@@ -3,11 +3,9 @@
 namespace oneCC {
 namespace Lexer {
 
-    Lexer::Lexer() {}
-
-    int Lexer::test_func()
+    Lexer::Lexer(std::shared_ptr<TextSequencer> _textSequencer)
     {
-        return 1;
+        m_textSequencer = _textSequencer;
     }
 
 }
