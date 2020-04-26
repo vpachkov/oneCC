@@ -1,9 +1,11 @@
 SUBDIRS += \
 		Lexer \
+		TextSequencer \
 
 BIG_OBJ += \
 	main.o \
 	Lexer/Lexer.o \
+	TextSequencer/TextSequencer.o \
 
 PROGRAM = oneCC.exec
 
