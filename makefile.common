@@ -1,0 +1,20 @@
+QUIET = @
+
+CXX = g++
+CXX_STANDARD_FLAGS = -std=c++2a
+CXXFLAGS = ${CXX_STANDARD_FLAGS} ${SUBPROJECT_CXXFLAGS}
+
+LD = ld
+LDFLAGS = ${SUBPROJECT_LDFLAGS}
+
+%.o: %.cpp
+	@echo "$(notdir $(CURDIR)): C++ $@"
+	$(QUIET) $(CXX) $(CXXFLAGS) -o $@ -c $<
+
+$(PROGRAM): $(OBJS)
+	@echo "$(notdir $(CURDIR)): LINK $(PROGRAM)"
+	$(QUIET) $(CXX) $(LDFLAGS) $^ -o $(PROGRAM)
+
+clean:
+	@echo "$(notdir $(CURDIR)): CLEAN"
+	$(QUIET) rm -rf $(PROGRAM)
