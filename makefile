@@ -27,8 +27,9 @@ main.o: main.cpp
 	$(QUIET) $(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean:
-	$(QUIET) $(MAKE) clean -C $(SUBDIRS)
-
+	@for dir in $(SUBDIRS); do \
+        $(MAKE) clean -C $$dir; \
+	done
 	@echo "$(notdir $(CURDIR)): CLEAN"
 	$(QUIET) rm -rf *.exec *.o
 
