@@ -1,10 +1,8 @@
 SUBDIRS += \
 		Lexer \
-		TextSequencer \
 
 BIG_OBJ += \
-		Lexer/Lexer.o \
-		TextSequencer/TextSequencer.o \
+		Lexer/ProgLexer.o \
 
 PROGRAM = oneCC.exec
 PROGRAM_TEST = test$(PROGRAM)
