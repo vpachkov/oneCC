@@ -4,6 +4,7 @@ namespace oneCC::Lexer {
 
 Lexer::Lexer(std::shared_ptr<std::ifstream> fileStream)
     : TextSequencer(fileStream)
+    , m_keywordManager(KeywordManager::makeStandart())
 {
 }
 
@@ -48,9 +49,9 @@ Token Lexer::nextToken()
     if (isNextDigit()) {
         return readNumber();
     } else if (isNextAlpha()) {
-        return readWord();
+        return m_keywordManager->process(readWord());
     } else if (isNextPunct()) {
-        return readPunct();
+        return m_keywordManager->process(readPunct());
     }
     return Token("", TokenType::EndOfFile);
 }
