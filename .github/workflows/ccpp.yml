@@ -15,3 +15,14 @@ jobs:
     - uses: actions/checkout@v2
     - name: make
       run: make
+  
+  test:
+    name: Complex test
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: build test version
+      run: make build_test
+    - name: testing
+      run: ./testoneCC.exec && exit 0 || exit 1
