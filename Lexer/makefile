@@ -1,4 +1,5 @@
 OBJS = 	Lexer.o \
+		KeywordManager.o \
 		TextSequencer.o \
 		Token.o
 
