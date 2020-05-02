@@ -13,9 +13,10 @@ LDFLAGS = ${SUBPROJECT_LDFLAGS}
 	$(QUIET) $(CXX) $(CXXFLAGS) -o $@ -c $<
 
 $(PROGRAM): $(OBJS)
-	@echo "$(notdir $(CURDIR)): LINK $(PROGRAM)"
+	@echo "$(notdir $(CURDIR)): MERGE $(PROGRAM)"
 	$(QUIET) $(CXX) $(LDFLAGS) $^ -o $(PROGRAM)
 
 clean:
 	@echo "$(notdir $(CURDIR)): CLEAN"
 	$(QUIET) rm -rf $(PROGRAM)
+	$(QUIET) rm -rf *.exec *.o
