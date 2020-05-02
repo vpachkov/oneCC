@@ -1,7 +1,11 @@
-#include "Lexer/Lexer.h"
-#include <iostream>
+#include "LexerTester.h"
+#include "../../Lexer/Lexer.h"
+#include "../../Lexer/Token.h"
+#include <fstream>
 
-bool compareFiles(const std::string& filename1, const std::string& filename2)
+namespace oneCC::Tests {
+
+bool LexerTester::compareFiles(const std::string& filename1, const std::string& filename2)
 {
     std::ifstream file1(filename1, std::ifstream::ate);
     std::ifstream file2(filename2, std::ifstream::ate);
@@ -19,12 +23,11 @@ bool compareFiles(const std::string& filename1, const std::string& filename2)
     return std::equal(begin1, std::istreambuf_iterator<char>(), begin2);
 }
 
-bool testLexer()
-{
-    auto ifstreamPtr = std::make_shared<std::ifstream>("tests/lexer.txt");
+bool LexerTester::test() {
+    auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
     auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
     
-    std::fstream ofile("tests/lexer.tmp", std::fstream::in | std::fstream::out | std::fstream::trunc);
+    std::fstream ofile("Tests/Lexer/Data/lexer.tmp", std::fstream::in | std::fstream::out | std::fstream::trunc);
     for (;;) {
         auto token = lexer.nextToken();
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
@@ -35,11 +38,6 @@ bool testLexer()
     }
 
     ofile.close();
-    return compareFiles("tests/lexer_ans.txt", "tests/lexer.tmp");
+    return compareFiles("Tests/Lexer/Data/lexer_ans.txt", "Tests/Lexer/Data/lexer.tmp");
 }
-
-int main()
-{
-    assert(testLexer() && "Lexer test not passed");
-    return 0;
 }
