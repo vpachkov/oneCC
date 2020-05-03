@@ -5,7 +5,7 @@ namespace oneCC::Tests {
 class LexerTest : public AbstractTest {
 public:
     std::string name() override { return "Lexer Test"; }
-    bool test() override;
+    void test() override;
     void clear() override {}
     ~LexerTest() {}
 

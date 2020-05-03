@@ -1,3 +1,6 @@
 *.o
 *.exec
 *.tmp
+*.vscode
+
+.DS_Store

@@ -21,9 +21,10 @@ public:
     {
         bool result = true;
         for (auto i : m_queue) {
-            bool testRes = i->test();
-            Tester::print(testRes, i);
-            result &= testRes;
+            i->test();
+            bool testResult = i->result();
+            Tester::print(testResult, i);
+            result &= testResult;
         }
         return result;
     }
@@ -33,6 +34,9 @@ private:
     {
         if (!res) {
             std::cout << "\u001b[31mFailed: \u001b[0m" << test->name() << "\n";
+            for (std::string& resultDetail : test->resultDetails()) {
+                std::cout << "\t" << resultDetail << "\n";
+            }
         } else {
             std::cout << "\u001b[32;1mPass: \u001b[0m" << test->name() << "\n";
         }
