@@ -2,6 +2,7 @@
 #include "../../Lexer/Lexer.h"
 #include "../../Lexer/Token.h"
 #include <fstream>
+#include <iostream>
 
 namespace oneCC::Tests {
 
@@ -23,7 +24,7 @@ bool LexerTest::compareFiles(const std::string& filename1, const std::string& fi
     return std::equal(begin1, std::istreambuf_iterator<char>(), begin2);
 }
 
-void LexerTest::test()
+void LexerTest::testCorrectness()
 {
     auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
     auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
@@ -40,5 +41,27 @@ void LexerTest::test()
 
     ofile.close();
     this->assertTrue(compareFiles("Tests/Lexer/Data/lexer_ans.txt", "Tests/Lexer/Data/lexer.tmp"));
+}
+
+void LexerTest::testSpeed()
+{
+    auto start = std::chrono::high_resolution_clock::now();
+    auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
+    auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
+    for (;;) {
+        auto token = lexer.nextToken();
+        if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
+            break;
+        }
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "\u001b[34mInfo: \u001b[0m" << name() << ": " << duration.count() << "ms\n";
+}
+
+void LexerTest::test()
+{
+    testSpeed();
+    testCorrectness();
 }
 }

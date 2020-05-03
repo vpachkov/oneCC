@@ -10,6 +10,8 @@ public:
     ~LexerTest() {}
 
 private:
+    void testCorrectness();
+    void testSpeed();
     bool compareFiles(const std::string& filename1, const std::string& filename2);
 };
 }
