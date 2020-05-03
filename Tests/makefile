@@ -1,8 +1,10 @@
 SUBDIRS += \
 		Lexer \
+		Config \
 
 BIG_OBJ += \
 		Lexer/ProgLexerTester.o \
+		Config/ProgConfigTester.o \
 
 PROGRAM = ProgTester.o
 
