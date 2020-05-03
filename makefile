@@ -1,5 +1,6 @@
 SUBDIRS += \
 		Lexer \
+		Config \
 		
 SUBDIRS_TEST += \
 		$(SUBDIRS) \
@@ -7,6 +8,7 @@ SUBDIRS_TEST += \
 
 BIG_OBJ += \
 		Lexer/ProgLexer.o \
+		Config/ProgConfig.o \
 
 BIG_OBJ_TEST += \
 		$(BIG_OBJ) \
