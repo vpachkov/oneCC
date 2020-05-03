@@ -23,7 +23,7 @@ bool LexerTest::compareFiles(const std::string& filename1, const std::string& fi
     return std::equal(begin1, std::istreambuf_iterator<char>(), begin2);
 }
 
-bool LexerTest::test()
+void LexerTest::test()
 {
     auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
     auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
@@ -39,6 +39,6 @@ bool LexerTest::test()
     }
 
     ofile.close();
-    return compareFiles("Tests/Lexer/Data/lexer_ans.txt", "Tests/Lexer/Data/lexer.tmp");
+    this->assertTrue(compareFiles("Tests/Lexer/Data/lexer_ans.txt", "Tests/Lexer/Data/lexer.tmp"));
 }
 }
