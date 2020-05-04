@@ -23,8 +23,8 @@ namespace oneCC::Lexer {
         Token(const char* lexeme, TokenType type);
         Token(std::string lexeme, TokenType type);
 
-        TokenType type() { return m_type; }
-        std::string lexeme() { return m_lexeme; }
+        TokenType type() const { return m_type; }
+        std::string lexeme() const { return m_lexeme; }
     private:
         std::string m_lexeme;
         TokenType m_type;

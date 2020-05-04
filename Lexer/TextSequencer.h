@@ -12,7 +12,6 @@ public:
     char nextChar();
     char lookupChar();
 
-    bool isValidChar(char c) { return c >= 0; }
     bool isNextDigit() { return isdigit(lookupChar()); }
     bool isNextAlpha() { return isalpha(lookupChar()); }
     bool isNextPunct() { return ispunct(lookupChar()); }
