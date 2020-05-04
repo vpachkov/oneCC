@@ -25,13 +25,19 @@ CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS}
 
 all: build
 
-debug: CXXFLAGS += -g
-debug: $(PROGRAM)
+run: build
+	./$(PROGRAM)
+
+test: build_test
+	./$(PROGRAM_TEST)
+
+debug: build_debug
 	gdb $(PROGRAM)
 
 build: $(PROGRAM)
-
 build_test: $(PROGRAM_TEST)
+build_debug: CXXFLAGS += -g
+build_debug: $(PROGRAM)
 
 $(PROGRAM): $(SUBDIRS) main.o
 	@echo "$(notdir $(CURDIR)): LINK $(PROGRAM)"
@@ -58,4 +64,4 @@ clean:
 	@echo "$(notdir $(CURDIR)): CLEAN"
 	$(QUIET) rm -rf *.exec *.o
 
-.PHONY: all $(PROGRAM) $(SUBDIRS) $(SUBDIRS_TEST)
+.PHONY: all clean run test debug $(PROGRAM) $(SUBDIRS) $(SUBDIRS_TEST)
