@@ -34,6 +34,9 @@ void LexerTest::testCorrectness()
         auto token = lexer.nextToken();
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
+        } else if (token.type() == oneCC::Lexer::TokenType::Error) {
+            this->assertTrue(0);
+            return;
         } else {
             ofile << token.lexeme() << " ";
         }

@@ -29,6 +29,8 @@ readNumberIntState:
     } else if (lookupChar() == 'e') {
         val += nextChar();
         goto readNumberExpStateStart;
+    } else if (isNextAlpha()) {
+        goto readNumberErrorState;
     } else {
         return Token(val, TokenType::IntConst);
     }
@@ -40,6 +42,8 @@ readNumberFloatState:
     } else if (lookupChar() == 'e') {
         val += nextChar();
         goto readNumberExpStateStart;
+    } else if (isNextAlpha()) {
+        goto readNumberErrorState;
     } else {
         return Token(val, TokenType::FloatConst);
     }
@@ -63,18 +67,29 @@ readNumberExpState:
         val += nextChar();
     }
 
+    if (isNextAlpha()) {
+        goto readNumberErrorState;
+    }
+
     return Token(val, TokenType::FloatConst);
 
 readNumberErrorState:
-    return Token("", TokenType::EndOfFile);
+    return Token("", TokenType::Error);
 }
 
 Token Lexer::readWord()
 {
     std::string val;
-    while (isNextAlpha()) {
+
+    if (isNextAlpha())
+        val += nextChar();
+    else
+        return Token("", TokenType::Error);
+    
+    while (isNextAlpha() || isNextDigit()) {
         val += nextChar();
     }
+
     return Token(val, TokenType::Identifier);
 }
 
@@ -96,8 +111,11 @@ Token Lexer::nextToken()
         return m_keywordManager->process(readWord());
     } else if (isNextPunct()) {
         return m_keywordManager->process(readPunct());
+    } else if (lookupChar() == EOF) {
+        return Token("", TokenType::EndOfFile);
     }
-    return Token("", TokenType::EndOfFile);
+
+    return Token("", TokenType::Error);
 }
 
 }
