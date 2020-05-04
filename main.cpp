@@ -10,7 +10,7 @@ int main()
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
         } else {
-            std::cout << token.value() << " " << token.type() << "\n";
+            std::cout << token.lexeme() << " " << token.type() << "\n";
         }
     }
     return 0;

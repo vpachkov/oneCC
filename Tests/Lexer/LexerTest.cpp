@@ -35,7 +35,7 @@ void LexerTest::testCorrectness()
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
         } else {
-            ofile << token.value() << " ";
+            ofile << token.lexeme() << " ";
         }
     }
 

@@ -20,13 +20,13 @@ namespace oneCC::Lexer {
 
     class Token {
     public:
-        Token(const char* value, TokenType type);
-        Token(std::string value, TokenType type);
+        Token(const char* lexeme, TokenType type);
+        Token(std::string lexeme, TokenType type);
 
         TokenType type() { return m_type; }
-        std::string value() { return m_value; }
+        std::string lexeme() { return m_lexeme; }
     private:
-        std::string m_value;
+        std::string m_lexeme;
         TokenType m_type;
     };
 }

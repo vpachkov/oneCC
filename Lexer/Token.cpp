@@ -2,14 +2,14 @@
 #include <string>
 
 namespace oneCC::Lexer {
-Token::Token(std::string value, TokenType type)
-    : m_value(value)
+Token::Token(std::string lexeme, TokenType type)
+    : m_lexeme(lexeme)
     , m_type(type)
 {
 }
 
-Token::Token(const char* value, TokenType type)
-    : m_value(value)
+Token::Token(const char* lexeme, TokenType type)
+    : m_lexeme(lexeme)
     , m_type(type)
 {
 }
