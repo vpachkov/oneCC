@@ -16,6 +16,7 @@ namespace oneCC::Lexer {
 
         // Others
         EndOfFile,
+        Error,
     };
 
     class Token {
