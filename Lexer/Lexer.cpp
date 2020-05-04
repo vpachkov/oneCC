@@ -15,14 +15,58 @@ void Lexer::skipGaps()
     }
 }
 
-// FIXME: currently supports only int
 Token Lexer::readNumber()
 {
     std::string val;
+
+readNumberIntState:
+    if (isNextDigit()) {
+        val += nextChar();
+        goto readNumberIntState;
+    } else if (lookupChar() == '.') {
+        val += nextChar();
+        goto readNumberFloatState;
+    } else if (lookupChar() == 'e') {
+        val += nextChar();
+        goto readNumberExpStateStart;
+    } else {
+        return Token(val, TokenType::IntConst);
+    }
+
+readNumberFloatState:
+    if (isNextDigit()) {
+        val += nextChar();
+        goto readNumberFloatState;
+    } else if (lookupChar() == 'e') {
+        val += nextChar();
+        goto readNumberExpStateStart;
+    } else {
+        return Token(val, TokenType::FloatConst);
+    }
+
+readNumberExpStateStart:
+    if (isNextDigit()) {
+        val += nextChar();
+        goto readNumberExpState;
+    } else if (lookupChar() == '+') {
+        val += nextChar();
+        goto readNumberExpState;
+    } else if (lookupChar() == '-') {
+        val += nextChar();
+        goto readNumberExpState;
+    } else {
+        goto readNumberErrorState;
+    }
+
+readNumberExpState:
     while (isNextDigit()) {
         val += nextChar();
     }
-    return Token(val, TokenType::Number);
+
+    return Token(val, TokenType::FloatConst);
+
+readNumberErrorState:
+    return Token("", TokenType::EndOfFile);
 }
 
 Token Lexer::readWord()
@@ -31,7 +75,7 @@ Token Lexer::readWord()
     while (isNextAlpha()) {
         val += nextChar();
     }
-    return Token(val, TokenType::Word);
+    return Token(val, TokenType::Identifier);
 }
 
 Token Lexer::readPunct()

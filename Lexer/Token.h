@@ -3,8 +3,9 @@
 
 namespace oneCC::Lexer {
     enum TokenType {
-        Number,
-        Word,
+        IntConst,
+        FloatConst,
+        Identifier,
         Punct,
         
         // Keywords
