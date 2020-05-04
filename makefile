@@ -25,6 +25,10 @@ CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS}
 
 all: build
 
+debug: CXXFLAGS += -g
+debug: $(PROGRAM)
+	gdb $(PROGRAM)
+
 build: $(PROGRAM)
 
 build_test: $(PROGRAM_TEST)
