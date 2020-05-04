@@ -8,13 +8,13 @@ KeywordManager::KeywordManager()
 
 void KeywordManager::addKeyword(Token token)
 {
-    m_storage[token.value()] = token.type();
+    m_storage[token.lexeme()] = token.type();
 }
 
 Token KeywordManager::process(Token token)
 {
-    if (auto el = m_storage.find(token.value()); el != m_storage.end()) {
-        return Token(token.value(), el->second);
+    if (auto el = m_storage.find(token.lexeme()); el != m_storage.end()) {
+        return Token(token.lexeme(), el->second);
     }
     return token;
 }
