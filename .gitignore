@@ -5,4 +5,7 @@
 *.dSYM
 *.trace
 
+oneCC
+oneCC-test
+oneCC-debug
 .DS_Store

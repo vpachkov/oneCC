@@ -25,4 +25,4 @@ jobs:
     - name: build test version
       run: make build_test
     - name: testing
-      run: ./testoneCC.exec && exit 0 || exit 1
+      run: ./oneCC-test && exit 0 || exit 1
