@@ -3,7 +3,7 @@
 
 int main()
 {
-    auto ifstreamPtr = std::make_shared<std::ifstream>("test.txt");
+    auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
     auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
     for (;;) {
         auto token = lexer.nextToken();

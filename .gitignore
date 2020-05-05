@@ -2,5 +2,7 @@
 *.exec
 *.tmp
 *.vscode
+*.dSYM
+*.trace
 
 .DS_Store

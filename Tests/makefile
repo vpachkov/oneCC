@@ -8,10 +8,6 @@ BIG_OBJ += \
 
 PROGRAM = ProgTester.o
 
-QUIET = @
-CXX = g++
-CXX_STANDARD_FLAGS = -std=c++2a
-CXX_WARNING_FLAGS += -Werror
 CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS}
 LDFLAGS = -r
 
