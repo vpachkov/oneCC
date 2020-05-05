@@ -1,1 +1,1 @@
-13 + 33333 ; 2.3 ; 2.3e22 ; 2.3e-1 ; 1e1 e1e ; 10e+10 - 3 ; 10.2222 + 223.22e222 ; plus ( ) ; if 13 > 22 
+int(Identifier) kek(Identifier) ((Punct) int(Identifier) *(Punct) a(Identifier) )(Punct) {(Punct) }(Punct) int(Identifier) main(Identifier) ((Punct) )(Punct) {(Punct) int(Identifier) a(Identifier) ;(Punct) kek(Identifier) ((Punct) &(Punct) a(Identifier) )(Punct) ;(Punct) return(Identifier) 0(IntConst) ;(Punct) }(Punct) 

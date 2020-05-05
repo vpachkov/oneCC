@@ -1,6 +1,7 @@
 #pragma once
 #include <sstream>
 #include <string>
+#include "../Lexer/Token.h"
 
 namespace oneCC::Utils {
 template <typename T>

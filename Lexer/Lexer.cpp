@@ -10,7 +10,7 @@ Lexer::Lexer(std::shared_ptr<std::ifstream> fileStream)
 
 void Lexer::skipGaps()
 {
-    while (isspace(lookupChar())) {
+    while (isNextSpace()) {
         nextChar();
     }
 }
@@ -52,10 +52,7 @@ readNumberExpStateStart:
     if (isNextDigit()) {
         val += nextChar();
         goto readNumberExpState;
-    } else if (lookupChar() == '+') {
-        val += nextChar();
-        goto readNumberExpState;
-    } else if (lookupChar() == '-') {
+    } else if (lookupChar() == '+' || lookupChar() == '-') {
         val += nextChar();
         goto readNumberExpState;
     } else {
@@ -74,7 +71,7 @@ readNumberExpState:
     return Token(val, TokenType::FloatConst);
 
 readNumberErrorState:
-    return Token("", TokenType::Error);
+    return Token(TokenType::Error);
 }
 
 Token Lexer::readWord()
@@ -84,7 +81,7 @@ Token Lexer::readWord()
     if (isNextAlpha())
         val += nextChar();
     else
-        return Token("", TokenType::Error);
+        return Token(TokenType::Error);
     
     while (isNextAlpha() || isNextDigit()) {
         val += nextChar();
@@ -104,18 +101,27 @@ Token Lexer::readPunct()
 
 Token Lexer::nextToken()
 {
+    Token res;
     skipGaps();
-    if (isNextDigit()) {
-        return readNumber();
-    } else if (isNextAlpha()) {
-        return m_keywordManager->process(readWord());
-    } else if (isNextPunct()) {
-        return m_keywordManager->process(readPunct());
-    } else if (lookupChar() == EOF) {
-        return Token("", TokenType::EndOfFile);
+    if (switchLine()) {
+        nextLine();
+        skipGaps();
     }
 
-    return Token("", TokenType::Error);
+    if (isNextDigit()) {
+        res = readNumber();
+    } else if (isNextAlpha()) {
+        res = m_keywordManager->process(readWord());
+    } else if (isNextPunct()) {
+        res = m_keywordManager->process(readPunct());
+    } else if (isNextEOF()) {
+        res = Token(TokenType::EndOfFile);
+    }
+
+    if (res.type() != TokenType::Error) {
+        return res;
+    }
+    return Token(TokenType::Error);
 }
 
 }

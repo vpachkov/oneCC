@@ -38,7 +38,7 @@ void LexerTest::testCorrectness()
             this->assertTrue(0);
             return;
         } else {
-            ofile << token.lexeme() << " ";
+            ofile << token.lexeme() << "(" << oneCC::Lexer::Token::typeToString(token) << ") ";
         }
     }
 

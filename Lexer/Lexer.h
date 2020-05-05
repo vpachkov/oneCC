@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-
 #include "KeywordManager.h"
 #include "TextSequencer.h"
 #include "Token.h"
