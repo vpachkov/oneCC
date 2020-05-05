@@ -19,12 +19,15 @@ public:
 
 protected:
     template <typename T>
-    bool assertEqual(T& valueA, T& valueB)
+    bool assertEqual(T valueA, T valueB)
     {
-        bool assertationResult = valueA == valueB;
+        std::string valueAString = oneCC::Utils::toString(valueA);
+        std::string valueBString = oneCC::Utils::toString(valueB);
+
+        bool assertationResult = valueAString == valueBString;
         if (!assertationResult) {
             m_resultDetails.push_back(
-                "Assertation faied, " + oneCC::Utils::toString(valueA) + " != " + oneCC::Utils::toString(valueB));
+                "Assertation faied, " + valueAString + " != " + valueBString);
         }
         m_result &= (assertationResult);
         return assertationResult;
