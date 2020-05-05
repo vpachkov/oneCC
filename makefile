@@ -23,6 +23,9 @@ CXX_STANDARD_FLAGS = -std=c++2a
 CXX_WARNING_FLAGS += -Werror
 CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS}
 
+# Flags which we pass to sub makefiles
+PASS_VARS = CXX="$(CXX)" CXX_STANDARD_FLAGS="$(CXX_STANDARD_FLAGS)" CXX_WARNING_FLAGS="$(CXX_WARNING_FLAGS)" QUIET="$(QUIET)"
+
 all: build
 
 run: build
@@ -36,8 +39,9 @@ debug: build_debug
 
 build: $(PROGRAM)
 build_test: $(PROGRAM_TEST)
-build_debug: CXXFLAGS += -g
+build_debug: CXX_STANDARD_FLAGS += -g
 build_debug: $(PROGRAM)
+	xcrun dsymutil $(PROGRAM) -o $(PROGRAM).dSYM
 
 $(PROGRAM): $(SUBDIRS) main.o
 	@echo "$(notdir $(CURDIR)): LINK $(PROGRAM)"
@@ -48,10 +52,10 @@ $(PROGRAM_TEST): $(SUBDIRS_TEST)
 	$(QUIET) $(CXX) $(BIG_OBJ_TEST) -o $(PROGRAM_TEST)
 
 $(SUBDIRS): 
-	$(QUIET) $(MAKE) -C $@
+	$(QUIET) $(MAKE) -C $@ $(PASS_VARS)
 
 $(SUBDIRS_TEST): 
-	$(QUIET) $(MAKE) -C $@
+	$(QUIET) $(MAKE) -C $@ $(PASS_VARS)
 
 main.o: main.cpp
 	@echo "$(notdir $(CURDIR)): C++ $@"
