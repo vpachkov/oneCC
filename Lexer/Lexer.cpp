@@ -118,10 +118,26 @@ Token Lexer::nextToken()
         res = Token(TokenType::EndOfFile);
     }
 
-    if (res.type() != TokenType::Error) {
-        return res;
+    if (res.type() == TokenType::Error) {
+        throw std::runtime_error(errorMsg());
     }
-    return Token(TokenType::Error);
+
+    return res;
+}
+
+std::string Lexer::errorMsg() {
+    std::string msg;
+    msg += "Lexer: unexpected symbol\n\u001b[31m";
+    msg += currentLine() + "\n";
+    for (int i = 0; i < currentLine().size(); i++) {
+        if (i == currentOffset()) {
+            msg += '^';
+        } else {
+            msg += '~';
+        }
+    }
+    msg += "\u001b[0m";
+    return msg;
 }
 
 }

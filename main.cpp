@@ -7,12 +7,16 @@ int main()
     auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
     auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
     for (;;) {
-        auto token = lexer.nextToken();
+        oneCC::Lexer::Token token;
+        try {
+            token = lexer.nextToken();
+        } catch (std::exception& e) {
+            std::cout << "\n" << e.what() << "\n";
+            return 1;
+        }
+
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
-        } else if (token.type() == oneCC::Lexer::TokenType::Error) {
-            std::cout << "Error parsing\n";
-            return 1;
         } else {
             std::cout << token.lexeme() << "(" << oneCC::Lexer::Token::typeToString(token) << ") ";
         }

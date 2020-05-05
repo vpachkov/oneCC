@@ -25,7 +25,6 @@ void TextSequencer::nextLine()
             m_currentLine = "";
         }
     }
-    
 }
 
 // Returns next char at position @offset and doesn't seek the file.

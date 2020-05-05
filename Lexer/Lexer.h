@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <stdexcept>
 #include "KeywordManager.h"
 #include "TextSequencer.h"
 #include "Token.h"
@@ -16,6 +17,8 @@ private:
     Token readNumber();
     Token readWord();
     Token readPunct();
+    std::string errorMsg();
+
     std::shared_ptr<KeywordManager> m_keywordManager;
 };
 }
