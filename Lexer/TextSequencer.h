@@ -6,7 +6,7 @@
 
 namespace oneCC::Lexer {
 class TextSequencer {
-public:
+protected:
     TextSequencer(std::shared_ptr<std::ifstream> fileStream);
     ~TextSequencer();
     char nextChar();
@@ -23,6 +23,7 @@ public:
     void nextLine();
     bool switchLine() { return m_switchLine; }
     std::string currentLine() const { return m_currentLine; }
+    int currentOffset() const { return m_passed; }
 
 private:
     std::shared_ptr<std::ifstream> m_fileStream;

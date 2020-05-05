@@ -2,36 +2,37 @@
 #include <string>
 
 namespace oneCC::Lexer {
-    enum TokenType {
-        IntConst,
-        FloatConst,
-        Identifier,
-        Punct,
-        
-        // Keywords
-        If,
-        
-        // Operations
-        Bigger,
+enum TokenType {
+    IntConst,
+    FloatConst,
+    Identifier,
+    Punct,
 
-        // Others
-        EndOfFile,
-        Error,
-    };
+    // Keywords
+    If,
 
-    class Token {
-    public:
-        Token();
-        Token(TokenType type);
-        Token(const char* lexeme, TokenType type);
-        Token(std::string lexeme, TokenType type);
+    // Operations
+    Bigger,
 
-        TokenType type() const { return m_type; }
-        std::string lexeme() const { return m_lexeme; }
-        
-        static std::string typeToString(Token& tt);
-    private:
-        std::string m_lexeme;
-        TokenType m_type;
-    };
+    // Others
+    EndOfFile,
+    Error,
+};
+
+class Token {
+public:
+    Token();
+    Token(TokenType type);
+    Token(const char* lexeme, TokenType type);
+    Token(std::string lexeme, TokenType type);
+
+    TokenType type() const { return m_type; }
+    std::string lexeme() const { return m_lexeme; }
+
+    static std::string typeToString(Token& tt);
+
+private:
+    std::string m_lexeme;
+    TokenType m_type;
+};
 }
