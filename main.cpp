@@ -1,5 +1,6 @@
 #include "Lexer/Lexer.h"
 #include <iostream>
+#include "Utils/Utils.h"
 
 int main()
 {
@@ -13,7 +14,7 @@ int main()
             std::cout << "Error parsing\n";
             return 1;
         } else {
-            std::cout << token.lexeme() << " " << token.type() << "\n";
+            std::cout << token.lexeme() << "(" << oneCC::Lexer::Token::typeToString(token) << ") ";
         }
     }
     return 0;

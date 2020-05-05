@@ -10,13 +10,25 @@ public:
     TextSequencer(std::shared_ptr<std::ifstream> fileStream);
     ~TextSequencer();
     char nextChar();
+    char lookupChar(int offset);
     char lookupChar();
 
     bool isNextDigit() { return isdigit(lookupChar()); }
     bool isNextAlpha() { return isalpha(lookupChar()); }
     bool isNextPunct() { return ispunct(lookupChar()); }
+    bool isNextEOF() { return lookupChar() == EOF; }
+    bool isNextSpace() { return lookupChar() == ' '; }
+    bool isNextNL() { return lookupChar() == '\n'; }
+
+    void nextLine();
+    bool switchLine() { return m_switchLine; }
+    std::string currentLine() const { return m_currentLine; }
 
 private:
     std::shared_ptr<std::ifstream> m_fileStream;
+    std::string m_currentLine;
+    int m_passed;
+    bool m_switchLine;
+    bool m_fileEnded;
 };
 }
