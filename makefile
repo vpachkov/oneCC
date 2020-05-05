@@ -1,21 +1,6 @@
-SUBDIRS += \
-		Lexer \
-		Config \
-		
-SUBDIRS_TEST += \
-		$(SUBDIRS) \
-		Tests \
-
-BIG_OBJ += \
-		Lexer/ProgLexer.o \
-		Config/ProgConfig.o \
-
-BIG_OBJ_TEST += \
-		$(BIG_OBJ) \
-		Tests/ProgTester.o \
-
-PROGRAM = oneCC.exec
-PROGRAM_TEST = test$(PROGRAM)
+###########
+# Build params
+###########
 
 QUIET = @
 CXX = g++
@@ -25,6 +10,45 @@ CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS}
 
 # Flags which we pass to sub makefiles
 PASS_VARS = CXX="$(CXX)" CXX_STANDARD_FLAGS="$(CXX_STANDARD_FLAGS)" CXX_WARNING_FLAGS="$(CXX_WARNING_FLAGS)" QUIET="$(QUIET)"
+
+
+###########
+# Sources
+###########
+
+SUBDIRS += \
+		Lexer \
+		Config \
+		
+BIG_OBJ += \
+		Lexer/ProgLexer.o \
+		Config/ProgConfig.o \
+
+
+###########
+# Sources with Test included
+# Note: not to edit, all you need is in Sources Group
+###########
+
+SUBDIRS_TEST += \
+		$(SUBDIRS) \
+		Tests \
+
+BIG_OBJ_TEST += \
+		$(BIG_OBJ) \
+		Tests/ProgTester.o \
+
+###########
+# Outputs
+###########
+
+PROGRAM = oneCC.exec
+PROGRAM_TEST = test$(PROGRAM)
+
+
+###########
+# Build rules
+###########
 
 all: build
 
