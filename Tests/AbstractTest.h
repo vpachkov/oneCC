@@ -1,4 +1,5 @@
 #pragma once
+#include <exception>
 #include <string>
 #include <vector>
 
@@ -45,6 +46,21 @@ protected:
     bool assertFalse(bool value)
     {
         return assertTrue(!value);
+    }
+
+    template <typename T>
+    bool assertThrows(const std::function<void()>& func)
+    {
+        try {
+            func();
+        } catch (T& e) {
+            return true;
+        } catch (...) {
+            m_resultDetails.push_back("Assertation failed, function throwed unknown exception");
+        }
+        m_resultDetails.push_back("Assertation failed, function throwed nothing");
+        m_result = false;
+        return false;
     }
 
 private:
