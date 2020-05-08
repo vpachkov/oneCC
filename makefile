@@ -21,6 +21,7 @@ SUBDIRS += \
 		Lexer \
 		Config \
 		ArgsParser \
+		Parser \
 
 SRCS := $(shell find $(SUBDIRS) -name "*.cpp")
 OBJS := $(patsubst %.cpp, %.o, $(SRCS))

@@ -4,6 +4,7 @@
 *.vscode
 *.dSYM
 *.trace
+*.idea
 
 oneCC
 oneCC-test
