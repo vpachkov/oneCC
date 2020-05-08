@@ -3,20 +3,25 @@
 
 namespace oneCC::Lexer {
 enum TokenType {
-    IntConst,
-    FloatConst,
     Identifier,
     Punct,
 
     // Keywords
     If,
 
-    // Operations
+    // Binary Operations
     Bigger,
+    Plus,
+    Multiply,
 
     // Others
     EndOfFile,
     Error,
+
+    // Types
+    IntConst,
+    FloatConst,
+    StringConst,
 };
 
 class Token {
