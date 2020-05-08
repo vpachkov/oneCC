@@ -20,6 +20,7 @@ PASS_VARS = CXX="$(CXX)" CXX_STANDARD_FLAGS="$(CXX_STANDARD_FLAGS)" CXX_WARNING_
 SUBDIRS += \
 		Lexer \
 		Config \
+		ArgsParser \
 
 SRCS := $(shell find $(SUBDIRS) -name "*.cpp")
 OBJS := $(patsubst %.cpp, %.o, $(SRCS))

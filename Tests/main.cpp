@@ -1,5 +1,6 @@
 #include "Lexer/LexerTest.h"
 #include "Config/ConfigTest.h"
+#include "ArgsParser/ArgsParserTest.h"
 #include "Tester.h"
 
 int main()
@@ -8,6 +9,7 @@ int main()
     auto tester = Tester();
     tester.addTest(std::make_shared<LexerTest>());
     tester.addTest(std::make_shared<ConfigTest>());
+    tester.addTest(std::make_shared<ArgsParserTest>());
     if (!tester.run()) {
         return 1;
     }
