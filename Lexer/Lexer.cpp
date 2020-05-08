@@ -31,7 +31,6 @@ readNumberIntState:
     if (isNextDigit()) {
         val += nextChar();
         goto readNumberIntState;
-    } else if (lookupChar() == '.') {
         val += nextChar();
         goto readNumberFloatState;
     } else if (lookupChar() == 'e') {

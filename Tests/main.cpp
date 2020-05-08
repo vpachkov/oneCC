@@ -1,6 +1,6 @@
-#include "Lexer/LexerTest.h"
-#include "Config/ConfigTest.h"
 #include "ArgsParser/ArgsParserTest.h"
+#include "Config/ConfigTest.h"
+#include "Lexer/LexerTest.h"
 #include "Tester.h"
 
 int main()

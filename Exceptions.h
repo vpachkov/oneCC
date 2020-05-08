@@ -33,4 +33,19 @@ private:
     }
 };
 
+class ParserError : public std::exception {
+public:
+    std::string message;
+    ParserError(const char* mes = NULL)
+    {
+        message = mes == NULL ? "" : std::string(mes);
+    }
+
+private:
+    virtual const char* what() const throw()
+    {
+        return ("Parser Error, " + message).c_str();
+    }
+};
+
 }
