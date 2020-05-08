@@ -18,7 +18,7 @@ void ArgsParser::loadArgs(int argc, char* argv[])
     }
 }
 void ArgsParser::registerArgument(std::string& configField, std::string argumentLong,
-    std::string argumentShort = NULL_ARGUMENT, bool required = false)
+    std::string argumentShort, bool required)
 {
     m_validateArgumentKeys(argumentLong, argumentShort);
 
@@ -29,12 +29,12 @@ void ArgsParser::registerArgument(std::string& configField, std::string argument
             return;
         }
     }
-    if (required){
+    if (required) {
         throw oneCC::Exceptions::MissingArgument();
     }
 }
 void ArgsParser::registerArgument(int& configField, std::string argumentLong,
-    std::string argumentShort = NULL_ARGUMENT, bool required = false)
+    std::string argumentShort, bool required)
 {
     m_validateArgumentKeys(argumentLong, argumentShort);
 
@@ -45,12 +45,12 @@ void ArgsParser::registerArgument(int& configField, std::string argumentLong,
             return;
         }
     }
-    if (required){
+    if (required) {
         throw oneCC::Exceptions::MissingArgument();
     }
 }
 void ArgsParser::registerArgument(bool& configField, std::string argumentLong,
-    std::string argumentShort = NULL_ARGUMENT)
+    std::string argumentShort)
 {
     m_validateArgumentKeys(argumentLong, argumentShort);
 
