@@ -122,12 +122,12 @@ Token Lexer::readWord()
 {
     std::string val;
 
-    if (isNextAlpha())
+    if (isNextWordCapableSymbol())
         val += nextChar();
     else
         return Token(TokenType::Error);
     
-    while (isNextAlpha() || isNextDigit()) {
+    while (isNextWordCapableSymbol() || isNextDigit()) {
         val += nextChar();
     }
 
@@ -154,7 +154,7 @@ Token Lexer::nextToken()
 
     if (isNextDigit()) {
         res = readNumber();
-    } else if (isNextAlpha()) {
+    } else if (isNextWordCapableSymbol()) {
         res = m_keywordManager->process(readWord());
     } else if (isNextPunct()) {
         res = m_keywordManager->process(readPunct());
