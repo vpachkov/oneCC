@@ -19,6 +19,11 @@ Token Lexer::readNumber()
 {
     std::string val;
 
+readNumberIntStartState:
+    if (lookupChar() == '0') {
+        val += nextChar();
+        goto readNumberNotDecFormat;
+    } 
 readNumberIntState:
     if (isNextDigit()) {
         val += nextChar();
@@ -29,6 +34,45 @@ readNumberIntState:
     } else if (lookupChar() == 'e') {
         val += nextChar();
         goto readNumberExpStateStart;
+    } else if (isNextAlpha()) {
+        goto readNumberErrorState;
+    } else {
+        return Token(val, TokenType::IntConst);
+    }
+
+readNumberNotDecFormat:
+    if (lookupChar() == 'b') {
+        val += nextChar();
+        goto readNumberBinFormat;
+    } else if (lookupChar() == 'x') {
+        val += nextChar();
+        goto readNumberHexFormat;
+    } else {
+        goto readNumberIntState;
+    }
+
+readNumberBinFormat:
+    if (lookupChar() == '0') {
+        val += nextChar();
+        goto readNumberBinFormat;
+    } else if (lookupChar() == '1') {
+        val += nextChar();
+        goto readNumberBinFormat;
+    } else if (isNextDigit()) {
+        goto readNumberErrorState;
+    } else if (isNextAlpha()) {
+        goto readNumberErrorState;
+    } else {
+        return Token(val, TokenType::IntConst);
+    }
+
+readNumberHexFormat:
+    if (isNextHex()) {
+        val += nextChar();
+        goto readNumberHexFormat;
+    } else if (isNextDigit()) {
+        val += nextChar();
+        goto readNumberHexFormat;
     } else if (isNextAlpha()) {
         goto readNumberErrorState;
     } else {

@@ -3,8 +3,7 @@ int kek(int *a) {
 }
 
 int main() {
-    int a;
-
+    int a = 0x3f;
     kek(&a);
     return 0;
 }
