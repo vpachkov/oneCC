@@ -37,6 +37,7 @@ SUBDIRS_TEST += \
 SRCS_TEST := $(shell find $(SUBDIRS) $(SUBDIRS_TEST) -name "*.cpp")
 OBJS_TEST := $(patsubst %.cpp, %.o, $(SRCS_TEST))
 
+HEADERS += $(shell find $(SUBDIRS) $(SUBDIRS_TEST) -name "*.h")
 
 ###########
 # Outputs
@@ -85,7 +86,7 @@ $(PROGRAM_TEST): $(OBJS_TEST)
 	@echo "$(notdir $(CURDIR)): LINK $(PROGRAM_TEST)"
 	$(QUIET) $(CXX) $^ -o $@
 
-%.o: %.cpp
+%.o: %.cpp $(HEADERS)
 	@echo "$(notdir $(CURDIR)): C++ $@"
 	$(QUIET) $(CXX) $(CXXFLAGS) -o $@ -c $<
 
