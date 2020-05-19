@@ -5,6 +5,8 @@ namespace oneCC::Lexer {
 Lexer::Lexer(std::shared_ptr<std::ifstream> fileStream)
     : TextSequencer(fileStream)
     , m_keywordManager(KeywordManager::makeStandart())
+    , m_cache_pos()
+    , m_cache()
 {
 }
 
@@ -23,7 +25,7 @@ readNumberIntStartState:
     if (lookupChar() == '0') {
         val += nextChar();
         goto readNumberNotDecFormat;
-    } 
+    }
 readNumberIntState:
     if (isNextDigit()) {
         val += nextChar();
@@ -126,7 +128,7 @@ Token Lexer::readWord()
         val += nextChar();
     else
         return Token(TokenType::Error);
-    
+
     while (isNextWordCapableSymbol() || isNextDigit()) {
         val += nextChar();
     }
@@ -143,6 +145,104 @@ Token Lexer::readPunct()
     return Token(val, TokenType::Punct);
 }
 
+// TODO: add support for UNICODE
+char Lexer::asEscapeSequence(char c)
+{
+    switch (c) {
+    case '\'':
+        return 0x27;
+    case '\"':
+        return 0x22;
+    case '?':
+        return 0x3f;
+    case '\\':
+        return 0x5c;
+    case '0':
+        return 0x00;
+    case 'a':
+        return 0x07;
+    case 'b':
+        return 0x08;
+    case 'f':
+        return 0x0c;
+    case 'n':
+        return 0x0a;
+    case 'r':
+        return 0x0d;
+    case 't':
+        return 0x09;
+    case 'v':
+        return 0x0b;
+    default:
+        return -1;
+    }
+}
+
+Token Lexer::readString()
+{
+    std::string val;
+
+    if (isNextDoubleQuote()) {
+        nextChar();
+    }
+
+    bool escape_seq = false;
+    for (;;) {
+        if (escape_seq) {
+            if (switchLine()) {
+                nextLine();
+            } else if (char eseq = asEscapeSequence(lookupChar()); eseq != -1) {
+                val += eseq;
+                nextChar();
+            } else {
+                return Token(TokenType::Error);
+            }
+            escape_seq = false;
+        } else {
+            if (lookupChar() == EOF) {
+                return Token(TokenType::Error);
+            } if (lookupChar() == '\\') {
+                escape_seq = true;
+                nextChar();
+            } else if (isNextDoubleQuote()) {
+                nextChar();
+                return Token(val, TokenType::ConstString);
+            } else {
+                val += nextChar();
+            }
+        }
+    }
+    return Token(TokenType::Error);
+}
+
+Token Lexer::readChar()
+{
+    if (isNextSingleQuote()) {
+        nextChar();
+    }
+    std::string val;
+    if (lookupChar() == '\\') {
+        nextChar();
+        if (char eseq = asEscapeSequence(lookupChar()); eseq != -1) {
+            val += eseq;
+            nextChar();
+        } else {
+            return Token(TokenType::Error);
+        }
+    } else if (isNextSingleQuote()) {
+        nextChar();
+        return Token(val, TokenType::ConstChar);
+    } else {
+        val += nextChar();
+    }
+    if (isNextSingleQuote()) {
+        nextChar();
+        return Token(val, TokenType::ConstChar);
+    } else {
+        return Token(TokenType::Error);
+    }
+}
+
 Token Lexer::nextToken()
 {
     Token res;
@@ -156,6 +256,10 @@ Token Lexer::nextToken()
         res = readNumber();
     } else if (isNextWordCapableSymbol()) {
         res = m_keywordManager->process(readWord());
+    } else if (isNextDoubleQuote()) {
+        res = readString();
+    } else if (isNextSingleQuote()) {
+        res = readChar();
     } else if (isNextPunct()) {
         res = m_keywordManager->process(readPunct());
     } else if (isNextEOF()) {
@@ -169,7 +273,8 @@ Token Lexer::nextToken()
     return res;
 }
 
-std::string Lexer::errorMsg() {
+std::string Lexer::errorMsg()
+{
     std::string msg;
     msg += "Lexer: unexpected symbol\n\u001b[31m";
     msg += currentLine() + "\n";

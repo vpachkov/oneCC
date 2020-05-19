@@ -29,6 +29,8 @@ std::string Token::typeToString(Token& tt)
         case FloatConst:    return "FloatConst";
         case Identifier:    return "Identifier";
         case Punct:         return "Punct";
+        case ConstString:   return "ConstString";
+        case ConstChar:     return "ConstChar";
         
         // Keywords
         case If:            return "If";
