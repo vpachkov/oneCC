@@ -4,6 +4,12 @@ int kek(int *_a) {
 
 int main() {
     int a$a = 0x3f;
+    string txt = "she's saying i'm on a \
+    run, i'm chasing guys for fun";
+    string test = "";
+    char kek = '';
+    char kek = '\\';
+    char kek = 'a';
     kek(&a);
     return 0;
 }

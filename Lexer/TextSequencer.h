@@ -18,6 +18,8 @@ protected:
     bool isNextWordCapableSymbol() { return isNextAlpha() || isNextIdentifierAllowPunct(); }
     bool isNextHex() { return isHex(lookupChar()); }
     bool isNextPunct() { return isPunct(lookupChar()); }
+    bool isNextSingleQuote() { return lookupChar() == '\''; }
+    bool isNextDoubleQuote() { return lookupChar() == '\"'; }
     bool isNextIdentifierAllowPunct() { return isIdentifierAllowPunct(lookupChar()); }
     bool isNextEOF() { return lookupChar() == EOF; }
     bool isNextSpace() { return lookupChar() == ' '; }

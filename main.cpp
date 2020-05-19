@@ -21,5 +21,6 @@ int main()
             std::cout << token.lexeme() << "(" << oneCC::Lexer::Token::typeToString(token) << ") ";
         }
     }
+    
     return 0;
 }

@@ -7,6 +7,8 @@ enum TokenType {
     FloatConst,
     Identifier,
     Punct,
+    ConstString,
+    ConstChar,
 
     // Keywords
     If,
