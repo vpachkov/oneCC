@@ -11,12 +11,13 @@ namespace oneCC::Lexer {
 class Lexer : TextSequencer {
 public:
     Lexer(std::shared_ptr<std::ifstream> fileStream);
-    void skipGaps();
-    Token lookupToken(int at);
+    bool tokinizeFile();
+    Token lookupToken(int offset);
     Token lookupToken();
     Token nextToken();
 
 private:
+    void skipGaps();
     Token readNumber();
     Token readWord();
     Token readPunct();
@@ -27,6 +28,6 @@ private:
 
     std::shared_ptr<KeywordManager> m_keywordManager;
     std::vector<Token> m_cache;
-    int m_cache_pos;
+    int m_active_token;
 };
 }
