@@ -3,8 +3,8 @@
 ###########
 
 PROJECT_BASE_DIR = $(shell pwd)
-QUIET = @
-CXX = g++
+QUIET = 
+CXX = g++-10
 CXX_STANDARD_FLAGS = -std=c++2a
 CXX_WARNING_FLAGS += -Werror
 CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS}
