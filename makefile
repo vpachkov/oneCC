@@ -3,8 +3,8 @@
 ###########
 
 PROJECT_BASE_DIR = $(shell pwd)
-QUIET = 
-CXX = g++-10
+QUIET = @
+CXX = g++
 CXX_STANDARD_FLAGS = -std=c++2a
 CXX_WARNING_FLAGS += -Werror
 CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS}
@@ -92,6 +92,6 @@ $(PROGRAM_TEST): $(OBJS_TEST)
 
 clean:
 	@echo "$(notdir $(CURDIR)): CLEANED"
-	$(QUIET) rm -rf $(PROGRAM) $(PROGRAM_TEST) $(PROGRAM_DEBUG) $(PROGRAM_SYMBOLS) $(OBJS_TEST)
+	$(QUIET) rm -rf $(PROGRAM) $(PROGRAM_TEST) $(PROGRAM_DEBUG) $(PROGRAM_SYMBOLS) $(OBJS_TEST) main.o
 
 .PHONY: all clean run test debug build build_test build_debug $(PROGRAM_TEST) $(PROGRAM_DEBUG) $(PROGRAM_SYMBOLS)
