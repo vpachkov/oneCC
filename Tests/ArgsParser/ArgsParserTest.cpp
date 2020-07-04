@@ -1,4 +1,5 @@
 #include "ArgsParserTest.h"
+#include <cstring>
 #include "../../ArgsParser/ArgsParser.h"
 #include "../../Config/Config.h"
 #include "../../Exceptions.h"

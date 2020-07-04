@@ -2,6 +2,7 @@
 #include <exception>
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "../Utils/Utils.h"
 
