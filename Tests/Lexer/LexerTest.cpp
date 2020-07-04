@@ -3,6 +3,7 @@
 #include "../../Lexer/Token.h"
 #include <fstream>
 #include <iostream>
+#include <chrono>
 
 namespace oneCC::Tests {
 
@@ -28,6 +29,7 @@ void LexerTest::testCorrectness()
 {
     auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
     auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
+    lexer.tokinizeFile();
 
     std::fstream ofile("Tests/Lexer/Data/lexer.tmp", std::fstream::in | std::fstream::out | std::fstream::trunc);
     for (;;) {
@@ -51,6 +53,7 @@ void LexerTest::testSpeed()
     auto start = std::chrono::high_resolution_clock::now();
     auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
     auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
+    lexer.tokinizeFile();
     for (;;) {
         auto token = lexer.nextToken();
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {

@@ -1,11 +1,12 @@
 #include "Lexer.h"
+#include <iostream>
 
 namespace oneCC::Lexer {
 
 Lexer::Lexer(std::shared_ptr<std::ifstream> fileStream)
     : TextSequencer(fileStream)
     , m_keywordManager(KeywordManager::makeStandart())
-    , m_cache_pos()
+    , m_active_token(-1)
     , m_cache()
 {
 }
@@ -243,34 +244,59 @@ Token Lexer::readChar()
     }
 }
 
-Token Lexer::nextToken()
+bool Lexer::tokinizeFile()
 {
     Token res;
-    skipGaps();
-    if (switchLine()) {
-        nextLine();
+    
+    while (!isNextEOF()) {
         skipGaps();
+        if (switchLine()) {
+            nextLine();
+            skipGaps();
+        }
+
+        if (isNextDigit()) {
+            res = readNumber();
+        } else if (isNextWordCapableSymbol()) {
+            res = m_keywordManager->process(readWord());
+        } else if (isNextDoubleQuote()) {
+            res = readString();
+        } else if (isNextSingleQuote()) {
+            res = readChar();
+        } else if (isNextPunct()) {
+            res = m_keywordManager->process(readPunct());
+        } else if (isNextEOF()) {
+            res = Token(TokenType::EndOfFile);
+        }
+
+        if (res.type() == TokenType::Error) {
+            throw std::runtime_error(errorMsg());
+        }
+
+        m_cache.push_back(res);
     }
 
-    if (isNextDigit()) {
-        res = readNumber();
-    } else if (isNextWordCapableSymbol()) {
-        res = m_keywordManager->process(readWord());
-    } else if (isNextDoubleQuote()) {
-        res = readString();
-    } else if (isNextSingleQuote()) {
-        res = readChar();
-    } else if (isNextPunct()) {
-        res = m_keywordManager->process(readPunct());
-    } else if (isNextEOF()) {
-        res = Token(TokenType::EndOfFile);
-    }
+    return true;
+}
 
-    if (res.type() == TokenType::Error) {
-        throw std::runtime_error(errorMsg());
+Token Lexer::lookupToken(int offset)
+{
+    int index = m_active_token + offset;
+    if (index < 0 || index >= m_cache.size()) [[unlikely]] {
+        return Token(TokenType::EndOfFile);
     }
+    return m_cache[index];
+}
 
-    return res;
+Token Lexer::lookupToken()
+{
+    return lookupToken(1);
+}
+
+Token Lexer::nextToken()
+{
+    m_active_token++;
+    return lookupToken(0);
 }
 
 std::string Lexer::errorMsg()

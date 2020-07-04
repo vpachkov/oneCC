@@ -1,4 +1,5 @@
 #include "TextSequencer.h"
+#include <cassert>
 #include <iostream>
 
 namespace oneCC::Lexer {
