@@ -5,6 +5,11 @@
 #include "Utils/Debug/ASTReader.h"
 #include "Parser/Parser.h"
 
+inline bool exists_test0 (const std::string& name) {
+    std::ifstream f(name.c_str());
+    return f.good();
+}
+
 int main()
 {
     auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
@@ -27,14 +32,23 @@ int main()
     std::cout << "\n\n";
 
     std::vector<oneCC::Lexer::Token> tokens = {
+        oneCC::Lexer::Token("(", oneCC::Lexer::TokenType::OpenRoundBracket),
         oneCC::Lexer::Token("1", oneCC::Lexer::TokenType::IntConst),
         oneCC::Lexer::Token("+", oneCC::Lexer::TokenType::Plus),
-        oneCC::Lexer::Token("1", oneCC::Lexer::TokenType::IntConst),
+        oneCC::Lexer::Token("2", oneCC::Lexer::TokenType::IntConst),
+        oneCC::Lexer::Token(")", oneCC::Lexer::TokenType::CloseRoundBracket),
+        oneCC::Lexer::Token("*", oneCC::Lexer::TokenType::Multiply),
+        oneCC::Lexer::Token("3", oneCC::Lexer::TokenType::IntConst),
+        oneCC::Lexer::Token("/", oneCC::Lexer::TokenType::Divide),
+        oneCC::Lexer::Token("4", oneCC::Lexer::TokenType::IntConst),
     };
 
     auto parser = oneCC::Parser::Parser(tokens);
-    // oneCC::Utils::Debug::outputExpression(parser.sum());
-    auto s = parser.sum();
-    std::cout << s->operands[0]->constToken.lexeme();
+    auto* root = parser.sum();
+    oneCC::Utils::Debug::outputExpression(root);
+//    auto s = parser.sum();
+//    // std::cout << "lol";
+//    std::cout << s->operands[0]->constToken.lexeme();
+//    std::cout << s->operands[1]->constToken.lexeme();
     return 0;
 }
