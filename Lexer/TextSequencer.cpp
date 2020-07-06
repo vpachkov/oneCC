@@ -1,9 +1,10 @@
 #include "TextSequencer.h"
 #include <iostream>
+#include <utility>
 
 namespace oneCC::Lexer {
 TextSequencer::TextSequencer(std::shared_ptr<std::ifstream> fileStream)
-    : m_fileStream(fileStream)
+    : m_fileStream(std::move(fileStream))
     , m_currentLine("")
     , m_switchLine(true)
     , m_fileEnded(false)
@@ -18,7 +19,7 @@ void TextSequencer::nextLine()
     while (m_switchLine) {
         if (std::getline(*m_fileStream, m_currentLine)) {
             m_passed = 0;
-            m_switchLine = m_currentLine.size() ? false : true;
+            m_switchLine = m_currentLine.empty();
         } else {
             m_fileEnded = true;
             m_switchLine = false;
@@ -52,7 +53,6 @@ char TextSequencer::nextChar()
     return lookupChar(0);
 }
 
-TextSequencer::~TextSequencer()
-{
-}
+TextSequencer::~TextSequencer() = default;
+
 }
