@@ -298,6 +298,12 @@ Token Lexer::eatToken()
     return lookupToken(0);
 }
 
+Token Lexer::eatToken(const int offset)
+{
+    m_active_token += offset + 1;
+    return lookupToken(0);
+}
+
 std::string Lexer::errorMsg()
 {
     std::string msg;

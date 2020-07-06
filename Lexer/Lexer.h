@@ -15,6 +15,7 @@ public:
     Token lookupToken(int offset);
     Token lookupToken();
     Token eatToken();
+    Token eatToken(int offset);
 
 private:
     void skipGaps();
