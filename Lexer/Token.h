@@ -16,6 +16,7 @@ enum TokenType {
     Plus,
     Multiply,
     Divide,
+    Equal,
 
     // Others
     EndOfFile,
@@ -26,11 +27,18 @@ enum TokenType {
     FloatConst,
     StringConst,
 
+    TypeInt,
+    TypeFloat,
+
     // Brackets
     OpenRoundBracket,
     CloseRoundBracket,
     OpenSquareBracket,
-    CloseSquareBracket
+    CloseSquareBracket,
+
+    Assign,
+
+    EndOfStatement,
 };
 
 class Token {
