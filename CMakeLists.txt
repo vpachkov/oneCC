@@ -4,6 +4,7 @@ project(oneCC)
 set(CMAKE_CXX_STANDARD 20)
 
 include_directories(ArgsParser)
+include_directories(AST)
 include_directories(Config)
 include_directories(Lexer)
 include_directories(Parser)

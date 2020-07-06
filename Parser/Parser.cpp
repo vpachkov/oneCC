@@ -1,9 +1,10 @@
 #include "Parser.h"
+#include "../AST/Nodes/BinaryOperation.h"
+#include "../AST/Nodes/IntConst.h"
 #include "../Exceptions.h"
-#include "../Lexer/Token.h"
-#include "Expression.h"
 #include <iostream>
 #include <vector>
+#include <stdlib.h>
 
 namespace oneCC::Parser {
 
@@ -18,16 +19,14 @@ bool Parser::isConstant(oneCC::Lexer::Token& token)
     return token.type() == oneCC::Lexer::TokenType::IntConst || token.type() == oneCC::Lexer::TokenType::StringConst;
 }
 
-GeneralExpression* Parser::factor()
+AST::Node* Parser::factor()
 {
     // TODO: check for out of scope.
 
     auto token = m_tokens[m_passedTokens + 1];
 
     if (isConstant(token)) {
-        auto factor = new GeneralExpression();
-        factor->expressionType = oneCC::Parser::ExpressionType::Const;
-        factor->constToken = token;
+        auto factor = new AST::IntConstNode(atoi(token.lexeme().c_str()));
         m_passedTokens++;
         return factor;
     }
@@ -44,27 +43,26 @@ GeneralExpression* Parser::factor()
     return NULL;
 }
 
-GeneralExpression* Parser::multiplyDivide()
+AST::Node* Parser::multiplyDivide()
 {
-    GeneralExpression* root = factor();
+    auto* root = factor();
     if (!root) {
         return NULL;
     }
     while (m_tokens[m_passedTokens + 1].type() == oneCC::Lexer::TokenType::Multiply || m_tokens[m_passedTokens + 1].type() == oneCC::Lexer::TokenType::Divide) {
-        auto* new_root = new GeneralExpression();
-        new_root->expressionType = ExpressionType::BinaryOperaion;
-        new_root->operation = m_tokens[m_passedTokens + 1].type();
+        auto* new_root = new AST::BinaryOperationNode();
+        new_root->setOperation(m_tokens[m_passedTokens + 1].type());
 
         m_passedTokens++;
 
-        new_root->operands = { root, factor() };
+        new_root->setChildren(root, factor());
         root = new_root;
     }
 
     return root;
 }
 
-GeneralExpression* Parser::sum()
+AST::Node* Parser::sum()
 {
     auto* root = multiplyDivide();
     if (!root) {
@@ -72,14 +70,12 @@ GeneralExpression* Parser::sum()
     }
 
     while (m_tokens[m_passedTokens + 1].type() == oneCC::Lexer::TokenType::Plus) {
-        auto* new_root = new GeneralExpression();
-        new_root->expressionType = ExpressionType::BinaryOperaion;
-        new_root->operation = m_tokens[m_passedTokens + 1].type();
+        auto* new_root = new AST::BinaryOperationNode();
+        new_root->setOperation(m_tokens[m_passedTokens + 1].type());
 
         m_passedTokens++;
 
-        auto* right_side = multiplyDivide();
-        new_root->operands = { root, right_side };
+        new_root->setChildren(root, multiplyDivide());
         root = new_root;
     }
     return root;
