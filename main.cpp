@@ -22,7 +22,7 @@ int main()
         return 1;
     }
     for (;;) {
-        auto token = lexer.nextToken();
+        auto token = lexer.eatToken();
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
         } else {
@@ -31,19 +31,9 @@ int main()
     }
     std::cout << "\n\n";
 
-    std::vector<oneCC::Lexer::Token> tokens = {
-        oneCC::Lexer::Token("(", oneCC::Lexer::TokenType::OpenRoundBracket),
-        oneCC::Lexer::Token("1", oneCC::Lexer::TokenType::IntConst),
-        oneCC::Lexer::Token("+", oneCC::Lexer::TokenType::Plus),
-        oneCC::Lexer::Token("2", oneCC::Lexer::TokenType::IntConst),
-        oneCC::Lexer::Token(")", oneCC::Lexer::TokenType::CloseRoundBracket),
-        oneCC::Lexer::Token("*", oneCC::Lexer::TokenType::Multiply),
-        oneCC::Lexer::Token("3", oneCC::Lexer::TokenType::IntConst),
-        oneCC::Lexer::Token("/", oneCC::Lexer::TokenType::Divide),
-        oneCC::Lexer::Token("4", oneCC::Lexer::TokenType::IntConst),
-    };
-
-    auto parser = oneCC::Parser::Parser(tokens);
+    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("Tests/Parser/Data/test.txt");
+    auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
+    auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
     auto* root = parser.sum();
     oneCC::Utils::Debug::outputExpression(root);
     return 0;

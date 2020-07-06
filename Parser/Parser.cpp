@@ -3,15 +3,15 @@
 #include "../AST/Nodes/IntConst.h"
 #include "../Exceptions.h"
 #include <iostream>
-#include <vector>
 #include <stdlib.h>
+#include <vector>
 
 namespace oneCC::Parser {
 
-Parser::Parser(std::vector<oneCC::Lexer::Token>& tokens)
-    : m_tokens(tokens)
-    , m_passedTokens(-1)
+Parser::Parser(std::unique_ptr<Lexer::Lexer> lexer)
+    : m_lexer(std::move(lexer))
 {
+    m_lexer->tokinizeFile();
 }
 
 bool Parser::isConstant(oneCC::Lexer::Token& token)
@@ -21,21 +21,23 @@ bool Parser::isConstant(oneCC::Lexer::Token& token)
 
 AST::Node* Parser::factor()
 {
-    // TODO: check for out of scope.
-
-    auto token = m_tokens[m_passedTokens + 1];
+    auto token = m_lexer->lookupToken();
 
     if (isConstant(token)) {
         auto factor = new AST::IntConstNode(atoi(token.lexeme().c_str()));
-        m_passedTokens++;
+        m_lexer->eatToken();
         return factor;
     }
 
+    std::cout << token.type() << "\n";
+
     if (token.type() == oneCC::Lexer::TokenType::OpenRoundBracket) {
-        m_passedTokens++; // Eats open bracket, go ahead.
+        std::cout << "HERE\n";
+        std::cout.flush();
+        m_lexer->eatToken(); // Eats open bracket, go ahead.
         auto* expr = sum();
-        if (m_tokens[m_passedTokens + 1].type() == oneCC::Lexer::TokenType::CloseRoundBracket) {
-            m_passedTokens++;
+        if (m_lexer->lookupToken().type() == oneCC::Lexer::TokenType::CloseRoundBracket) {
+            m_lexer->eatToken();
             return expr;
         }
     }
@@ -49,12 +51,10 @@ AST::Node* Parser::multiplyDivide()
     if (!root) {
         return NULL;
     }
-    while (m_tokens[m_passedTokens + 1].type() == oneCC::Lexer::TokenType::Multiply || m_tokens[m_passedTokens + 1].type() == oneCC::Lexer::TokenType::Divide) {
+    while (m_lexer->lookupToken().type() == oneCC::Lexer::TokenType::Multiply || m_lexer->lookupToken().type() == oneCC::Lexer::TokenType::Divide) {
         auto* new_root = new AST::BinaryOperationNode();
-        new_root->setOperation(m_tokens[m_passedTokens + 1].type());
-
-        m_passedTokens++;
-
+        new_root->setOperation(m_lexer->lookupToken().type());
+        m_lexer->eatToken();
         new_root->setChildren(root, factor());
         root = new_root;
     }
@@ -69,12 +69,10 @@ AST::Node* Parser::sum()
         throw oneCC::Exceptions::ParserError("binary operation \"+\" should have 2 operands");
     }
 
-    while (m_tokens[m_passedTokens + 1].type() == oneCC::Lexer::TokenType::Plus) {
+    while (m_lexer->lookupToken().type() == oneCC::Lexer::TokenType::Plus) {
         auto* new_root = new AST::BinaryOperationNode();
-        new_root->setOperation(m_tokens[m_passedTokens + 1].type());
-
-        m_passedTokens++;
-
+        new_root->setOperation(m_lexer->lookupToken().type());
+        m_lexer->eatToken();
         new_root->setChildren(root, multiplyDivide());
         root = new_root;
     }

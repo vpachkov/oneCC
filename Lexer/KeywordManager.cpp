@@ -22,8 +22,11 @@ Token KeywordManager::process(Token token)
 std::shared_ptr<KeywordManager> KeywordManager::makeStandart()
 {
     auto man = std::make_shared<KeywordManager>();
-    man->addKeyword(Token("if", TokenType::If));
-    man->addKeyword(Token(">", TokenType::Bigger));
+    man->addKeyword(Token("+", TokenType::Plus));
+    man->addKeyword(Token("*", TokenType::Multiply));
+    man->addKeyword(Token("/", TokenType::Divide));
+    man->addKeyword(Token("(", TokenType::OpenRoundBracket));
+    man->addKeyword(Token(")", TokenType::CloseRoundBracket));
     return man;
 }
 

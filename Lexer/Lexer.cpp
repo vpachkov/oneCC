@@ -292,7 +292,7 @@ Token Lexer::lookupToken()
     return lookupToken(1);
 }
 
-Token Lexer::nextToken()
+Token Lexer::eatToken()
 {
     m_active_token++;
     return lookupToken(0);
