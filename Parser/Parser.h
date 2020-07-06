@@ -11,16 +11,15 @@ public:
     void parse();
     GeneralExpression* nextExpression(GeneralExpression* prevExpression = NULL);
 
-    bool isFactor(oneCC::Lexer::Token& token);
+    bool isConstant(oneCC::Lexer::Token& token);
 
     GeneralExpression* factor();
+    GeneralExpression* multiplyDivide();
     GeneralExpression* sum();
-    GeneralExpression* multiply();
 
 private:
     std::vector<oneCC::Lexer::Token> m_tokens;
-
-    int index;
+    int m_passedTokens;
 };
 
 }
