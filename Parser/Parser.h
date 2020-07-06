@@ -1,13 +1,15 @@
 #pragma once
+#include "../Lexer/Lexer.h"
 #include "../Lexer/Token.h"
 #include "../AST/ASTNode.h"
 #include <vector>
+#include <memory>
 
 namespace oneCC::Parser {
 
 class Parser {
 public:
-    Parser(std::vector<oneCC::Lexer::Token>& tokens);
+    Parser(std::unique_ptr<Lexer::Lexer> lexer);
     void parse();
     AST::Node* nextExpression(AST::Node* prevExpression = NULL);
 
@@ -18,8 +20,7 @@ public:
     AST::Node* sum();
 
 private:
-    std::vector<oneCC::Lexer::Token> m_tokens;
-    int m_passedTokens;
+    std::unique_ptr<Lexer::Lexer> m_lexer;
 };
 
 }

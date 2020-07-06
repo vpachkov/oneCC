@@ -33,7 +33,7 @@ void LexerTest::testCorrectness()
 
     std::fstream ofile("Tests/Lexer/Data/lexer.tmp", std::fstream::in | std::fstream::out | std::fstream::trunc);
     for (;;) {
-        auto token = lexer.nextToken();
+        auto token = lexer.eatToken();
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
         } else if (token.type() == oneCC::Lexer::TokenType::Error) {
@@ -55,7 +55,7 @@ void LexerTest::testSpeed()
     auto lexer = oneCC::Lexer::Lexer(std::move(ifstreamPtr));
     lexer.tokinizeFile();
     for (;;) {
-        auto token = lexer.nextToken();
+        auto token = lexer.eatToken();
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
         }
