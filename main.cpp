@@ -12,9 +12,10 @@ inline bool exists_test0 (const std::string& name) {
 
 int main()
 {
+    std::cout << exists_test0("Tests/Lexer/Data/lexer.txt");
     auto ifstreamPtr = std::make_unique<std::ifstream>("Tests/Lexer/Data/lexer.txt");
     auto lexer = oneCC::Lexer::Lexer(std::move(ifstreamPtr));
-    
+
     try {
         lexer.tokinizeFile();
     } catch (std::exception& e) {
@@ -31,10 +32,9 @@ int main()
     }
     std::cout << "\n\n";
 
-    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("Tests/Parser/Data/test.txt");
+    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("Tests/Lexer/Data/assign_expression.txt");
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
     auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
-    auto* root = parser.sum();
-    oneCC::Utils::Debug::outputExpression(root);
+    auto* root = parser.createInt();
     return 0;
 }

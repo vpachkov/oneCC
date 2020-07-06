@@ -20,8 +20,8 @@ public:
     AST::Node* multiplyDivide();
     AST::Node* sum();
 
-    GeneralExpression* typeInt();
-    GeneralExpression* createInt();
+    AST::Node* typeInt();
+    AST::Node* createInt();
 
 private:
     std::unique_ptr<Lexer::Lexer> m_lexer;
