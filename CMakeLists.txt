@@ -15,7 +15,6 @@ include_directories(Tests/Lexer)
 include_directories(Utils)
 include_directories(Utils/Debug)
 
-
 add_executable(
         oneCC_executable
         ArgsParser/ArgsParser.cpp

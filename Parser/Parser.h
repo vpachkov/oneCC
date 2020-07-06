@@ -14,10 +14,14 @@ public:
     AST::Node* nextExpression(AST::Node* prevExpression = NULL);
 
     bool isConstant(oneCC::Lexer::Token& token);
+    bool isType(oneCC::Lexer::Token& token);
 
     AST::Node* factor();
     AST::Node* multiplyDivide();
     AST::Node* sum();
+
+    GeneralExpression* typeInt();
+    GeneralExpression* createInt();
 
 private:
     std::unique_ptr<Lexer::Lexer> m_lexer;
