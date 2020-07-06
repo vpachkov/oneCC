@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../Lexer/Token.h"
 #include <string>
 #include <vector>
@@ -7,16 +8,23 @@ namespace oneCC::AST {
 
 enum NodeType {
     Const,
-    BinaryOperaion,
+    Identifier,
+    Type,
+
     UnaryOperation,
+    BinaryOperation,
+    TernaryOperation,
 };
 
 class Node {
 public:
     NodeType type() const { return m_type; }
+
+    virtual ~Node() = default;
+
 protected:
     Node(NodeType type) : m_type(type) {}
-    virtual ~Node() = default;
+
 private:
     NodeType m_type;
 };
