@@ -1,6 +1,9 @@
 #include "Parser.h"
 #include "../AST/Nodes/BinaryOperation.h"
+#include "../AST/Nodes/TernaryOperaion.h"
 #include "../AST/Nodes/IntConst.h"
+#include "../AST/Nodes/Type.h"
+#include "../AST/Nodes/Identifier.h"
 #include "../Exceptions.h"
 #include <iostream>
 #include <stdlib.h>
@@ -83,42 +86,34 @@ AST::Node* Parser::sum()
 
 
 
-GeneralExpression* Parser::createInt()
+AST::Node* Parser::createInt()
 {
     // TODO: check for out of scope.
 
-    auto type = m_tokens[m_passedTokens + 1];
+    auto type = m_lexer->lookupToken();
 
     if (isType(type)) {
-        auto* root = new GeneralExpression();
-        root->expressionType = ExpressionType::TernaryOperaion;
-        root->operation = oneCC::Lexer::TokenType::Assign;
 
-        auto identifier = m_tokens[m_passedTokens + 2];
+        auto identifier = m_lexer->lookupToken(1);
 
         if (identifier.type() != oneCC::Lexer::Identifier) {
             throw oneCC::Exceptions::ParserError("create int operation should have identifier");
         }
 
-        auto expression = m_tokens[m_passedTokens + 3];
+        m_lexer->eatToken(1);
 
-        auto* left = new GeneralExpression();
-        left->constToken = type;
-        left->expressionType = ExpressionType::Type;
+        auto parsedSum = sum();
 
-        auto* middle = new GeneralExpression();
-        middle->constToken = identifier;
-        middle->expressionType = ExpressionType::Identifier;
-
-        m_passedTokens += 3;
-
-        root->operands = { left, middle, sum() };
-
-        if (m_tokens[m_passedTokens + 1].type() != oneCC::Lexer::TokenType::EndOfStatement ) {
+        if (m_lexer->lookupToken().type() != oneCC::Lexer::TokenType::EndOfStatement ) {
             throw oneCC::Exceptions::ParserError("Assign operation should have \";\"");
         }
 
-        return root;
+        return new AST::TernaryOperationNode(
+        new AST::TypeNode(type.type()),
+        new AST::IdentifierNode(identifier.lexeme()),
+        parsedSum,
+        oneCC::Lexer::TokenType::Assign
+        );
 
     }
 

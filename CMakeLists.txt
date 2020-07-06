@@ -29,6 +29,16 @@ add_executable(
         Tests/Lexer/LexerTest.cpp
 #        Tests/main.cpp
         main.cpp
+        AST/Nodes/TernaryOperaion.h AST/Nodes/Identifier.h AST/Nodes/Type.h
+)
+
+file(
+    COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/assign_expression.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Tests/Lexer/Data/
+)
+file(
+    COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/lexer.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Tests/Lexer/Data/
 )
 
 enable_testing()
