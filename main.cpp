@@ -2,8 +2,8 @@
 #include <iostream>
 #include <vector>
 #include "Utils/Utils.h"
-#include "Utils/Debug/ASTReader.h"
 #include "Parser/Parser.h"
+#include "Utils/Debug/ASTReader.h"
 
 inline bool exists_test0 (const std::string& name) {
     std::ifstream f(name.c_str());
@@ -46,9 +46,5 @@ int main()
     auto parser = oneCC::Parser::Parser(tokens);
     auto* root = parser.sum();
     oneCC::Utils::Debug::outputExpression(root);
-//    auto s = parser.sum();
-//    // std::cout << "lol";
-//    std::cout << s->operands[0]->constToken.lexeme();
-//    std::cout << s->operands[1]->constToken.lexeme();
     return 0;
 }

@@ -22,6 +22,7 @@ SUBDIRS += \
 		Config \
 		ArgsParser \
 		Parser \
+		AST \
 
 SRCS := $(shell find $(SUBDIRS) -name "*.cpp")
 OBJS := $(patsubst %.cpp, %.o, $(SRCS))
@@ -38,7 +39,7 @@ SUBDIRS_TEST += \
 SRCS_TEST := $(shell find $(SUBDIRS) $(SUBDIRS_TEST) -name "*.cpp")
 OBJS_TEST := $(patsubst %.cpp, %.o, $(SRCS_TEST))
 
-HEADERS += $(shell find $(SUBDIRS) $(SUBDIRS_TEST) -name "*.h")
+HEADERS += $(shell find . -name "*.h")
 
 ###########
 # Outputs

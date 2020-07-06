@@ -1,15 +1,17 @@
 #pragma once
 #include "../../Lexer/Token.h"
-#include "../../Parser/Expression.h"
+#include "../../AST/ASTNode.h"
+#include "../../AST/Nodes/BinaryOperation.h"
+#include "../../AST/Nodes/IntConst.h"
 #include <iostream>
-#include <sstream>
+#include <cstdint>
 #include <string>
 
 namespace oneCC::Utils::Debug {
 
-char tokenTypeToString(int tokenType){
-    switch (tokenType)
-    {
+char tokenTypeToString(int tokenType)
+{
+    switch (tokenType) {
     case oneCC::Lexer::TokenType::Plus:
         return '+';
     case oneCC::Lexer::TokenType::Multiply:
@@ -19,18 +21,27 @@ char tokenTypeToString(int tokenType){
     default:
         return '?';
     }
+    
 }
-void outputExpression(oneCC::Parser::GeneralExpression* expr, int depth = 0)
+void outputExpression(oneCC::AST::Node* expr, int depth = 0)
 {
-    if (expr->expressionType == oneCC::Parser::ExpressionType::Const) {
+    if (expr->type() == oneCC::AST::NodeType::Const) {
+        auto* ptr = dynamic_cast<oneCC::AST::IntConstNode*>(expr);
+        if (!ptr) {
+            return;
+        }
         std::cout << std::string(depth * 2, ' ');
-        std::cout << expr->constToken.lexeme();
+        std::cout << ptr->value();
     }
-    if (expr->expressionType == oneCC::Parser::ExpressionType::BinaryOperaion) {
-        outputExpression(expr->operands[0], depth + 1);
+    if (expr->type() == oneCC::AST::NodeType::BinaryOperaion) {
+        auto* ptr = dynamic_cast<oneCC::AST::BinaryOperationNode*>(expr);
+        if (!ptr) {
+            return;
+        }
+        outputExpression(ptr->leftChild(), depth + 1);
         std::cout << std::string(depth * 2, ' ');
-        std::cout << tokenTypeToString(expr->operation) << std::endl;
-        outputExpression(expr->operands[1], depth + 1);
+        std::cout << tokenTypeToString(ptr->operation()) << std::endl;
+        outputExpression(ptr->rightChild(), depth + 1);
     }
 
     std::cout << std::endl;
