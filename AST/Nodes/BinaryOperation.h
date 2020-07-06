@@ -1,12 +1,13 @@
+#pragma once
 #include "../ASTNode.h"
 
 namespace oneCC::AST {
 
 class BinaryOperationNode : public Node {
 public:
-    BinaryOperationNode() : Node(BinaryOperaion) { }
+    BinaryOperationNode() : Node(BinaryOperation) { }
     BinaryOperationNode(Node* left, Node* right, oneCC::Lexer::TokenType operation)
-        : Node(BinaryOperaion)
+        : Node(BinaryOperation)
         , m_left(left)
         , m_right(right)
         , m_operation(operation) { }

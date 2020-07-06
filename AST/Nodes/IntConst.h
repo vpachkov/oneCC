@@ -1,3 +1,4 @@
+#pragma once
 #include "../ASTNode.h"
 
 namespace oneCC::AST {
