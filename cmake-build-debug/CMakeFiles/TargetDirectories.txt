@@ -1,0 +1,4 @@
+/Users/slava/Desktop/oneCC/oneCC/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/slava/Desktop/oneCC/oneCC/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/slava/Desktop/oneCC/oneCC/cmake-build-debug/CMakeFiles/test.dir
+/Users/slava/Desktop/oneCC/oneCC/cmake-build-debug/CMakeFiles/oneCC_executable.dir
