@@ -4,8 +4,8 @@
 #include <utility>
 
 namespace oneCC::Lexer {
-TextSequencer::TextSequencer(std::shared_ptr<std::ifstream> fileStream)
-    : m_fileStream(fileStream)
+TextSequencer::TextSequencer(std::unique_ptr<std::ifstream> fileStream)
+    : m_fileStream(std::move(fileStream))
     , m_currentLine("")
     , m_switchLine(true)
     , m_fileEnded(false)

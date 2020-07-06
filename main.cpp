@@ -12,8 +12,8 @@ inline bool exists_test0 (const std::string& name) {
 
 int main()
 {
-    auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
-    auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
+    auto ifstreamPtr = std::make_unique<std::ifstream>("Tests/Lexer/Data/lexer.txt");
+    auto lexer = oneCC::Lexer::Lexer(std::move(ifstreamPtr));
     
     try {
         lexer.tokinizeFile();

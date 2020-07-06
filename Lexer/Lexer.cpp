@@ -3,8 +3,8 @@
 
 namespace oneCC::Lexer {
 
-Lexer::Lexer(std::shared_ptr<std::ifstream> fileStream)
-    : TextSequencer(fileStream)
+Lexer::Lexer(std::unique_ptr<std::ifstream> fileStream)
+    : TextSequencer(std::move(fileStream))
     , m_keywordManager(KeywordManager::makeStandart())
     , m_active_token(-1)
     , m_cache()

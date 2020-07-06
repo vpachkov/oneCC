@@ -7,7 +7,7 @@
 namespace oneCC::Lexer {
 class TextSequencer {
 protected:
-    TextSequencer(std::shared_ptr<std::ifstream> fileStream);
+    TextSequencer(std::unique_ptr<std::ifstream> fileStream);
     ~TextSequencer();
     char nextChar();
     char lookupChar(int offset);
@@ -35,7 +35,7 @@ private:
     bool isPunct(char c) { return ispunct(c) && !isIdentifierAllowPunct(c); }
     bool isIdentifierAllowPunct(char c) { return c == '_' || c == '$'; }
 
-    std::shared_ptr<std::ifstream> m_fileStream;
+    std::unique_ptr<std::ifstream> m_fileStream;
     std::string m_currentLine;
     int m_passed;
     bool m_switchLine;

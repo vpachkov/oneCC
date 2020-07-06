@@ -27,8 +27,8 @@ bool LexerTest::compareFiles(const std::string& filename1, const std::string& fi
 
 void LexerTest::testCorrectness()
 {
-    auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
-    auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
+    auto ifstreamPtr = std::make_unique<std::ifstream>("Tests/Lexer/Data/lexer.txt");
+    auto lexer = oneCC::Lexer::Lexer(std::move(ifstreamPtr));
     lexer.tokinizeFile();
 
     std::fstream ofile("Tests/Lexer/Data/lexer.tmp", std::fstream::in | std::fstream::out | std::fstream::trunc);
@@ -51,8 +51,8 @@ void LexerTest::testCorrectness()
 void LexerTest::testSpeed()
 {
     auto start = std::chrono::high_resolution_clock::now();
-    auto ifstreamPtr = std::make_shared<std::ifstream>("Tests/Lexer/Data/lexer.txt");
-    auto lexer = oneCC::Lexer::Lexer(ifstreamPtr);
+    auto ifstreamPtr = std::make_unique<std::ifstream>("Tests/Lexer/Data/lexer.txt");
+    auto lexer = oneCC::Lexer::Lexer(std::move(ifstreamPtr));
     lexer.tokinizeFile();
     for (;;) {
         auto token = lexer.nextToken();
