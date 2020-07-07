@@ -30,6 +30,7 @@ add_executable(
 #        Tests/main.cpp
         main.cpp
         AST/Nodes/TernaryOperaion.h AST/Nodes/Identifier.h AST/Nodes/Type.h
+        Utils/Debug/ASTReader.cpp
 )
 
 file(
