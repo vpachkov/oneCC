@@ -5,9 +5,19 @@
 #include "../AST/Nodes/Type.h"
 #include "../AST/Nodes/Identifier.h"
 #include "../Exceptions.h"
+#include "../Utils/Debug/ASTReader.h"
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
+
+#define eatToken(x) if (m_lexer->skipToken().type() != x) [[unlikely]] { \
+    generateErrorText(x);\
+    return NULL; \
+}
+
+#define checkNode(x) if (!x) [[unlikely]] { \
+    return NULL; \
+}
 
 namespace oneCC::Parser {
 
@@ -17,33 +27,47 @@ Parser::Parser(std::unique_ptr<Lexer::Lexer> lexer)
     m_lexer->tokinizeFile();
 }
 
-bool Parser::isConstant(oneCC::Lexer::Token& token)
+void Parser::generateErrorText(Lexer::TokenType tokenType)
 {
-    return token.type() == oneCC::Lexer::TokenType::IntConst || token.type() == oneCC::Lexer::TokenType::StringConst;
+    m_err = "Was expected symbol: ";
+    m_err += Utils::Debug::tokenTypeToString(tokenType);
 }
 
-bool Parser::isType(oneCC::Lexer::Token& token)
+inline bool Parser::isConstant(Lexer::Token& token)
 {
-    return token.type() == oneCC::Lexer::TokenType::TypeInt || token.type() == oneCC::Lexer::TokenType::TypeFloat;
+    return token.type() == Lexer::TokenType::IntConst || token.type() == Lexer::TokenType::StringConst;
+}
+
+inline bool Parser::isType(Lexer::Token& token)
+{
+    return token.type() == Lexer::TokenType::TypeInt || token.type() == Lexer::TokenType::TypeFloat;
+}
+
+inline Lexer::Token Parser::lookupToken(int offset)
+{
+    return m_lexer->lookupToken(offset);
+}
+
+inline Lexer::Token Parser::lookupToken()
+{
+    return m_lexer->lookupToken();
 }
 
 AST::Node* Parser::factor()
 {
-    auto token = m_lexer->lookupToken();
+    auto token = lookupToken();
 
     if (isConstant(token)) {
         auto factor = new AST::IntConstNode(atoi(token.lexeme().c_str()));
-        m_lexer->eatToken();
+        eatToken(Lexer::TokenType::IntConst);
         return factor;
     }
 
-    if (token.type() == oneCC::Lexer::TokenType::OpenRoundBracket) {
-        m_lexer->eatToken(); // Eats open bracket, go ahead.
+    if (token.type() == Lexer::TokenType::OpenRoundBracket) {
+        eatToken(Lexer::TokenType::OpenRoundBracket);
         auto* expr = sum();
-        if (m_lexer->lookupToken().type() == oneCC::Lexer::TokenType::CloseRoundBracket) {
-            m_lexer->eatToken();
-            return expr;
-        }
+        eatToken(Lexer::TokenType::CloseRoundBracket);
+        return expr;
     }
 
     return NULL;
@@ -52,15 +76,19 @@ AST::Node* Parser::factor()
 AST::Node* Parser::multiplyDivide()
 {
     auto* root = factor();
-    if (!root) {
-        return NULL;
-    }
-    while (m_lexer->lookupToken().type() == oneCC::Lexer::TokenType::Multiply || m_lexer->lookupToken().type() == oneCC::Lexer::TokenType::Divide) {
-        auto* new_root = new AST::BinaryOperationNode();
-        new_root->setOperation(m_lexer->lookupToken().type());
-        m_lexer->eatToken();
-        new_root->setChildren(root, factor());
-        root = new_root;
+    checkNode(root);
+    
+    while (lookupToken().type() == Lexer::TokenType::Multiply || lookupToken().type() == Lexer::TokenType::Divide) {
+        auto* newNode = new AST::BinaryOperationNode();
+        newNode->setOperation(lookupToken().type());
+        
+        m_lexer->skipToken();
+        
+        auto* rightSide = factor();
+        checkNode(rightSide);
+
+        newNode->setChildren(root, rightSide);
+        root = newNode;
     }
 
     return root;
@@ -69,55 +97,50 @@ AST::Node* Parser::multiplyDivide()
 AST::Node* Parser::sum()
 {
     auto* root = multiplyDivide();
-    if (!root) {
-        // throw oneCC::Exceptions::ParserError("binary operation \"+\" should have 2 operands");
-        return NULL;
+    checkNode(root);
+
+    while (lookupToken().type() == Lexer::TokenType::Plus) {
+        auto* newNode = new AST::BinaryOperationNode();
+        newNode->setOperation(lookupToken().type());
+        
+        m_lexer->skipToken();
+
+        auto* rightSide = multiplyDivide();
+        checkNode(rightSide);
+
+        newNode->setChildren(root, rightSide);
+        root = newNode;
     }
 
-    while (m_lexer->lookupToken().type() == oneCC::Lexer::TokenType::Plus) {
-        auto* new_root = new AST::BinaryOperationNode();
-        new_root->setOperation(m_lexer->lookupToken().type());
-        m_lexer->eatToken();
-        new_root->setChildren(root, multiplyDivide());
-        root = new_root;
-    }
     return root;
 }
 
-
-
 AST::Node* Parser::createInt()
 {
-    // TODO: check for out of scope.
-
-    auto type = m_lexer->lookupToken();
+    auto type = lookupToken();
 
     if (isType(type)) {
-
-        auto identifier = m_lexer->lookupToken(1);
-
-        if (identifier.type() != oneCC::Lexer::Identifier) {
-            throw oneCC::Exceptions::ParserError("create int operation should have identifier");
-        }
-
-        m_lexer->eatToken(1);
-
+        eatToken(Lexer::TokenType::TypeInt);
+        auto identifier = lookupToken();
+        eatToken(Lexer::TokenType::Identifier);
         auto parsedSum = sum();
-
-        if (m_lexer->lookupToken().type() != oneCC::Lexer::TokenType::EndOfStatement ) {
-            throw oneCC::Exceptions::ParserError("Assign operation should have \";\"");
-        }
-
-        return new AST::TernaryOperationNode(
-        new AST::TypeNode(type.type()),
-        new AST::IdentifierNode(identifier.lexeme()),
-        parsedSum,
-        oneCC::Lexer::TokenType::Assign
-        );
-
+        checkNode(parsedSum);
+        eatToken(Lexer::TokenType::EndOfStatement);
+        return new AST::TernaryOperationNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), parsedSum, Lexer::TokenType::Assign);
     }
 
     return NULL;
+}
+
+
+// Entry point
+AST::Node* Parser::parse()
+{
+    auto* root = sum();
+    if (!root) [[unlikely]] {
+        throw oneCC::Exceptions::ParserError(m_err.c_str());
+    }
+    return root;
 }
 
 }

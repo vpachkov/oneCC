@@ -23,6 +23,7 @@ SUBDIRS += \
 		ArgsParser \
 		Parser \
 		AST \
+		Utils \
 
 SRCS := $(shell find $(SUBDIRS) -name "*.cpp")
 OBJS := $(patsubst %.cpp, %.o, $(SRCS))

@@ -10,11 +10,16 @@ namespace oneCC::Parser {
 class Parser {
 public:
     Parser(std::unique_ptr<Lexer::Lexer> lexer);
-    void parse();
     AST::Node* nextExpression(AST::Node* prevExpression = NULL);
 
-    bool isConstant(oneCC::Lexer::Token& token);
-    bool isType(oneCC::Lexer::Token& token);
+    bool isConstant(Lexer::Token& token);
+    bool isType(Lexer::Token& token);
+
+    AST::Node* parse();
+
+private:
+    Lexer::Token lookupToken(int offset);
+    Lexer::Token lookupToken();
 
     AST::Node* factor();
     AST::Node* multiplyDivide();
@@ -23,7 +28,9 @@ public:
     AST::Node* typeInt();
     AST::Node* createInt();
 
-private:
+    void generateErrorText(Lexer::TokenType tokenType);
+
+    std::string m_err;
     std::unique_ptr<Lexer::Lexer> m_lexer;
 };
 

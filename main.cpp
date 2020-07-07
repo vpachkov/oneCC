@@ -23,7 +23,7 @@ int main()
         return 1;
     }
     for (;;) {
-        auto token = lexer.eatToken();
+        auto token = lexer.skipToken();
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
         } else {
@@ -32,9 +32,14 @@ int main()
     }
     std::cout << "\n\n";
 
-    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("Tests/Lexer/Data/assign_expression.txt");
+    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("Tests/Parser/Data/test.txt");
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
     auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
-    auto* root = parser.createInt();
+    try {
+        auto* root = parser.parse();
+    } catch (std::exception& e) {
+        std::cout << "\n" << e.what() << "\n";
+        return 1;
+    }
     return 0;
 }
