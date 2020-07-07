@@ -27,6 +27,9 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandart()
     man->addKeyword(Token("/", TokenType::Divide));
     man->addKeyword(Token("(", TokenType::OpenRoundBracket));
     man->addKeyword(Token(")", TokenType::CloseRoundBracket));
+
+    // Types
+    man->addKeyword(Token("int", TokenType::TypeInt));
     return man;
 }
 

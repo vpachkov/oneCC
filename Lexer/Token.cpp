@@ -34,6 +34,7 @@ std::string Token::typeToString(Token& tt)
         
         // Keywords
         case If:            return "If";
+        case TypeInt:       return "TypeInt";
         
         // Operations
         case Bigger:        return "Bigger";
