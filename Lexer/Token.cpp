@@ -38,6 +38,12 @@ std::string Token::typeToString(Token& tt)
         
         // Operations
         case Bigger:        return "Bigger";
+        case Plus:      return "Plus";
+        case Multiply:      return "Multiply";
+
+        // Brackets
+        case OpenRoundBracket:      return "OpenRoundBracket";
+        case CloseRoundBracket:     return  "CloseRoundBracket";
 
         // Others
         case EndOfFile:     return "EOF";

@@ -33,7 +33,7 @@ void Parser::generateErrorText(Lexer::TokenType tokenType)
     m_err += Utils::Debug::tokenTypeToString(tokenType);
 }
 
-void Parser::generateErrorText(std::vector<Lexer::TokenType> tokenTypes)
+void Parser::generateErrorText(const std::vector<Lexer::TokenType>& tokenTypes)
 {
     m_err = "Was expected symbols: ";
     for (auto tokenType : tokenTypes) {
@@ -67,7 +67,7 @@ inline bool Parser::tryToEatToken(Lexer::TokenType tokenType)
     return m_lexer->skipToken().type() == tokenType;
 }
 
-inline bool Parser::tryToEatToken(std::vector<Lexer::TokenType> tokenTypes)
+inline bool Parser::tryToEatToken(const std::vector<Lexer::TokenType>& tokenTypes)
 {
     auto activeTokenType = m_lexer->skipToken().type();
     for (auto tokenType : tokenTypes) {
@@ -148,8 +148,8 @@ AST::Node* Parser::createInt()
         eatToken(Lexer::TokenType::TypeInt);
         auto identifier = lookupToken();
         eatToken(Lexer::TokenType::Identifier);
+        eatToken(Lexer::TokenType::Assign);
         auto parsedSum = sum();
-        checkNode(parsedSum);
         eatToken(Lexer::TokenType::EndOfStatement);
         return new AST::TernaryOperationNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), parsedSum, Lexer::TokenType::Assign);
     }
@@ -161,7 +161,7 @@ AST::Node* Parser::createInt()
 // Entry point
 AST::Node* Parser::parse()
 {
-    auto* root = sum();
+    auto* root = createInt();
     if (!root) [[unlikely]] {
         throw oneCC::Exceptions::ParserError(m_err.c_str());
     }
