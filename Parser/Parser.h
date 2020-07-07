@@ -21,6 +21,9 @@ private:
     Lexer::Token lookupToken(int offset);
     Lexer::Token lookupToken();
 
+    bool tryToEatToken(Lexer::TokenType tokenType);
+    bool tryToEatToken(std::vector<Lexer::TokenType> tokenTypes);
+
     AST::Node* factor();
     AST::Node* multiplyDivide();
     AST::Node* sum();
@@ -29,6 +32,7 @@ private:
     AST::Node* createInt();
 
     void generateErrorText(Lexer::TokenType tokenType);
+    void generateErrorText(std::vector<Lexer::TokenType> tokenTypes);
 
     std::string m_err;
     std::unique_ptr<Lexer::Lexer> m_lexer;
