@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <vector>
 
-#define eatToken(x) if (m_lexer->skipToken().type() != x) [[unlikely]] { \
-    generateErrorText(x);\
+#define eatToken(...) if (!tryToEatToken(__VA_ARGS__)) [[unlikely]] { \
+    generateErrorText(__VA_ARGS__);\
     return NULL; \
 }
 
@@ -33,6 +33,15 @@ void Parser::generateErrorText(Lexer::TokenType tokenType)
     m_err += Utils::Debug::tokenTypeToString(tokenType);
 }
 
+void Parser::generateErrorText(std::vector<Lexer::TokenType> tokenTypes)
+{
+    m_err = "Was expected symbols: ";
+    for (auto tokenType : tokenTypes) {
+        m_err += Utils::Debug::tokenTypeToString(tokenType);
+        m_err += " ";
+    }
+}
+
 inline bool Parser::isConstant(Lexer::Token& token)
 {
     return token.type() == Lexer::TokenType::IntConst || token.type() == Lexer::TokenType::StringConst;
@@ -51,6 +60,22 @@ inline Lexer::Token Parser::lookupToken(int offset)
 inline Lexer::Token Parser::lookupToken()
 {
     return m_lexer->lookupToken();
+}
+
+inline bool Parser::tryToEatToken(Lexer::TokenType tokenType)
+{
+    return m_lexer->skipToken().type() == tokenType;
+}
+
+inline bool Parser::tryToEatToken(std::vector<Lexer::TokenType> tokenTypes)
+{
+    auto activeTokenType = m_lexer->skipToken().type();
+    for (auto tokenType : tokenTypes) {
+        if (activeTokenType == tokenType) {
+            return true;
+        }
+    }
+    return false;
 }
 
 AST::Node* Parser::factor()
@@ -82,7 +107,7 @@ AST::Node* Parser::multiplyDivide()
         auto* newNode = new AST::BinaryOperationNode();
         newNode->setOperation(lookupToken().type());
         
-        m_lexer->skipToken();
+        eatToken({Lexer::TokenType::Multiply, Lexer::TokenType::Divide});
         
         auto* rightSide = factor();
         checkNode(rightSide);
