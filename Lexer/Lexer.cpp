@@ -292,15 +292,15 @@ Token Lexer::lookupToken()
     return lookupToken(1);
 }
 
-Token Lexer::eatToken()
+Token Lexer::skipToken(int offset)
 {
-    m_active_token++;
+    m_active_token += offset + 1;
     return lookupToken(0);
 }
 
-Token Lexer::eatToken(const int offset)
+Token Lexer::skipToken()
 {
-    m_active_token += offset + 1;
+    m_active_token++;
     return lookupToken(0);
 }
 

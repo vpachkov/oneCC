@@ -14,8 +14,8 @@ public:
     bool tokinizeFile();
     Token lookupToken(int offset);
     Token lookupToken();
-    Token eatToken();
-    Token eatToken(int offset);
+    Token skipToken(int offset);
+    Token skipToken();
 
 private:
     void skipGaps();
