@@ -13,7 +13,7 @@ public:
     AST::Node* nextExpression(AST::Node* prevExpression = NULL);
 
     bool isConstant(Lexer::Token& token);
-    bool isType(Lexer::Token& token);
+    bool isType(const Lexer::Token& token);
 
     AST::Node* parse();
 
@@ -36,6 +36,8 @@ private:
 
     std::string m_err;
     std::unique_ptr<Lexer::Lexer> m_lexer;
+
+    AST::Node *defineFunction();
 };
 
 }
