@@ -27,9 +27,16 @@ private:
     AST::Node* factor();
     AST::Node* multiplyDivide();
     AST::Node* sum();
-
-    AST::Node* typeInt();
     AST::Node* createInt();
+    AST::Node* expression();
+
+    AST::Node* ifStatement();
+    AST::Node* whileStatement();
+    AST::Node* blockStatement();
+    AST::Node* returnStatement();
+    AST::Node* statement();
+
+    AST::Node* defineFunction();
 
     void generateErrorText(Lexer::TokenType tokenType);
     void generateErrorText(const std::vector<Lexer::TokenType>& tokenTypes);
@@ -37,13 +44,6 @@ private:
     std::string m_err;
     std::unique_ptr<Lexer::Lexer> m_lexer;
 
-    AST::Node *defineFunction();
-
-    AST::Node *ifStatement();
-
-    AST::Node * whileStatement();
-
-    AST::Node *statement();
 };
 
 }

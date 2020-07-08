@@ -7,6 +7,7 @@ enum TokenType {
     Punct,
     ConstString,
     ConstChar,
+    Comma,
 
     // Keywords
     If,

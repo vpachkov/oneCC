@@ -7,6 +7,8 @@
 #include "../AST/Nodes/Function.h"
 #include "../AST/Nodes/IfStatement.h"
 #include "../AST/Nodes/WhileStatement.h"
+#include "../AST/Nodes/ReturnStatement.h"
+#include "../AST/Nodes/BlockStatement.h"
 #include "../Exceptions.h"
 #include "../Utils/Debug/ASTReader.h"
 #include <iostream>
@@ -161,28 +163,19 @@ AST::Node* Parser::createInt()
     return NULL;
 }
 
-AST::Node* Parser::defineFunction() {
-    auto type = lookupToken();
+AST::Node* Parser::expression() {
+    auto token = lookupToken();
 
-    if (isType(type)) {
-        eatToken(Lexer::TokenType::TypeInt);
-        auto identifier = lookupToken();
-        eatToken(Lexer::TokenType::Identifier);
-        eatToken(Lexer::TokenType::OpenRoundBracket);
-
-        std::vector<AST::Node*> arguments;
-        while (isType(lookupToken())) {
-            // TODO: Create isn't lowest expression
-            arguments.push_back(createInt());
+    switch (token.type()) {
+        case Lexer::TokenType::TypeInt: {
+            return createInt();
         }
-
-        eatToken(Lexer::TokenType::CloseRoundBracket);
-
-        // TODO: Parse statements
-
-        return new AST::FunctionNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), arguments);
     }
+
+    //TODO: add support for other expressions
+
     return NULL;
+
 }
 
 // Statements
@@ -193,22 +186,20 @@ AST::Node* Parser::ifStatement() {
         eatToken(Lexer::TokenType::If);
         eatToken(Lexer::TokenType::OpenRoundBracket);
 
-        // TODO: Create isn't lowest expression
-        auto expression = createInt();
+        auto expr = expression();
 
         //TODO: Checking only returns NULL (better to throw an exception here)
-        checkNode(expression);
+        checkNode(expr);
         eatToken(Lexer::TokenType::CloseRoundBracket);
 
-        // TODO: eat other statements
-        // auto trueStatement = ... statement()
+        auto trueStatement = statement();
 
         auto elseToken = lookupToken();
         if (elseToken.type() == Lexer::TokenType::Else){
-            // auto falseStatement = ... statement()
-            // return new AST::IfStatementNode(expression, trueStatement, falseStatement);
+            auto falseStatement = statement();
+            return new AST::IfStatementNode(expr, trueStatement, falseStatement);
         }
-        return new AST::IfStatementNode(expression, NULL , NULL);
+        return new AST::IfStatementNode(expr, trueStatement , NULL);
     }
 
     return NULL;
@@ -226,11 +217,39 @@ AST::Node* Parser::whileStatement() {
         eatToken(Lexer::TokenType::CloseRoundBracket);
         eatToken(Lexer::TokenType::OpenCurlyBracket);
 
-        // auto statement = statement();
+        auto stat = statement();
 
         eatToken(Lexer::TokenType::CloseCurlyBracket);
 
-        return new AST::WhileStatementNode(expression, NULL);
+        return new AST::WhileStatementNode(expression, stat);
+    }
+
+    return NULL;
+}
+
+AST::Node* Parser::blockStatement() {
+    std::vector<AST::Node*>statements;
+
+    while (lookupToken().type() == Lexer::TokenType::OpenCurlyBracket) {
+        eatToken(Lexer::TokenType::OpenCurlyBracket);
+        statements.push_back(statement());
+        eatToken(Lexer::TokenType::CloseCurlyBracket);
+    }
+
+    if (statements.empty()) {
+        return NULL;
+    }
+
+    return new AST::BlockStatementNode(statements);
+}
+
+AST::Node* Parser::returnStatement() {
+    if (lookupToken().type() == Lexer::TokenType::Return) {
+        eatToken(Lexer::TokenType::Return);
+        auto expr = expression();
+        eatToken(Lexer::TokenType::EndOfStatement);
+
+        return new AST::ReturnStatementNode(expr);
     }
 
     return NULL;
@@ -240,10 +259,7 @@ AST::Node* Parser::statement() {
     auto token = lookupToken();
     switch (token.type()) {
         case Lexer::TokenType::OpenCurlyBracket: {
-            eatToken(Lexer::TokenType::OpenCurlyBracket);
-            auto innerStatement = statement();
-            eatToken(Lexer::TokenType::CloseCurlyBracket);
-            return innerStatement;
+            return blockStatement();
         }
 
         case Lexer::TokenType::If: {
@@ -254,8 +270,53 @@ AST::Node* Parser::statement() {
             return whileStatement();
         }
 
+        case Lexer::TokenType::Return: {
+            return returnStatement();
+        }
+
     }
 
+    return NULL;
+
+}
+
+AST::Node* Parser::defineFunction() {
+    auto type = lookupToken();
+
+    if (isType(type)) {
+        eatToken(Lexer::TokenType::TypeInt);
+        auto identifier = lookupToken();
+        eatToken(Lexer::TokenType::Identifier);
+        eatToken(Lexer::TokenType::OpenRoundBracket);
+
+        std::vector<AST::Node*> arguments;
+        while (isType(lookupToken())) {
+            arguments.push_back(expression());
+            if (lookupToken().type() == Lexer::TokenType::Comma) {
+                eatToken(Lexer::TokenType::Comma);
+            }
+            else if (lookupToken().type() != Lexer::TokenType::CloseRoundBracket) {
+                //TODO: definitely should be an exception
+                return NULL;
+            }
+        }
+
+        eatToken(Lexer::TokenType::CloseRoundBracket);
+
+        /* TODO: Function declarations should be taken in account
+           int func(int a, int b);
+        */
+
+        auto blockStat = blockStatement();
+        if (blockStat->type() != AST::BlockStatement){
+            //TODO: exception
+            return NULL;
+        }
+
+        return new AST::FunctionNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), arguments, blockStat);
+    }
+
+    return NULL;
 }
 
 // Entry point

@@ -31,7 +31,7 @@ add_executable(
         main.cpp
         AST/Nodes/TernaryOperaion.h AST/Nodes/Identifier.h AST/Nodes/Type.h
         Utils/Debug/ASTReader.cpp
-        AST/Nodes/Function.h AST/Nodes/IfStatement.h AST/Nodes/WhileStatement.h AST/Nodes/ReturnStatement.h)
+        AST/Nodes/Function.h AST/Nodes/IfStatement.h AST/Nodes/WhileStatement.h AST/Nodes/ReturnStatement.h AST/Nodes/BlockStatement.h)
 
 file(
     COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/assign_expression.txt
