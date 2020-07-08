@@ -5,6 +5,7 @@
 *.dSYM
 *.trace
 *.idea
+debug/
 
 oneCC
 oneCC-test

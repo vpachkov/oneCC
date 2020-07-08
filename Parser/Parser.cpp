@@ -31,14 +31,14 @@ Parser::Parser(std::unique_ptr<Lexer::Lexer> lexer)
 void Parser::generateErrorText(Lexer::TokenType tokenType)
 {
     m_err = "Was expected symbol: ";
-    m_err += Utils::Debug::tokenTypeToString(tokenType);
+    m_err += oneCC::ASTUtils::Visualizer::tokenTypeToString(tokenType);
 }
 
 void Parser::generateErrorText(const std::vector<Lexer::TokenType>& tokenTypes)
 {
     m_err = "Was expected symbols: ";
     for (auto tokenType : tokenTypes) {
-        m_err += Utils::Debug::tokenTypeToString(tokenType);
+        m_err += oneCC::ASTUtils::Visualizer::tokenTypeToString(tokenType);
         m_err += " ";
     }
 }
