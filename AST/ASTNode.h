@@ -18,6 +18,7 @@ enum NodeType {
     IfStatement,
     WhileStatement,
     ReturnStatement,
+    BlockStatement,
 
     Function,
 };

@@ -8,11 +8,12 @@ namespace oneCC::AST {
 class FunctionNode : public Node {
 public:
     FunctionNode() : Node(Function) { }
-    FunctionNode(Node* type, Node* name, std::vector<Node*>  arguments)
+    FunctionNode(Node* type, Node* name, std::vector<Node*>  arguments, Node* statement)
             : Node(Function)
             , m_type(type)
             , m_name(name)
-            , m_arguments(std::move(arguments)) { }
+            , m_arguments(std::move(arguments))
+            , m_statement(statement){ }
 
     ~FunctionNode() override = default;
 
@@ -28,7 +29,7 @@ private:
     Node* m_type {};
     Node* m_name {};
     std::vector<Node*> m_arguments {};
-    //TODO: add statments (body)
+    Node* m_statement {};
 
 };
 
