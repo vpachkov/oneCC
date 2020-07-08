@@ -7,51 +7,30 @@
 #include <cstdint>
 #include <string>
 
-namespace oneCC::Utils::Debug {
+namespace oneCC::ASTUtils {
 
-char tokenTypeToString(int tokenType);
+class Visualizer {
+public:
+    
+    Visualizer() : m_saveTo("debug/astViz/") { };
+    Visualizer(std::string saveTo): m_saveTo(saveTo) {};
 
-//void outputExpression(oneCC::Parser::GeneralExpression* expr, int depth = 0)
-//{
-//    if (expr->type() == oneCC::AST::NodeType::Const) {
-//        auto* ptr = dynamic_cast<oneCC::AST::IntConstNode*>(expr);
-//        if (!ptr) {
-//            return;
-//        }
-//    if (expr == NULL){
-//        std::cout << std::string(depth * 2, ' ');
-//        std::cout << "undefined";
-//    }
-//
-//    if (expr->expressionType == oneCC::Parser::ExpressionType::Type ) {
-//        std::cout << std::string(depth * 2, ' ');
-//        std::cout << expr->constToken.lexeme();
-//    }
-//
-//    if (expr->expressionType == oneCC::Parser::ExpressionType::Identifier) {
-//        std::cout << std::string(depth * 2, ' ');
-//        std::cout << expr->constToken.lexeme();
-//    }
-//
-//    if (expr->expressionType == oneCC::Parser::ExpressionType::Const) {
-//        std::cout << std::string(depth * 2, ' ');
-//        std::cout << expr->constToken.lexeme();
-//    }
-//    if (expr->expressionType == oneCC::Parser::ExpressionType::BinaryOperaion) {
-//        outputExpression(expr->operands[0], depth + 1);
-//        std::cout << std::string(depth * 2, ' ');
-//        std::cout << tokenTypeToString(expr->operation) << std::endl;
-//        outputExpression(expr->operands[1], depth + 1);
-//    }
-//
-//    if (expr->expressionType == oneCC::Parser::ExpressionType::TernaryOperaion) {
-//        outputExpression(expr->operands[0], depth + 1);
-//        std::cout << std::string(depth * 2, ' ');
-//        std::cout << tokenTypeToString(expr->operation) << std::endl;
-//        outputExpression(expr->operands[1], depth + 1);
-//        outputExpression(expr->operands[2], depth + 1);
-//    }
-//
-//    std::cout << std::endl;
-//}
+    static char tokenTypeToString(int tokenType);
+    void genDotDescriptor(AST::Node* node, std::string filename);
+    void genTreePng(AST::Node* node);
+private:
+    void startVisitingTree(AST::Node* node);
+
+    int visitNode(AST::Node* a);
+    int visitNode(AST::BinaryOperationNode* a);
+    int visitNode(AST::IntConstNode* a);
+
+    std::string toText(AST::BinaryOperationNode*);
+    std::string toText(AST::IntConstNode*);
+
+    int m_tin;
+    std::vector<std::vector<int>>m_children;
+    std::vector<std::string>m_labels;
+    std::string m_saveTo;
+};
 }
