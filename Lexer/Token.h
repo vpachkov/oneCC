@@ -10,6 +10,8 @@ enum TokenType {
 
     // Keywords
     If,
+    Else,
+    While,
 
     // Binary Operations
     Bigger,
@@ -35,10 +37,14 @@ enum TokenType {
     CloseRoundBracket,
     OpenSquareBracket,
     CloseSquareBracket,
+    OpenCurlyBracket,
+    CloseCurlyBracket,
 
     Assign,
 
     EndOfStatement,
+
+    Return,
 };
 
 class Token {

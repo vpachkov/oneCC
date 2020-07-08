@@ -5,6 +5,8 @@
 #include "../AST/Nodes/Type.h"
 #include "../AST/Nodes/Identifier.h"
 #include "../AST/Nodes/Function.h"
+#include "../AST/Nodes/IfStatement.h"
+#include "../AST/Nodes/WhileStatement.h"
 #include "../Exceptions.h"
 #include "../Utils/Debug/ASTReader.h"
 #include <iostream>
@@ -79,6 +81,7 @@ inline bool Parser::tryToEatToken(const std::vector<Lexer::TokenType>& tokenType
     return false;
 }
 
+// Expressions
 AST::Node* Parser::factor()
 {
     auto token = lookupToken();
@@ -169,15 +172,91 @@ AST::Node* Parser::defineFunction() {
 
         std::vector<AST::Node*> arguments;
         while (isType(lookupToken())) {
+            // TODO: Create isn't lowest expression
             arguments.push_back(createInt());
         }
 
         eatToken(Lexer::TokenType::CloseRoundBracket);
 
+        // TODO: Parse statements
+
         return new AST::FunctionNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), arguments);
     }
+    return NULL;
 }
 
+// Statements
+AST::Node* Parser::ifStatement() {
+    auto ifToken = lookupToken();
+
+    if (ifToken.type() == Lexer::TokenType::If) {
+        eatToken(Lexer::TokenType::If);
+        eatToken(Lexer::TokenType::OpenRoundBracket);
+
+        // TODO: Create isn't lowest expression
+        auto expression = createInt();
+
+        //TODO: Checking only returns NULL (better to throw an exception here)
+        checkNode(expression);
+        eatToken(Lexer::TokenType::CloseRoundBracket);
+
+        // TODO: eat other statements
+        // auto trueStatement = ... statement()
+
+        auto elseToken = lookupToken();
+        if (elseToken.type() == Lexer::TokenType::Else){
+            // auto falseStatement = ... statement()
+            // return new AST::IfStatementNode(expression, trueStatement, falseStatement);
+        }
+        return new AST::IfStatementNode(expression, NULL , NULL);
+    }
+
+    return NULL;
+}
+
+AST::Node* Parser::whileStatement() {
+    auto whileToken = lookupToken();
+    if (whileToken.type() == Lexer::TokenType::While) {
+        eatToken(Lexer::TokenType::While);
+        eatToken(Lexer::TokenType::OpenRoundBracket);
+
+        // TODO: Create isn't lowest expression
+        auto expression = createInt();
+
+        eatToken(Lexer::TokenType::CloseRoundBracket);
+        eatToken(Lexer::TokenType::OpenCurlyBracket);
+
+        // auto statement = statement();
+
+        eatToken(Lexer::TokenType::CloseCurlyBracket);
+
+        return new AST::WhileStatementNode(expression, NULL);
+    }
+
+    return NULL;
+}
+
+AST::Node* Parser::statement() {
+    auto token = lookupToken();
+    switch (token.type()) {
+        case Lexer::TokenType::OpenCurlyBracket: {
+            eatToken(Lexer::TokenType::OpenCurlyBracket);
+            auto innerStatement = statement();
+            eatToken(Lexer::TokenType::CloseCurlyBracket);
+            return innerStatement;
+        }
+
+        case Lexer::TokenType::If: {
+            return ifStatement();
+        }
+
+        case Lexer::TokenType::While: {
+            return whileStatement();
+        }
+
+    }
+
+}
 
 // Entry point
 AST::Node* Parser::parse()

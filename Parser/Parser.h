@@ -38,6 +38,12 @@ private:
     std::unique_ptr<Lexer::Lexer> m_lexer;
 
     AST::Node *defineFunction();
+
+    AST::Node *ifStatement();
+
+    AST::Node * whileStatement();
+
+    AST::Node *statement();
 };
 
 }
