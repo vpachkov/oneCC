@@ -9,8 +9,7 @@ namespace oneCC::Parser {
 
 class Parser {
 public:
-    Parser(std::unique_ptr<Lexer::Lexer> lexer);
-    AST::Node* nextExpression(AST::Node* prevExpression = NULL);
+    explicit Parser(std::unique_ptr<Lexer::Lexer> lexer);
 
     bool isConstant(Lexer::Token& token);
     bool isType(const Lexer::Token& token);
