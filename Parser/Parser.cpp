@@ -4,6 +4,7 @@
 #include "../AST/Nodes/IntConst.h"
 #include "../AST/Nodes/Type.h"
 #include "../AST/Nodes/Identifier.h"
+#include "../AST/Nodes/Function.h"
 #include "../Exceptions.h"
 #include "../Utils/Debug/ASTReader.h"
 #include <iostream>
@@ -47,7 +48,7 @@ inline bool Parser::isConstant(Lexer::Token& token)
     return token.type() == Lexer::TokenType::IntConst || token.type() == Lexer::TokenType::StringConst;
 }
 
-inline bool Parser::isType(Lexer::Token& token)
+inline bool Parser::isType(const Lexer::Token& token)
 {
     return token.type() == Lexer::TokenType::TypeInt || token.type() == Lexer::TokenType::TypeFloat;
 }
@@ -155,6 +156,26 @@ AST::Node* Parser::createInt()
     }
 
     return NULL;
+}
+
+AST::Node* Parser::defineFunction() {
+    auto type = lookupToken();
+
+    if (isType(type)) {
+        eatToken(Lexer::TokenType::TypeInt);
+        auto identifier = lookupToken();
+        eatToken(Lexer::TokenType::Identifier);
+        eatToken(Lexer::TokenType::OpenRoundBracket);
+
+        std::vector<AST::Node*> arguments;
+        while (isType(lookupToken())) {
+            arguments.push_back(createInt());
+        }
+
+        eatToken(Lexer::TokenType::CloseRoundBracket);
+
+        return new AST::FunctionNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), arguments);
+    }
 }
 
 

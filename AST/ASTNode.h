@@ -14,6 +14,8 @@ enum NodeType {
     UnaryOperation,
     BinaryOperation,
     TernaryOperation,
+
+    Function,
 };
 
 class Node {
