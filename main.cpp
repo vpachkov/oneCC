@@ -54,11 +54,17 @@ int main()
 //    }
 //    std::cout << "\n\n";
     auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
+    oneCC::AST::Node* root;
     try {
-        auto* root = parser.parse();
+        root = parser.parse();
     } catch (std::exception& e) {
         std::cout << "\n" << e.what() << "\n";
         return 1;
     }
+
+    auto viz = oneCC::ASTUtils::Visualizer();
+    viz.genTreePng(root);
+    
+
     return 0;
 }
