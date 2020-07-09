@@ -7,12 +7,12 @@ namespace oneCC::AST {
 
 class IfStatementNode : public Node {
 public:
-    IfStatementNode() : Node(IfStatement) { };
+    IfStatementNode() : Node(IfStatement) { }
     explicit IfStatementNode(Node* expression, Node* trueStatement, Node* falseStatement)
-            : Node(Identifier)
+            : Node(IfStatement)
             , m_expression(expression)
             , m_trueStatement(trueStatement)
-            , m_falseStatement(falseStatement){ }
+            , m_falseStatement(falseStatement) { }
 
     ~IfStatementNode() override = default;
 
@@ -21,9 +21,9 @@ public:
     Node* falseStatement() const { return m_falseStatement; }
 
 private:
-    Node* m_expression{};
-    Node* m_trueStatement{};
-    Node* m_falseStatement{};
+    Node* m_expression {};
+    Node* m_trueStatement {};
+    Node* m_falseStatement {};
 };
 
 }

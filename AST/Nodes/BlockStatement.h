@@ -7,14 +7,17 @@ namespace oneCC::AST {
 
 class BlockStatementNode : public Node {
 public:
-    BlockStatementNode() : Node(BlockStatement) { };
-    explicit BlockStatementNode(std::vector<Node*>  statements)
-            : Node(Identifier)
-            , m_statements(std::move(statements)) {}
+    BlockStatementNode() : Node(BlockStatement) { }
+    explicit BlockStatementNode(std::vector<Node*> statements)
+            : Node(BlockStatement)
+            , m_statements(statements) { }
+    explicit BlockStatementNode(std::vector<Node*>&& statements)
+            : Node(BlockStatement)
+            , m_statements(statements) { }
 
     ~BlockStatementNode() override = default;
 
-    std::vector<Node*> statements() const { return m_statements; }
+    const std::vector<Node*>& statements() const { return m_statements; }
 
 private:
     std::vector<Node*> m_statements;

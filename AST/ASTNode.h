@@ -25,10 +25,8 @@ enum NodeType {
 
 class Node {
 public:
-    NodeType type() const { return m_type; }
-
+    const NodeType& type() const { return m_type; }
     virtual ~Node() = default;
-
 protected:
     Node(NodeType type) : m_type(type) {}
 

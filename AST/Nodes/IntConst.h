@@ -12,7 +12,7 @@ public:
 
     virtual ~IntConstNode() = default;
 
-    int value() { return m_value; }
+    int value() const { return m_value; }
 
 private:
     int m_value;

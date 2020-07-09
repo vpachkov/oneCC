@@ -3,8 +3,8 @@
 
 namespace oneCC::AST {
 
+// TODO: (Token.h) divide tokens by groups
 class TypeNode : public Node {
-//TODO: (Token.h) divide tokens by groups
 public:
     TypeNode(oneCC::Lexer::TokenType type)
             : Node(Type)
@@ -12,10 +12,10 @@ public:
 
     ~TypeNode() override = default;
 
-    oneCC::Lexer::TokenType type() const { return m_type; }
+    Lexer::TokenType type() const { return m_type; }
 
 private:
-    oneCC::Lexer::TokenType m_type;
+    Lexer::TokenType m_type;
 };
 
 }

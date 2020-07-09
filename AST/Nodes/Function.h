@@ -13,17 +13,18 @@ public:
             , m_type(type)
             , m_name(name)
             , m_arguments(std::move(arguments))
-            , m_statement(statement){ }
+            , m_statement(statement) { }
 
     ~FunctionNode() override = default;
 
     void setType(Node* type) { m_type = type; }
     void setName(Node* name) { m_name = name; }
-    void setArguments(std::vector<Node*> arguments) { m_arguments = std::move(arguments); }
+    void setArguments(std::vector<Node*> arguments) { m_arguments = arguments; }
+    void setArguments(std::vector<Node*>&& arguments) { m_arguments = arguments; }
 
-    Node* type() { return m_type; }
-    Node* name() { return m_name; }
-    std::vector<Node*> arguments() { return m_arguments; }
+    Node* type() const { return m_type; }
+    Node* name() const { return m_name; }
+    const std::vector<Node*>& arguments() const { return m_arguments; }
 
 private:
     Node* m_type {};

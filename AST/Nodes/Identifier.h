@@ -6,10 +6,14 @@ namespace oneCC::AST {
 
 class IdentifierNode : public Node {
 public:
-    IdentifierNode() : Node(Identifier) { };
+    IdentifierNode() : Node(Identifier) { }
     explicit IdentifierNode(const std::string value)
             : Node(Identifier)
-            , m_value(std::move(value)) { }
+            , m_value(value) { }
+
+    explicit IdentifierNode(const std::string&& value)
+            : Node(Identifier)
+            , m_value(value) { }
 
     ~IdentifierNode() override = default;
 

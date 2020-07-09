@@ -9,9 +9,9 @@ class WhileStatementNode : public Node {
 public:
     WhileStatementNode() : Node(WhileStatement) { };
     explicit WhileStatementNode(Node* expression, Node* statement)
-            : Node(Identifier)
+            : Node(WhileStatement)
             , m_expression(expression)
-            , m_statement(statement) {}
+            , m_statement(statement) { }
 
     ~WhileStatementNode() override = default;
 
@@ -19,8 +19,8 @@ public:
     Node* statement() const { return m_statement; }
 
 private:
-    Node* m_expression{};
-    Node* m_statement{};
+    Node* m_expression {};
+    Node* m_statement {};
 };
 
 }

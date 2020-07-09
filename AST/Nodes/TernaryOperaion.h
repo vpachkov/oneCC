@@ -5,7 +5,7 @@ namespace oneCC::AST {
 class TernaryOperationNode : public Node {
 public:
     TernaryOperationNode() : Node(TernaryOperation) { }
-    TernaryOperationNode(Node* left, Node* middle, Node* right, oneCC::Lexer::TokenType operation)
+    TernaryOperationNode(Node* left, Node* middle, Node* right, Lexer::TokenType operation)
             : Node(TernaryOperation)
             , m_left(left)
             , m_middle(middle)
@@ -18,17 +18,17 @@ public:
     void setLeftChild(Node* left) { m_left = left; }
     void setMiddleChild(Node* middle) { m_middle = middle; }
     void setRightChild(Node* right) { m_right = right; }
-    void setOperation(oneCC::Lexer::TokenType operation) { m_operation = operation; }
+    void setOperation(Lexer::TokenType operation) { m_operation = operation; }
 
-    Node* leftChild() { return m_left; }
-    Node* rightChild() { return m_right; }
-    oneCC::Lexer::TokenType operation() { return m_operation; }
+    Node* leftChild() const { return m_left; }
+    Node* rightChild() const { return m_right; }
+    const Lexer::TokenType& operation() const { return m_operation; }
 
 private:
-    Node* m_left{};
-    Node* m_middle{};
-    Node* m_right{};
-    oneCC::Lexer::TokenType m_operation;
+    Node* m_left {};
+    Node* m_middle {};
+    Node* m_right {};
+    Lexer::TokenType m_operation;
 };
 
 }

@@ -6,7 +6,7 @@ namespace oneCC::AST {
 class BinaryOperationNode : public Node {
 public:
     BinaryOperationNode() : Node(BinaryOperation) { }
-    BinaryOperationNode(Node* left, Node* right, oneCC::Lexer::TokenType operation)
+    BinaryOperationNode(Node* left, Node* right, Lexer::TokenType operation)
         : Node(BinaryOperation)
         , m_left(left)
         , m_right(right)
@@ -17,16 +17,16 @@ public:
     void setChildren(Node* left, Node* right) { m_left = left, m_right = right; }
     void setLeftChild(Node* left) { m_left = left; }
     void setRightChild(Node* right) { m_right = right; }
-    void setOperation(oneCC::Lexer::TokenType operation) { m_operation = operation; }
+    void setOperation(Lexer::TokenType operation) { m_operation = operation; }
 
-    Node* leftChild() { return m_left; }
-    Node* rightChild() { return m_right; }
-    oneCC::Lexer::TokenType operation() { return m_operation; }
+    Node* leftChild() const { return m_left; }
+    Node* rightChild() const { return m_right; }
+    Lexer::TokenType operation() const { return m_operation; }
 
 private:
     Node* m_left;
     Node* m_right;
-    oneCC::Lexer::TokenType m_operation;
+    Lexer::TokenType m_operation;
 };
 
 }
