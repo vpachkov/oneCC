@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-#include <stdexcept>
 #include "KeywordManager.h"
 #include "TextSequencer.h"
 #include "Token.h"
+#include <memory>
+#include <stdexcept>
+#include <vector>
 
 namespace oneCC::Lexer {
 class Lexer : TextSequencer {

@@ -10,7 +10,7 @@ public:
     KeywordManager();
     Token process(Token token);
     void addKeyword(Token token);
-    static std::shared_ptr<KeywordManager> makeStandart();
+    static std::shared_ptr<KeywordManager> makeStandard();
 
 private:
     std::unordered_map<std::string, TokenType> m_storage;

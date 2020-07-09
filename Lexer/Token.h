@@ -55,10 +55,10 @@ public:
     Token(const char* lexeme, TokenType type);
     Token(std::string lexeme, TokenType type);
 
-    TokenType type() const { return m_type; }
-    std::string lexeme() const { return m_lexeme; }
+    const TokenType& type() const { return m_type; }
+    const std::string& lexeme() const { return m_lexeme; }
 
-    static std::string typeToString(Token& tt);
+    static std::string typeToString(const Token& tt);
 
 private:
     std::string m_lexeme;

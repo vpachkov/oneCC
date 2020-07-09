@@ -22,7 +22,7 @@ Token::Token(const char* lexeme, TokenType type)
 {
 }
 
-std::string Token::typeToString(Token& tt)
+std::string Token::typeToString(const Token& tt)
 {
     switch (tt.type()) {
         case IntConst:      return "IntConst";

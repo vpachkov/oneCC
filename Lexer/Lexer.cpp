@@ -5,7 +5,7 @@ namespace oneCC::Lexer {
 
 Lexer::Lexer(std::unique_ptr<std::ifstream> fileStream)
     : TextSequencer(std::move(fileStream))
-    , m_keywordManager(KeywordManager::makeStandart())
+    , m_keywordManager(KeywordManager::makeStandard())
     , m_active_token(-1)
     , m_cache()
 {
@@ -201,7 +201,7 @@ Token Lexer::readString()
         } else {
             if (lookupChar() == EOF) {
                 return Token(TokenType::Error);
-            } if (lookupChar() == '\\') {
+            } else if (lookupChar() == '\\') {
                 escape_seq = true;
                 nextChar();
             } else if (isNextDoubleQuote()) {
@@ -246,7 +246,7 @@ Token Lexer::readChar()
 bool Lexer::tokinizeFile()
 {
     Token res;
-    
+
     while (!isNextEOF()) {
         skipGaps();
         if (switchLine()) {
