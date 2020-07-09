@@ -1,7 +1,7 @@
 #include "ASTReader.h"
-#include <time.h>
 #include <fstream>
 #include <string>
+#include <time.h>
 
 namespace oneCC::ASTUtils {
 
@@ -79,29 +79,32 @@ void Visualizer::startVisitingTree(AST::Node* node)
     visitNode(node);
 }
 
-// It tries to convert the node into diverted type, if it's possible and leave the function. 
-#define tryConvertTo(x, y) if (node->type() == y) { \
-    auto* ptr = dynamic_cast<x*>(node);\
-    if (ptr) { \
-        return visitNode(ptr); \
-    } \
-    std::cout << "\nError: dynamic_cast can't convert, but type shows that it's possible!!!\n"; \
-}
+// It tries to convert the node into diverted type, if it's possible and leave the function.
+#define tryConvertTo(x, y)                                                                          \
+    if (node->type() == y) {                                                                        \
+        auto* ptr = dynamic_cast<x*>(node);                                                         \
+        if (ptr) {                                                                                  \
+            return visitNode(ptr);                                                                  \
+        }                                                                                           \
+        std::cout << "\nError: dynamic_cast can't convert, but type shows that it's possible!!!\n"; \
+    }
 
 // Do NOT change @node param name since it's used in define (which is upper).
-int Visualizer::visitNode(AST::Node* node) {
+int Visualizer::visitNode(AST::Node* node)
+{
     // TODO: Work on define, too many params now.
     tryConvertTo(AST::IntConstNode, AST::NodeType::Const);
     tryConvertTo(AST::BinaryOperationNode, AST::NodeType::BinaryOperation);
     return -1; // Means no translation for a node found.
 }
 
-int Visualizer::visitNode(AST::BinaryOperationNode* node) {
+int Visualizer::visitNode(AST::BinaryOperationNode* node)
+{
     int myTin = ++m_tin;
 
     m_labels.push_back(toText(node));
     m_children.push_back(std::vector<int>());
-    
+
     int leftTin = visitNode(node->leftChild());
     int rightTin = visitNode(node->rightChild());
 
@@ -111,22 +114,25 @@ int Visualizer::visitNode(AST::BinaryOperationNode* node) {
     return myTin;
 }
 
-std::string Visualizer::toText(AST::BinaryOperationNode* node) {
+std::string Visualizer::toText(AST::BinaryOperationNode* node)
+{
     std::string res;
     res += Visualizer::tokenTypeToString(node->operation());
     return res;
 }
 
-int Visualizer::visitNode(AST::IntConstNode* node) {
+int Visualizer::visitNode(AST::IntConstNode* node)
+{
     int myTin = ++m_tin;
 
     m_labels.push_back(toText(node));
     m_children.push_back(std::vector<int>());
-    
+
     return myTin;
 }
 
-std::string Visualizer::toText(AST::IntConstNode* node) {
+std::string Visualizer::toText(AST::IntConstNode* node)
+{
     std::string res(std::to_string(node->value()));
     return res;
 }
