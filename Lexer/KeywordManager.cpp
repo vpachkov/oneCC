@@ -19,7 +19,7 @@ Token KeywordManager::process(Token token)
     return token;
 }
 
-std::shared_ptr<KeywordManager> KeywordManager::makeStandart()
+std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
 {
     auto man = std::make_shared<KeywordManager>();
     man->addKeyword(Token("+", TokenType::Plus));
