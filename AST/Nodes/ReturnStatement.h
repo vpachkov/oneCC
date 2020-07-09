@@ -7,17 +7,17 @@ namespace oneCC::AST {
 
 class ReturnStatementNode : public Node {
 public:
-    ReturnStatementNode() : Node(ReturnStatement) { };
+    ReturnStatementNode() : Node(ReturnStatement) { }
     explicit ReturnStatementNode(Node* returnedExpression)
-            : Node(Identifier)
-            , m_returnedExpression(returnedExpression) {}
+            : Node(ReturnStatement)
+            , m_returnedExpression(returnedExpression) { }
 
     ~ReturnStatementNode() override = default;
 
     Node* returnedExpression() const { return m_returnedExpression; }
 
 private:
-    Node* m_returnedExpression{};
+    Node* m_returnedExpression {};
 };
 
 }
