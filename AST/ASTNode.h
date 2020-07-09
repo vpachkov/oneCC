@@ -14,6 +14,7 @@ enum NodeType {
     UnaryOperation,
     BinaryOperation,
     TernaryOperation,
+    FunctionCallExpression,
 
     IfStatement,
     WhileStatement,

@@ -9,6 +9,7 @@
 #include "../AST/Nodes/WhileStatement.h"
 #include "../AST/Nodes/ReturnStatement.h"
 #include "../AST/Nodes/BlockStatement.h"
+#include "../AST/Nodes/FunctionCall.h"
 #include "../Exceptions.h"
 #include "../Utils/Debug/ASTReader.h"
 #include <iostream>
@@ -127,6 +128,7 @@ AST::Node* Parser::multiplyDivide()
 
 AST::Node* Parser::sum()
 {
+    //TODO: need to support variables here
     auto* root = multiplyDivide();
     checkNode(root);
 
@@ -163,12 +165,43 @@ AST::Node* Parser::createInt()
     return NULL;
 }
 
+AST::Node* Parser::functionCall() {
+    auto ident = lookupToken();
+
+    if (ident.type() == Lexer::TokenType::Identifier){
+        // TODO: what if we deal with function pointers? Look for expression? pointerExpression()?
+
+        if (lookupToken(1).type() == Lexer::OpenRoundBracket){
+            std::vector<AST::Node*>arguments;
+            while (lookupToken().type() == Lexer::Identifier) {
+                arguments.push_back(sum());
+
+                if (lookupToken().type() == Lexer::TokenType::Comma) {
+                    eatToken(Lexer::TokenType::Comma);
+                }
+                else if (lookupToken().type() != Lexer::TokenType::CloseRoundBracket) {
+                    //TODO: definitely should be an exception
+                    return NULL;
+                }
+            }
+            return new AST::FunctionCallNode(new AST::IdentifierNode(ident.lexeme()), arguments);
+        }
+
+    }
+
+    return NULL;
+}
+
 AST::Node* Parser::expression() {
     auto token = lookupToken();
 
     switch (token.type()) {
         case Lexer::TokenType::TypeInt: {
             return createInt();
+        }
+        case Lexer::TokenType::Identifier: {
+            // TODO: need to add variables in sum(), then at first, try to parse sum() here
+            return functionCall();
         }
     }
 

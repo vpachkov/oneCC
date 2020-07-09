@@ -43,6 +43,7 @@ private:
     std::string m_err;
     std::unique_ptr<Lexer::Lexer> m_lexer;
 
+    AST::Node *functionCall();
 };
 
 }
