@@ -5,12 +5,18 @@ namespace oneCC::AST {
 
 class BinaryOperationNode : public Node {
 public:
-    BinaryOperationNode() : Node(BinaryOperation) { }
+    BinaryOperationNode()
+        : Node(BinaryOperation)
+    {
+    }
+    
     BinaryOperationNode(Node* left, Node* right, Lexer::TokenType operation)
         : Node(BinaryOperation)
         , m_left(left)
         , m_right(right)
-        , m_operation(operation) { }
+        , m_operation(operation)
+    {
+    }
 
     virtual ~BinaryOperationNode() = default;
 

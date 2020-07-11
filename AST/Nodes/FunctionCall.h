@@ -7,11 +7,24 @@ namespace oneCC::AST {
 
 class FunctionCallNode : public Node {
 public:
-    FunctionCallNode() : Node(FunctionCallExpression) { }
-    FunctionCallNode(Node* name, std::vector<Node*>  arguments)
-            : Node(FunctionCallExpression)
-            , m_name(name)
-            , m_arguments(std::move(arguments)) { }
+    FunctionCallNode()
+        : Node(FunctionCallExpression)
+    {
+    }
+
+    FunctionCallNode(Node* name, const std::vector<Node*>& arguments)
+        : Node(FunctionCallExpression)
+        , m_name(name)
+        , m_arguments(arguments)
+    {
+    }
+
+    FunctionCallNode(Node* name, std::vector<Node*>&& arguments)
+        : Node(FunctionCallExpression)
+        , m_name(name)
+        , m_arguments(std::move(arguments))
+    {
+    }
 
     ~FunctionCallNode() override = default;
 
