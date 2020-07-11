@@ -109,6 +109,7 @@ int Visualizer::visitNode(AST::Node* node)
     tryConvertTo(AST::TypeNode, AST::NodeType::Type);
     tryConvertTo(AST::IdentifierNode, AST::NodeType::Identifier);
     tryConvertTo(AST::BlockStatementNode, AST::NodeType::BlockStatement);
+    tryConvertTo(AST::ReturnStatementNode, AST::NodeType::ReturnStatement);
     return -1; // Means no translation for a node found.
 }
 
@@ -219,6 +220,24 @@ std::string Visualizer::toText(AST::BlockStatementNode* node)
     return res;
 }
 
+int Visualizer::visitNode(AST::ReturnStatementNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+
+    int childTin = visitNode(node->returnedExpression());
+    m_children[myTin].push_back(childTin);
+
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::ReturnStatementNode* node)
+{
+    std::string res("ret");
+    return res;
+}
 
 int Visualizer::visitNode(AST::IntConstNode* node)
 {
