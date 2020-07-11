@@ -22,6 +22,7 @@ enum NodeType {
     BlockStatement,
 
     Function,
+    FunctionArgument,
 };
 
 class Node {

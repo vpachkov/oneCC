@@ -2,6 +2,7 @@
 #include "../AST/Nodes/BinaryOperation.h"
 #include "../AST/Nodes/BlockStatement.h"
 #include "../AST/Nodes/Function.h"
+#include "../AST/Nodes/FunctionArgument.h"
 #include "../AST/Nodes/FunctionCall.h"
 #include "../AST/Nodes/Identifier.h"
 #include "../AST/Nodes/IfStatement.h"
@@ -302,7 +303,7 @@ AST::Node* Parser::statement()
     } else if (nextToken.type() == Lexer::TokenType::Return) {
         return returnStatement();
     } 
-    // else if (nextToken.type() == Lexer::TokenType::OpenCurlyBracket) {
+    // else if (nextToken.type() == Lexer::TokenType::If) {
     //     return blockStatement();
     // } else if (nextToken.type() == Lexer::TokenType::OpenCurlyBracket) {
     //     return blockStatement();
@@ -311,49 +312,53 @@ AST::Node* Parser::statement()
     return NULL;
 }
 
+AST::Node* Parser::declareFunctionArguments() {
+    auto type = lookupToken();
+    eatToken(Lexer::TokenType::TypeInt);
+    auto varName = lookupToken();
+    eatToken(Lexer::TokenType::Identifier);
+    return new AST::FunctionArgumentNode(type.type(), varName.lexeme());
+}
+
 AST::Node* Parser::defineFunction()
 {
+    // FIXME: Now we eat only int
     auto type = lookupToken();
+    eatToken(Lexer::TokenType::TypeInt);
+    auto funcName = lookupToken();
+    eatToken(Lexer::TokenType::Identifier);
+    eatToken(Lexer::TokenType::OpenRoundBracket);
 
-    if (isType(type)) {
-        eatToken(Lexer::TokenType::TypeInt);
-        auto identifier = lookupToken();
-        eatToken(Lexer::TokenType::Identifier);
-        eatToken(Lexer::TokenType::OpenRoundBracket);
-
-        std::vector<AST::Node*> arguments;
-        while (isType(lookupToken())) {
-            arguments.push_back(expression());
-            if (lookupToken().type() == Lexer::TokenType::Comma) {
-                eatToken(Lexer::TokenType::Comma);
-            } else if (lookupToken().type() != Lexer::TokenType::CloseRoundBracket) {
-                //TODO: definitely should be an exception
-                return NULL;
-            }
+    // Eating args
+    std::vector<AST::Node*> arguments;
+    if (isType(lookupToken())) {
+        // TODO: Make it cleaner.
+        auto* argDecl = declareFunctionArguments();
+        checkNode(argDecl);
+        arguments.push_back(argDecl);
+        while (lookupToken().type() == Lexer::TokenType::Comma) {
+            eatToken(Lexer::TokenType::Comma);
+            auto* argDecl = declareFunctionArguments();
+            checkNode(argDecl);
+            arguments.push_back(argDecl);
         }
-
-        eatToken(Lexer::TokenType::CloseRoundBracket);
-
-        /* TODO: Function declarations should be taken in account
-           int func(int a, int b);
-        */
-
-        auto blockStat = blockStatement();
-        if (blockStat->type() != AST::BlockStatement) {
-            //TODO: exception
-            return NULL;
-        }
-
-        return new AST::FunctionNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), arguments, blockStat);
     }
 
-    return NULL;
+    eatToken(Lexer::TokenType::CloseRoundBracket);
+
+    if (lookupToken().type() == Lexer::TokenType::EndOfStatement) {
+        // FIXME: Add support for function declaration
+        return NULL;
+    } else {
+        auto blockStat = blockStatement();
+        return new AST::FunctionNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(funcName.lexeme()), arguments, blockStat);
+    }
 }
 
 // Entry point
 AST::Node* Parser::parse()
 {
-    auto* root = blockStatement();
+    auto* root = defineFunction();
     if (!root) [[unlikely]] {
         throw oneCC::Exceptions::ParserError(m_err.c_str());
     }

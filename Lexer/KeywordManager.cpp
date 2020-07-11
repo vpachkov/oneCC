@@ -32,6 +32,7 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
 
     // Punctuation
     man->addKeyword(Token(";", TokenType::EndOfStatement));
+    man->addKeyword(Token(",", TokenType::Comma));
     man->addKeyword(Token("(", TokenType::OpenRoundBracket));
     man->addKeyword(Token(")", TokenType::CloseRoundBracket));
     man->addKeyword(Token("{", TokenType::OpenCurlyBracket));

@@ -6,6 +6,8 @@
 #include "../../AST/Nodes/TernaryOperation.h"
 #include "../../AST/Nodes/BlockStatement.h"
 #include "../../AST/Nodes/ReturnStatement.h"
+#include "../../AST/Nodes/Function.h"
+#include "../../AST/Nodes/FunctionArgument.h"
 #include "../../AST/Nodes/Type.h"
 #include "../../Lexer/Token.h"
 #include <cstdint>
@@ -37,6 +39,9 @@ private:
     int visitNode(AST::BlockStatementNode* a);
     int visitNode(AST::ReturnStatementNode* a);
 
+    int visitNode(AST::FunctionNode* a);
+    int visitNode(AST::FunctionArgumentNode* a);
+
     int visitNode(AST::IntConstNode* a);
 
     std::string toText(AST::BinaryOperationNode*);
@@ -46,6 +51,9 @@ private:
 
     std::string toText(AST::BlockStatementNode*);
     std::string toText(AST::ReturnStatementNode*);
+
+    std::string toText(AST::FunctionNode*);
+    std::string toText(AST::FunctionArgumentNode*);
 
     std::string toText(AST::IntConstNode*);
 
