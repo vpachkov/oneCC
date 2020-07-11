@@ -1,4 +1,5 @@
 int func () {
+    
 }
 
 int main (int kek, int lol)

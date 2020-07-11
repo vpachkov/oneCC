@@ -249,7 +249,7 @@ bool Lexer::tokinizeFile()
 
     while (!isNextEOF()) {
         skipGaps();
-        if (switchLine()) {
+        while (switchLine()) {
             nextLine();
             skipGaps();
         }
