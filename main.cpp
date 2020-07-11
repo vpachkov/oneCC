@@ -61,6 +61,9 @@ int main()
         return 1;
     }
 
+    std::cout << "Parsed\n";
+    std::cout.flush();
+
     auto viz = oneCC::ASTUtils::Visualizer();
     viz.genTreePng(root);
 

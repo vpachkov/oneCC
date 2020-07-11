@@ -36,6 +36,9 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
     man->addKeyword(Token(")", TokenType::CloseRoundBracket));
     man->addKeyword(Token("{", TokenType::OpenCurlyBracket));
     man->addKeyword(Token("}", TokenType::CloseCurlyBracket));
+
+    // Keywords
+    man->addKeyword(Token("return", TokenType::Return));
     return man;
 }
 
