@@ -8,6 +8,7 @@
 #include "../../AST/Nodes/ReturnStatement.h"
 #include "../../AST/Nodes/Function.h"
 #include "../../AST/Nodes/FunctionArgument.h"
+#include "../../AST/Nodes/FunctionCall.h"
 #include "../../AST/Nodes/Type.h"
 #include "../../Lexer/Token.h"
 #include <cstdint>
@@ -41,6 +42,7 @@ private:
 
     int visitNode(AST::FunctionNode* a);
     int visitNode(AST::FunctionArgumentNode* a);
+    int visitNode(AST::FunctionCallNode* a);
 
     int visitNode(AST::IntConstNode* a);
 
@@ -54,6 +56,7 @@ private:
 
     std::string toText(AST::FunctionNode*);
     std::string toText(AST::FunctionArgumentNode*);
+    std::string toText(AST::FunctionCallNode*);
 
     std::string toText(AST::IntConstNode*);
 

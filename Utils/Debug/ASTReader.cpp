@@ -102,6 +102,11 @@ void Visualizer::startVisitingTree(AST::Node* node)
 // Do NOT change @node param name since it's used in define (which is upper).
 int Visualizer::visitNode(AST::Node* node)
 {
+    if (!node) {
+        std::cout << "The ast has a null ptr\n";
+        return 0;
+    }
+    
     // TODO: Work on define, too many params now.
     tryConvertTo(AST::IntConstNode, AST::NodeType::Const);
 
@@ -116,6 +121,7 @@ int Visualizer::visitNode(AST::Node* node)
 
     tryConvertTo(AST::FunctionNode, AST::NodeType::Function);
     tryConvertTo(AST::FunctionArgumentNode, AST::NodeType::FunctionArgument);
+    tryConvertTo(AST::FunctionCallNode, AST::NodeType::FunctionCallExpression);
     return -1; // Means no translation for a node found.
 }
 
@@ -293,6 +299,34 @@ std::string Visualizer::toText(AST::FunctionArgumentNode* node)
     res += Visualizer::tokenTypeToString(node->type());
     res += ' ';
     res += node->name();
+    return res;
+}
+
+int Visualizer::visitNode(AST::FunctionCallNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+
+    std::vector<int>argsTin;
+
+    int nameTin = visitNode(node->name());
+    for (auto* arg : node->arguments()) {
+        argsTin.push_back(visitNode(arg));
+    }
+    
+    m_children[myTin].push_back(nameTin);
+    for (auto i : argsTin) {
+        m_children[myTin].push_back(i);
+    }
+
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::FunctionCallNode* node)
+{
+    std::string res("call");
     return res;
 }
 

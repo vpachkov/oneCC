@@ -32,7 +32,7 @@ public:
     void setArguments(const std::vector<Node*>& arguments) { m_arguments = arguments; }
 
     Node* name() const { return m_name; }
-    std::vector<Node*> arguments() const { return m_arguments; }
+    const std::vector<Node*>& arguments() const { return m_arguments; }
 
 private:
     Node* m_name {};
