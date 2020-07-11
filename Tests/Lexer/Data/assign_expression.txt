@@ -1,5 +1,6 @@
 int main (int kek, int lol)
 {
     int a = 2 + 4;
+    func(1, 2, 3);
     return 1 + 3;
 }
