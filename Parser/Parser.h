@@ -25,7 +25,7 @@ private:
 
     AST::Node* factor();
     AST::Node* multiplyDivide();
-    AST::Node* sum();
+    AST::Node* expr();
     AST::Node* createInt();
     AST::Node* expression();
 

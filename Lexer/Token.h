@@ -15,11 +15,13 @@ enum TokenType {
     While,
 
     // Binary Operations
-    Bigger,
     Plus,
+    Minus,
     Multiply,
     Divide,
     Equal,
+
+    Bigger,
 
     // Others
     EndOfFile,
