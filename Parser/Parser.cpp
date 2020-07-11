@@ -106,9 +106,15 @@ AST::Node* Parser::factor()
 
     if (token.type() == Lexer::TokenType::OpenRoundBracket) {
         eatToken(Lexer::TokenType::OpenRoundBracket);
-        auto* res = expr();
+        auto* factor = expr();
         eatToken(Lexer::TokenType::CloseRoundBracket);
-        return res;
+        return factor;
+    }
+
+    if (token.type() == Lexer::TokenType::Identifier) {
+        auto factor = new AST::IdentifierNode(token.lexeme());
+        eatToken(Lexer::TokenType::Identifier);
+        return factor;
     }
 
     return NULL;
