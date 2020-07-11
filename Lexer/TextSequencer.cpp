@@ -10,6 +10,7 @@ TextSequencer::TextSequencer(std::unique_ptr<std::ifstream> fileStream)
     , m_switchLine(true)
     , m_fileEnded(false)
     , m_passed(0)
+    , m_linesSwitched(0)
 {
     assert(m_fileStream->is_open());
 }
@@ -27,6 +28,7 @@ void TextSequencer::nextLine()
             m_currentLine = "";
         }
     }
+    m_linesSwitched++;
 }
 
 // Returns next char at position @offset and doesn't seek the file.

@@ -23,6 +23,8 @@ enum NodeType {
 
     Function,
     FunctionArgument,
+
+    Program,
 };
 
 class Node {

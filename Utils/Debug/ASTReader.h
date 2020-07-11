@@ -5,6 +5,7 @@
 #include "../../AST/Nodes/IntConst.h"
 #include "../../AST/Nodes/TernaryOperation.h"
 #include "../../AST/Nodes/BlockStatement.h"
+#include "../../AST/Nodes/Program.h"
 #include "../../AST/Nodes/ReturnStatement.h"
 #include "../../AST/Nodes/Function.h"
 #include "../../AST/Nodes/FunctionArgument.h"
@@ -44,6 +45,8 @@ private:
     int visitNode(AST::FunctionArgumentNode* a);
     int visitNode(AST::FunctionCallNode* a);
 
+    int visitNode(AST::ProgramNode* a);
+
     int visitNode(AST::IntConstNode* a);
 
     std::string toText(AST::BinaryOperationNode*);
@@ -57,6 +60,8 @@ private:
     std::string toText(AST::FunctionNode*);
     std::string toText(AST::FunctionArgumentNode*);
     std::string toText(AST::FunctionCallNode*);
+
+    std::string toText(AST::ProgramNode*);
 
     std::string toText(AST::IntConstNode*);
 

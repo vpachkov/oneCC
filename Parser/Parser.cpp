@@ -7,6 +7,7 @@
 #include "../AST/Nodes/Identifier.h"
 #include "../AST/Nodes/IfStatement.h"
 #include "../AST/Nodes/IntConst.h"
+#include "../AST/Nodes/Program.h"
 #include "../AST/Nodes/ReturnStatement.h"
 #include "../AST/Nodes/TernaryOperation.h"
 #include "../AST/Nodes/Type.h"
@@ -44,6 +45,10 @@ void Parser::generateErrorText(Lexer::TokenType tokenType)
 {
     m_err = "Was expected symbol: ";
     m_err += oneCC::ASTUtils::Visualizer::tokenTypeToString(tokenType);
+    m_err += " at ";
+    m_err += std::to_string(m_lexer->lineIndex());
+    m_err += ", ";
+    m_err += std::to_string(m_lexer->lineOffset());
 }
 
 void Parser::generateErrorText(const std::vector<Lexer::TokenType>& tokenTypes)
@@ -362,10 +367,21 @@ AST::Node* Parser::defineFunction()
     }
 }
 
+AST::Node* Parser::program()
+{
+    std::vector<AST::Node*> funcs;
+    while (lookupToken().type() != Lexer::TokenType::EndOfFile) {
+        auto func = defineFunction();
+        checkNode(func);
+        funcs.push_back(func);
+    }
+    return new AST::ProgramNode(funcs);
+}
+
 // Entry point
 AST::Node* Parser::parse()
 {
-    auto* root = defineFunction();
+    auto* root = program();
     if (!root) [[unlikely]] {
         throw oneCC::Exceptions::ParserError(m_err.c_str());
     }

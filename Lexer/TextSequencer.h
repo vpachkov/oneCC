@@ -26,6 +26,7 @@ protected:
     bool isNextNL() { return lookupChar() == '\n'; }
 
     void nextLine();
+    int lineSwitched() { return m_linesSwitched; }
     bool switchLine() { return m_switchLine; }
     std::string currentLine() const { return m_currentLine; }
     int currentOffset() const { return m_passed; }
@@ -38,6 +39,7 @@ private:
     std::unique_ptr<std::ifstream> m_fileStream;
     std::string m_currentLine;
     int m_passed;
+    int m_linesSwitched;
     bool m_switchLine;
     bool m_fileEnded;
 };
