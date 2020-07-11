@@ -20,6 +20,10 @@ public:
     int lineIndex() { return lineSwitched(); }
     int lineOffset() { return currentOffset(); }
 
+    bool isComment() { return m_oneLineComment || m_multiLineComment; }
+    void setOneLineComment(bool val) { m_oneLineComment = val; }
+    void setMultilineComment(bool val) { m_multiLineComment = val; }
+
 private:
     void skipGaps();
     Token readNumber();
@@ -33,5 +37,8 @@ private:
     std::shared_ptr<KeywordManager> m_keywordManager;
     std::vector<Token> m_cache;
     int m_active_token;
+
+    bool m_oneLineComment { false };
+    bool m_multiLineComment { false };
 };
 }

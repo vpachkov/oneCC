@@ -25,7 +25,6 @@ enum TokenType {
 
     // Others
     EndOfFile,
-    Error,
 
     // Types
     IntConst,
@@ -48,6 +47,12 @@ enum TokenType {
     EndOfStatement,
 
     Return,
+
+    // Used only inside Lexer
+    OneLineComment,
+    OpenSeveralLinesComment,
+    CloseSeveralLinesComment,
+    Error,
 };
 
 class Token {

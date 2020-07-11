@@ -5,10 +5,18 @@
 #include <unordered_map>
 
 namespace oneCC::Lexer {
+
+enum KeywordManagerDecision {
+    NotFound,
+    PossibleMatch,
+    Match,
+};
+
 class KeywordManager {
 public:
     KeywordManager();
     Token process(Token token);
+    KeywordManagerDecision shouldContinue(const std::string& str);
     void addKeyword(Token token);
     static std::shared_ptr<KeywordManager> makeStandard();
 
