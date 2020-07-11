@@ -142,7 +142,24 @@ Token Lexer::readPunct()
     if (isNextPunct()) {
         val += nextChar();
     }
-    return Token(val, TokenType::Punct);
+
+    std::string bestMatch(val);
+
+    int willEat = 0;
+    auto dec = m_keywordManager->shouldContinue(val);
+    for (int toEat = 0; !switchLine() && dec != NotFound; val += lookupChar(), toEat++, dec = m_keywordManager->shouldContinue(val)) {
+        if (dec == Match) {
+            bestMatch = val;
+            willEat = toEat;
+        }
+    }
+
+    while (willEat) {
+        nextChar();
+        willEat--;
+    }
+
+    return Token(bestMatch, TokenType::Punct);
 }
 
 // TODO: add support for UNICODE
@@ -250,6 +267,7 @@ bool Lexer::tokinizeFile()
     while (!isNextEOF()) {
         skipGaps();
         while (switchLine()) {
+            setOneLineComment(false);
             nextLine();
             skipGaps();
         }
@@ -268,11 +286,23 @@ bool Lexer::tokinizeFile()
             res = Token(TokenType::EndOfFile);
         }
 
-        if (res.type() == TokenType::Error) {
+        if (res.type() == TokenType::Error) [[unlikely]] {
             throw std::runtime_error(errorMsg());
         }
 
-        m_cache.push_back(res);
+        if (res.type() == TokenType::OpenSeveralLinesComment && !isComment()) {
+            setMultilineComment(true);
+        } else if (res.type() == TokenType::OneLineComment && !isComment()) {
+            setOneLineComment(true);
+        }
+
+        if (!isComment()) {
+            m_cache.push_back(res);
+        }
+
+        if (res.type() == TokenType::CloseSeveralLinesComment && !m_oneLineComment) {
+            setMultilineComment(false);
+        }
     }
 
     return true;

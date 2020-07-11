@@ -11,6 +11,17 @@ void KeywordManager::addKeyword(Token token)
     m_storage[token.lexeme()] = token.type();
 }
 
+KeywordManagerDecision KeywordManager::shouldContinue(const std::string& str)
+{
+    for (auto kw : m_storage) {
+        if (kw.first.size() >= str.size()) {
+            if (str.compare(0, str.size(), kw.first) == 0)
+                return kw.first.size() == str.size() ? Match : PossibleMatch;
+        }
+    }
+    return NotFound;
+}
+
 Token KeywordManager::process(Token token)
 {
     if (auto el = m_storage.find(token.lexeme()); el != m_storage.end()) {
@@ -40,6 +51,12 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
 
     // Keywords
     man->addKeyword(Token("return", TokenType::Return));
+
+    // Comments, used only inside Lexer
+    man->addKeyword(Token("//", TokenType::OneLineComment));
+    man->addKeyword(Token("/*", TokenType::OpenSeveralLinesComment));
+    man->addKeyword(Token("*/", TokenType::CloseSeveralLinesComment));
+
     return man;
 }
 
