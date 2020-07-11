@@ -4,13 +4,19 @@ namespace oneCC::AST {
 
 class TernaryOperationNode : public Node {
 public:
-    TernaryOperationNode() : Node(TernaryOperation) { }
+    TernaryOperationNode()
+        : Node(TernaryOperation)
+    {
+    }
+    
     TernaryOperationNode(Node* left, Node* middle, Node* right, Lexer::TokenType operation)
-            : Node(TernaryOperation)
-            , m_left(left)
-            , m_middle(middle)
-            , m_right(right)
-            , m_operation(operation) { }
+        : Node(TernaryOperation)
+        , m_left(left)
+        , m_middle(middle)
+        , m_right(right)
+        , m_operation(operation)
+    {
+    }
 
     ~TernaryOperationNode() override = default;
 
@@ -25,9 +31,9 @@ public:
     const Lexer::TokenType& operation() const { return m_operation; }
 
 private:
-    Node* m_left {};
-    Node* m_middle {};
-    Node* m_right {};
+    Node* m_left;
+    Node* m_middle;
+    Node* m_right;
     Lexer::TokenType m_operation;
 };
 

@@ -7,11 +7,15 @@ namespace oneCC::AST {
 
 class WhileStatementNode : public Node {
 public:
-    WhileStatementNode() : Node(WhileStatement) { };
+    WhileStatementNode()
+        : Node(WhileStatement) {};
+    
     explicit WhileStatementNode(Node* expression, Node* statement)
-            : Node(WhileStatement)
-            , m_expression(expression)
-            , m_statement(statement) { }
+        : Node(WhileStatement)
+        , m_expression(expression)
+        , m_statement(statement)
+    {
+    }
 
     ~WhileStatementNode() override = default;
 

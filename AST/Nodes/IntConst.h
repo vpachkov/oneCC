@@ -5,10 +5,16 @@ namespace oneCC::AST {
 
 class IntConstNode : public Node {
 public:
-    IntConstNode() : Node(Const) { }
+    IntConstNode()
+        : Node(Const)
+    {
+    }
+
     IntConstNode(int value)
         : Node(Const)
-        , m_value(value) { }
+        , m_value(value)
+    {
+    }
 
     virtual ~IntConstNode() = default;
 

@@ -7,8 +7,10 @@ namespace oneCC::AST {
 class TypeNode : public Node {
 public:
     TypeNode(oneCC::Lexer::TokenType type)
-            : Node(Type)
-            , m_type(type) { }
+        : Node(Type)
+        , m_type(type)
+    {
+    }
 
     ~TypeNode() override = default;
 
