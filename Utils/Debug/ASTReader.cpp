@@ -22,6 +22,10 @@ char Visualizer::tokenTypeToString(int tokenType)
         return '(';
     case Lexer::TokenType::CloseRoundBracket:
         return ')';
+    case Lexer::TokenType::TypeInt:
+        return 'i';
+    case Lexer::TokenType::TypeFloat:
+        return 'f';
     default:
         return '?';
     }
@@ -31,11 +35,15 @@ void Visualizer::genDotDescriptor(AST::Node* node, std::string filename)
 {
     startVisitingTree(node);
 
+    if (m_tin == -1) {
+        std::cout << "something went wrong\n";
+        return;
+    }
+
     std::ofstream file;
     file.open(filename);
     file << "digraph AST {\n";
     file << "node [shape=box];\n";
-    std::cout << m_tin << " kek\n";
     for (int i = 0; i <= m_tin; i++) {
         file << std::to_string(i) << " [label=\"" << m_labels[i] << "\"];\n";
     }
@@ -97,6 +105,9 @@ int Visualizer::visitNode(AST::Node* node)
     // TODO: Work on define, too many params now.
     tryConvertTo(AST::IntConstNode, AST::NodeType::Const);
     tryConvertTo(AST::BinaryOperationNode, AST::NodeType::BinaryOperation);
+    tryConvertTo(AST::TernaryOperationNode, AST::NodeType::TernaryOperation);
+    tryConvertTo(AST::TypeNode, AST::NodeType::Type);
+    tryConvertTo(AST::IdentifierNode, AST::NodeType::Identifier);
     return -1; // Means no translation for a node found.
 }
 
@@ -120,6 +131,64 @@ std::string Visualizer::toText(AST::BinaryOperationNode* node)
 {
     std::string res;
     res += Visualizer::tokenTypeToString(node->operation());
+    return res;
+}
+
+int Visualizer::visitNode(AST::TernaryOperationNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+
+    int leftTin  = visitNode(node->leftChild());
+    int midTin   = visitNode(node->middleChild());
+    int rightTin = visitNode(node->rightChild());
+
+    m_children[myTin].push_back(leftTin);
+    m_children[myTin].push_back(midTin);
+    m_children[myTin].push_back(rightTin);
+
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::TernaryOperationNode* node)
+{
+    std::string res("tOp");
+    return res;
+}
+
+int Visualizer::visitNode(AST::TypeNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+    
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::TypeNode* node)
+{
+    std::string res;
+    res += Visualizer::tokenTypeToString(node->type());
+    return res;
+}
+
+int Visualizer::visitNode(AST::IdentifierNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+    
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::IdentifierNode* node)
+{
+    std::string res("Var ");
+    res += node->value();
     return res;
 }
 

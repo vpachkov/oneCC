@@ -1,7 +1,10 @@
 #pragma once
 #include "../../AST/ASTNode.h"
 #include "../../AST/Nodes/BinaryOperation.h"
+#include "../../AST/Nodes/Identifier.h"
 #include "../../AST/Nodes/IntConst.h"
+#include "../../AST/Nodes/TernaryOperation.h"
+#include "../../AST/Nodes/Type.h"
 #include "../../Lexer/Token.h"
 #include <cstdint>
 #include <iostream>
@@ -25,9 +28,15 @@ private:
 
     int visitNode(AST::Node* a);
     int visitNode(AST::BinaryOperationNode* a);
+    int visitNode(AST::TernaryOperationNode* a);
+    int visitNode(AST::TypeNode* a);
+    int visitNode(AST::IdentifierNode* a);
     int visitNode(AST::IntConstNode* a);
 
     std::string toText(AST::BinaryOperationNode*);
+    std::string toText(AST::TernaryOperationNode*);
+    std::string toText(AST::TypeNode*);
+    std::string toText(AST::IdentifierNode*);
     std::string toText(AST::IntConstNode*);
 
     int m_tin;
