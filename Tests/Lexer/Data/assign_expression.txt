@@ -1,3 +1,6 @@
+int func () {
+}
+
 int main (int kek, int lol)
 {
     int a = 2 + 4;

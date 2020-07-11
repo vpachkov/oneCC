@@ -17,6 +17,9 @@ public:
     Token skipToken(int offset);
     Token skipToken();
 
+    int lineIndex() { return lineSwitched(); }
+    int lineOffset() { return currentOffset(); }
+
 private:
     void skipGaps();
     Token readNumber();

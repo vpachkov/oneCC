@@ -122,6 +122,8 @@ int Visualizer::visitNode(AST::Node* node)
     tryConvertTo(AST::FunctionNode, AST::NodeType::Function);
     tryConvertTo(AST::FunctionArgumentNode, AST::NodeType::FunctionArgument);
     tryConvertTo(AST::FunctionCallNode, AST::NodeType::FunctionCallExpression);
+
+    tryConvertTo(AST::ProgramNode, AST::NodeType::Program);
     return -1; // Means no translation for a node found.
 }
 
@@ -327,6 +329,33 @@ int Visualizer::visitNode(AST::FunctionCallNode* node)
 std::string Visualizer::toText(AST::FunctionCallNode* node)
 {
     std::string res("call");
+    return res;
+}
+
+
+int Visualizer::visitNode(AST::ProgramNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+
+    std::vector<int>funcsTin;
+
+    for (auto* arg : node->funcs()) {
+        funcsTin.push_back(visitNode(arg));
+    }
+    
+    for (auto i : funcsTin) {
+        m_children[myTin].push_back(i);
+    }
+    
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::ProgramNode* node)
+{
+    std::string res("prog");
     return res;
 }
 
