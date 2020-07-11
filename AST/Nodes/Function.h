@@ -39,6 +39,7 @@ public:
 
     Node* type() const { return m_type; }
     Node* name() const { return m_name; }
+    Node* statement() const { return m_statement; }
     const std::vector<Node*>& arguments() const { return m_arguments; }
 
 private:

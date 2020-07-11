@@ -104,12 +104,18 @@ int Visualizer::visitNode(AST::Node* node)
 {
     // TODO: Work on define, too many params now.
     tryConvertTo(AST::IntConstNode, AST::NodeType::Const);
+
     tryConvertTo(AST::BinaryOperationNode, AST::NodeType::BinaryOperation);
     tryConvertTo(AST::TernaryOperationNode, AST::NodeType::TernaryOperation);
+
     tryConvertTo(AST::TypeNode, AST::NodeType::Type);
     tryConvertTo(AST::IdentifierNode, AST::NodeType::Identifier);
+
     tryConvertTo(AST::BlockStatementNode, AST::NodeType::BlockStatement);
     tryConvertTo(AST::ReturnStatementNode, AST::NodeType::ReturnStatement);
+
+    tryConvertTo(AST::FunctionNode, AST::NodeType::Function);
+    tryConvertTo(AST::FunctionArgumentNode, AST::NodeType::FunctionArgument);
     return -1; // Means no translation for a node found.
 }
 
@@ -236,6 +242,57 @@ int Visualizer::visitNode(AST::ReturnStatementNode* node)
 std::string Visualizer::toText(AST::ReturnStatementNode* node)
 {
     std::string res("ret");
+    return res;
+}
+
+int Visualizer::visitNode(AST::FunctionNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+
+    std::vector<int>argsTin;
+
+    int typeTin = visitNode(node->type());
+    int nameTin = visitNode(node->name());
+    int statementTin = visitNode(node->statement());
+    for (auto* arg : node->arguments()) {
+        argsTin.push_back(visitNode(arg));
+    }
+    
+    m_children[myTin].push_back(typeTin);
+    m_children[myTin].push_back(nameTin);
+    for (auto i : argsTin) {
+        m_children[myTin].push_back(i);
+    }
+    m_children[myTin].push_back(statementTin);
+
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::FunctionNode* node)
+{
+    std::string res("func");
+    return res;
+}
+
+int Visualizer::visitNode(AST::FunctionArgumentNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::FunctionArgumentNode* node)
+{
+    std::string res;
+    res += Visualizer::tokenTypeToString(node->type());
+    res += ' ';
+    res += node->name();
     return res;
 }
 

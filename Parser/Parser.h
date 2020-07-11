@@ -36,6 +36,7 @@ private:
     AST::Node* statement();
 
     AST::Node* defineFunction();
+    AST::Node* declareFunctionArguments();
 
     void generateErrorText(Lexer::TokenType tokenType);
     void generateErrorText(const std::vector<Lexer::TokenType>& tokenTypes);
