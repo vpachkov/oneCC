@@ -25,8 +25,6 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
     man->addKeyword(Token("+", TokenType::Plus));
     man->addKeyword(Token("*", TokenType::Multiply));
     man->addKeyword(Token("/", TokenType::Divide));
-    man->addKeyword(Token("(", TokenType::OpenRoundBracket));
-    man->addKeyword(Token(")", TokenType::CloseRoundBracket));
     man->addKeyword(Token("=", TokenType::Assign));
 
     // Types
@@ -34,6 +32,10 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
 
     // Punctuation
     man->addKeyword(Token(";", TokenType::EndOfStatement));
+    man->addKeyword(Token("(", TokenType::OpenRoundBracket));
+    man->addKeyword(Token(")", TokenType::CloseRoundBracket));
+    man->addKeyword(Token("{", TokenType::OpenCurlyBracket));
+    man->addKeyword(Token("}", TokenType::CloseCurlyBracket));
     return man;
 }
 

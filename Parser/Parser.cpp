@@ -272,15 +272,13 @@ AST::Node* Parser::blockStatement()
 {
     std::vector<AST::Node*> statements;
 
-    while (lookupToken().type() == Lexer::TokenType::OpenCurlyBracket) {
-        eatToken(Lexer::TokenType::OpenCurlyBracket);
+    eatToken(Lexer::TokenType::OpenCurlyBracket);
+
+    while (lookupToken().type() != Lexer::TokenType::CloseCurlyBracket) {
         statements.push_back(statement());
-        eatToken(Lexer::TokenType::CloseCurlyBracket);
     }
 
-    if (statements.empty()) {
-        return NULL;
-    }
+    eatToken(Lexer::TokenType::CloseCurlyBracket);
 
     return new AST::BlockStatementNode(statements);
 }
@@ -364,7 +362,7 @@ AST::Node* Parser::defineFunction()
 // Entry point
 AST::Node* Parser::parse()
 {
-    auto* root = createInt();
+    auto* root = blockStatement();
     if (!root) [[unlikely]] {
         throw oneCC::Exceptions::ParserError(m_err.c_str());
     }

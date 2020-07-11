@@ -108,6 +108,7 @@ int Visualizer::visitNode(AST::Node* node)
     tryConvertTo(AST::TernaryOperationNode, AST::NodeType::TernaryOperation);
     tryConvertTo(AST::TypeNode, AST::NodeType::Type);
     tryConvertTo(AST::IdentifierNode, AST::NodeType::Identifier);
+    tryConvertTo(AST::BlockStatementNode, AST::NodeType::BlockStatement);
     return -1; // Means no translation for a node found.
 }
 
@@ -191,6 +192,33 @@ std::string Visualizer::toText(AST::IdentifierNode* node)
     res += node->value();
     return res;
 }
+
+int Visualizer::visitNode(AST::BlockStatementNode* node)
+{
+    int myTin = ++m_tin;
+
+    m_labels.push_back(toText(node));
+    m_children.push_back(std::vector<int>());
+
+    std::vector<int>tmpChildren;
+
+    for (auto* statment : node->statements()) {
+        tmpChildren.push_back(visitNode(statment));
+    }
+    
+    for (auto i : tmpChildren) {
+        m_children[myTin].push_back(i);
+    }
+
+    return myTin;
+}
+
+std::string Visualizer::toText(AST::BlockStatementNode* node)
+{
+    std::string res("Block");
+    return res;
+}
+
 
 int Visualizer::visitNode(AST::IntConstNode* node)
 {
