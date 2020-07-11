@@ -27,6 +27,7 @@ public:
     void setOperation(Lexer::TokenType operation) { m_operation = operation; }
 
     Node* leftChild() const { return m_left; }
+    Node* middleChild() const { return m_middle; }
     Node* rightChild() const { return m_right; }
     const Lexer::TokenType& operation() const { return m_operation; }
 

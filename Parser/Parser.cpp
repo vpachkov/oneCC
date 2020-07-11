@@ -7,7 +7,7 @@
 #include "../AST/Nodes/IfStatement.h"
 #include "../AST/Nodes/IntConst.h"
 #include "../AST/Nodes/ReturnStatement.h"
-#include "../AST/Nodes/TernaryOperaion.h"
+#include "../AST/Nodes/TernaryOperation.h"
 #include "../AST/Nodes/Type.h"
 #include "../AST/Nodes/WhileStatement.h"
 #include "../Exceptions.h"

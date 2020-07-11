@@ -25,7 +25,7 @@ public:
 
     ~IdentifierNode() override = default;
 
-    std::string value() const { return m_value; }
+    const std::string& value() const { return m_value; }
 
 private:
     std::string m_value {};
