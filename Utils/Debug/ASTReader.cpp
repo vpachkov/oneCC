@@ -10,6 +10,8 @@ char Visualizer::tokenTypeToString(int tokenType)
     switch (tokenType) {
     case Lexer::TokenType::Plus:
         return '+';
+    case Lexer::TokenType::Minus:
+        return '-';
     case Lexer::TokenType::Multiply:
         return '*';
     case Lexer::TokenType::Divide:
