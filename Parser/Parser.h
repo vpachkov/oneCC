@@ -25,14 +25,15 @@ private:
 
     AST::Node* factor();
     AST::Node* multiplyDivide();
-    AST::Node* expr();
     AST::Node* createInt();
     AST::Node* expression();
+    AST::Node* functionCall();
 
     AST::Node* ifStatement();
     AST::Node* whileStatement();
     AST::Node* blockStatement();
     AST::Node* returnStatement();
+    AST::Node* callFunctionStatement();
     AST::Node* statement();
 
     AST::Node* defineFunction();
@@ -45,8 +46,6 @@ private:
 
     std::string m_err;
     std::unique_ptr<Lexer::Lexer> m_lexer;
-
-    AST::Node *functionCall();
 };
 
 }
