@@ -111,9 +111,13 @@ AST::Node* Parser::factor()
 
     if (token.type() == Lexer::TokenType::OpenRoundBracket) {
         eatToken(Lexer::TokenType::OpenRoundBracket);
-        auto* factor = expr();
+        auto* factor = expression();
         eatToken(Lexer::TokenType::CloseRoundBracket);
         return factor;
+    }
+
+    if (token.type() == Lexer::TokenType::Identifier && lookupToken(1).type() == Lexer::TokenType::OpenRoundBracket){
+        return functionCall();
     }
 
     if (token.type() == Lexer::TokenType::Identifier) {
@@ -146,7 +150,7 @@ AST::Node* Parser::multiplyDivide()
     return root;
 }
 
-AST::Node* Parser::expr()
+AST::Node* Parser::expression()
 {
     auto* root = multiplyDivide();
     checkNode(root);
@@ -167,19 +171,6 @@ AST::Node* Parser::expr()
     return root;
 }
 
-AST::Node* Parser::createInt()
-{
-    auto type = lookupToken();
-    eatToken(Lexer::TokenType::TypeInt);
-    auto identifier = lookupToken();
-    eatToken(Lexer::TokenType::Identifier);
-    eatToken(Lexer::TokenType::Assign);
-    auto* parsedExpr = expr();
-    checkNode(parsedExpr);
-    eatToken(Lexer::TokenType::EndOfStatement);
-    return new AST::TernaryOperationNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), parsedExpr, Lexer::TokenType::Assign);
-}
-
 AST::Node* Parser::functionCall()
 {
     auto funcName = lookupToken();
@@ -188,43 +179,36 @@ AST::Node* Parser::functionCall()
 
     std::vector<AST::Node*> arguments;
     if (lookupToken().type() != Lexer::TokenType::CloseRoundBracket) {
-        auto* res = expr();
+        auto* res = expression();
         checkNode(res);
         arguments.push_back(res);
         while (lookupToken().type() == Lexer::TokenType::Comma) {
             eatToken(Lexer::TokenType::Comma);
-            auto* res = expr();
+            auto* res = expression();
             checkNode(res);
             arguments.push_back(res);
         }
     }
 
     eatToken(Lexer::TokenType::CloseRoundBracket);
-    eatToken(Lexer::TokenType::EndOfStatement);
 
-    return new AST::FunctionCallNode(new AST::IdentifierNode(funcName.lexeme()), arguments);
-}
-
-AST::Node* Parser:: expression()
-{
-    auto token = lookupToken();
-
-    switch (token.type()) {
-    case Lexer::TokenType::TypeInt: {
-        return createInt();
-    }
-    case Lexer::TokenType::Identifier: {
-        // TODO: need to add variables in expr(), then at first, try to parse expr() here
-        return functionCall();
-    }
-    }
-
-    //TODO: add support for other expressions
-
-    return NULL;
+    return new AST::FunctionCallNode(funcName.lexeme(), arguments);
 }
 
 // Statements
+AST::Node* Parser::createInt()
+{
+    auto type = lookupToken();
+    eatToken(Lexer::TokenType::TypeInt);
+    auto identifier = lookupToken();
+    eatToken(Lexer::TokenType::Identifier);
+    eatToken(Lexer::TokenType::Assign);
+    auto* parsedExpr = expression();
+    checkNode(parsedExpr);
+    eatToken(Lexer::TokenType::EndOfStatement);
+    return new AST::TernaryOperationNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), parsedExpr, Lexer::TokenType::Assign);
+}
+
 AST::Node* Parser::ifStatement()
 {
     auto ifToken = lookupToken();
@@ -296,9 +280,16 @@ AST::Node* Parser::returnStatement()
 {
     // FIXME: may be used without return values (just return;)
     eatToken(Lexer::TokenType::Return);
-    auto res = expr();
+    auto res = expression();
     eatToken(Lexer::TokenType::EndOfStatement);
     return new AST::ReturnStatementNode(res);
+}
+
+AST::Node* Parser::callFunctionStatement()
+{
+    auto* funcCall = functionCall();
+    eatToken(Lexer::TokenType::EndOfStatement);
+    return funcCall;
 }
 
 AST::Node* Parser::statement()
@@ -313,13 +304,12 @@ AST::Node* Parser::statement()
     } else if (nextToken.type() == Lexer::TokenType::Return) {
         return returnStatement();
     } else if (nextToken.type() == Lexer::TokenType::Identifier) {
-        return functionCall();
-    } 
-    // else if (nextToken.type() == Lexer::TokenType::If) {
-    //     return blockStatement();
-    // } else if (nextToken.type() == Lexer::TokenType::OpenCurlyBracket) {
-    //     return blockStatement();
-    // } 
+        return callFunctionStatement();
+    } else if (nextToken.type() == Lexer::TokenType::If) {
+         return ifStatement();
+     } else if (nextToken.type() == Lexer::TokenType::While) {
+         return whileStatement();
+     }
     return NULL;
 }
 
@@ -363,7 +353,7 @@ AST::Node* Parser::defineFunction()
     } else {
         auto blockStat = blockStatement();
         checkNode(blockStat);
-        return new AST::FunctionNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(funcName.lexeme()), arguments, blockStat);
+        return new AST::FunctionNode(type.type(), funcName.lexeme(), arguments, blockStat);
     }
 }
 

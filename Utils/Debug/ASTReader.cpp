@@ -262,15 +262,11 @@ int Visualizer::visitNode(AST::FunctionNode* node)
 
     std::vector<int>argsTin;
 
-    int typeTin = visitNode(node->type());
-    int nameTin = visitNode(node->name());
     int statementTin = visitNode(node->statement());
     for (auto* arg : node->arguments()) {
         argsTin.push_back(visitNode(arg));
     }
     
-    m_children[myTin].push_back(typeTin);
-    m_children[myTin].push_back(nameTin);
     for (auto i : argsTin) {
         m_children[myTin].push_back(i);
     }
@@ -281,7 +277,10 @@ int Visualizer::visitNode(AST::FunctionNode* node)
 
 std::string Visualizer::toText(AST::FunctionNode* node)
 {
-    std::string res("func");
+    std::string res;
+    res += Visualizer::tokenTypeToString(node->type());
+    res += " ";
+    res += node->name();
     return res;
 }
 
@@ -313,12 +312,10 @@ int Visualizer::visitNode(AST::FunctionCallNode* node)
 
     std::vector<int>argsTin;
 
-    int nameTin = visitNode(node->name());
     for (auto* arg : node->arguments()) {
         argsTin.push_back(visitNode(arg));
     }
     
-    m_children[myTin].push_back(nameTin);
     for (auto i : argsTin) {
         m_children[myTin].push_back(i);
     }
@@ -328,7 +325,8 @@ int Visualizer::visitNode(AST::FunctionCallNode* node)
 
 std::string Visualizer::toText(AST::FunctionCallNode* node)
 {
-    std::string res("call");
+    std::string res("call ");
+    res += node->name();
     return res;
 }
 

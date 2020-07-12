@@ -2,6 +2,7 @@
 #include "../ASTNode.h"
 #include <utility>
 #include <vector>
+#include <string>
 
 namespace oneCC::AST {
 
@@ -12,7 +13,7 @@ public:
     {
     }
 
-    FunctionNode(Node* type, Node* name, const std::vector<Node*>& arguments, Node* statement)
+    FunctionNode(Lexer::TokenType type, const std::string& name, const std::vector<Node*>& arguments, Node* statement)
         : Node(Function)
         , m_type(type)
         , m_name(name)
@@ -21,7 +22,7 @@ public:
     {
     }
 
-    FunctionNode(Node* type, Node* name, std::vector<Node*>&& arguments, Node* statement)
+    FunctionNode(Lexer::TokenType type, const std::string& name, std::vector<Node*>&& arguments, Node* statement)
         : Node(Function)
         , m_type(type)
         , m_name(name)
@@ -32,19 +33,19 @@ public:
 
     ~FunctionNode() override = default;
 
-    void setType(Node* type) { m_type = type; }
-    void setName(Node* name) { m_name = name; }
+    void setType(Lexer::TokenType type) { m_type = type; }
+    void setName(const std::string& name) { m_name = name; }
     void setArguments(std::vector<Node*> arguments) { m_arguments = arguments; }
     void setArguments(std::vector<Node*>&& arguments) { m_arguments = arguments; }
 
-    Node* type() const { return m_type; }
-    Node* name() const { return m_name; }
+    Lexer::TokenType type() const { return m_type; }
+    const std::string& name() const { return m_name; }
     Node* statement() const { return m_statement; }
     const std::vector<Node*>& arguments() const { return m_arguments; }
 
 private:
-    Node* m_type {};
-    Node* m_name {};
+    Lexer::TokenType m_type {};
+    std::string m_name {};
     std::vector<Node*> m_arguments {};
     Node* m_statement {};
 };
