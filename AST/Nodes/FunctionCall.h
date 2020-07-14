@@ -8,19 +8,19 @@ namespace oneCC::AST {
 class FunctionCallNode : public Node {
 public:
     FunctionCallNode()
-        : Node(FunctionCallExpression)
+        : Node(servedType())
     {
     }
 
     FunctionCallNode(const std::string& name, const std::vector<Node*>& arguments)
-        : Node(FunctionCallExpression)
+        : Node(servedType())
         , m_name(name)
         , m_arguments(arguments)
     {
     }
 
     FunctionCallNode(const std::string& name, std::vector<Node*>&& arguments)
-        : Node(FunctionCallExpression)
+        : Node(servedType())
         , m_name(name)
         , m_arguments(std::move(arguments))
     {
@@ -33,6 +33,8 @@ public:
 
     const std::string& name() const { return m_name; }
     const std::vector<Node*>& arguments() const { return m_arguments; }
+
+    static NodeType servedType() { return FunctionCallExpression; }
 
 private:
     std::string m_name {};

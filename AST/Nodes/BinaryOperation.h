@@ -6,12 +6,12 @@ namespace oneCC::AST {
 class BinaryOperationNode : public Node {
 public:
     BinaryOperationNode()
-        : Node(BinaryOperation)
+        : Node(servedType())
     {
     }
     
     BinaryOperationNode(Node* left, Node* right, Lexer::TokenType operation)
-        : Node(BinaryOperation)
+        : Node(servedType())
         , m_left(left)
         , m_right(right)
         , m_operation(operation)
@@ -28,6 +28,8 @@ public:
     Node* leftChild() const { return m_left; }
     Node* rightChild() const { return m_right; }
     Lexer::TokenType operation() const { return m_operation; }
+
+    static NodeType servedType() { return BinaryOperation; }
 
 private:
     Node* m_left;

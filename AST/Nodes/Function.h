@@ -9,12 +9,12 @@ namespace oneCC::AST {
 class FunctionNode : public Node {
 public:
     FunctionNode()
-        : Node(Function)
+        : Node(servedType())
     {
     }
 
     FunctionNode(Lexer::TokenType type, const std::string& name, const std::vector<Node*>& arguments, Node* statement)
-        : Node(Function)
+        : Node(servedType())
         , m_type(type)
         , m_name(name)
         , m_arguments(arguments)
@@ -23,7 +23,7 @@ public:
     }
 
     FunctionNode(Lexer::TokenType type, const std::string& name, std::vector<Node*>&& arguments, Node* statement)
-        : Node(Function)
+        : Node(servedType())
         , m_type(type)
         , m_name(name)
         , m_arguments(std::move(arguments))
@@ -42,6 +42,8 @@ public:
     const std::string& name() const { return m_name; }
     Node* statement() const { return m_statement; }
     const std::vector<Node*>& arguments() const { return m_arguments; }
+
+    static NodeType servedType() { return Function; }
 
 private:
     Lexer::TokenType m_type {};

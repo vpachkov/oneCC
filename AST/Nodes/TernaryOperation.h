@@ -5,12 +5,12 @@ namespace oneCC::AST {
 class TernaryOperationNode : public Node {
 public:
     TernaryOperationNode()
-        : Node(TernaryOperation)
+        : Node(servedType())
     {
     }
     
     TernaryOperationNode(Node* left, Node* middle, Node* right, Lexer::TokenType operation)
-        : Node(TernaryOperation)
+        : Node(servedType())
         , m_left(left)
         , m_middle(middle)
         , m_right(right)
@@ -30,6 +30,8 @@ public:
     Node* middleChild() const { return m_middle; }
     Node* rightChild() const { return m_right; }
     const Lexer::TokenType& operation() const { return m_operation; }
+
+    static NodeType servedType() { return TernaryOperation; }
 
 private:
     Node* m_left;
