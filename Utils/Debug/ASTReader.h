@@ -1,16 +1,5 @@
 #pragma once
-#include "../../AST/ASTNode.h"
-#include "../../AST/Nodes/BinaryOperation.h"
-#include "../../AST/Nodes/Identifier.h"
-#include "../../AST/Nodes/IntConst.h"
-#include "../../AST/Nodes/TernaryOperation.h"
-#include "../../AST/Nodes/BlockStatement.h"
-#include "../../AST/Nodes/Program.h"
-#include "../../AST/Nodes/ReturnStatement.h"
-#include "../../AST/Nodes/Function.h"
-#include "../../AST/Nodes/FunctionArgument.h"
-#include "../../AST/Nodes/FunctionCall.h"
-#include "../../AST/Nodes/Type.h"
+#include "../../AST/AbstractAST.h"
 #include "../../Lexer/Token.h"
 #include <cstdint>
 #include <iostream>
@@ -18,7 +7,7 @@
 
 namespace oneCC::ASTUtils {
 
-class Visualizer {
+class Visualizer final : public AST::AbstractAST {
 public:
     Visualizer()
         : m_saveTo("debug/astViz/") {};
@@ -32,40 +21,47 @@ public:
 private:
     void startVisitingTree(AST::Node* node);
 
-    int visitNode(AST::Node* a);
-    int visitNode(AST::BinaryOperationNode* a);
-    int visitNode(AST::TernaryOperationNode* a);
-    int visitNode(AST::TypeNode* a);
-    int visitNode(AST::IdentifierNode* a);
+    inline void increaseLevel() { m_level++; }
+    inline void decreaseLevel() { m_level--; }
+    inline int tin()
+    {
+        m_labels.push_back("not set");
+        m_children.push_back(std::vector<int>());
+        return ++m_tin;
+    }
 
-    int visitNode(AST::BlockStatementNode* a);
-    int visitNode(AST::ReturnStatementNode* a);
+    void pushTin(int tin);
+    std::vector<int> popChildrenTins();
 
-    int visitNode(AST::FunctionNode* a);
-    int visitNode(AST::FunctionArgumentNode* a);
-    int visitNode(AST::FunctionCallNode* a);
-
-    int visitNode(AST::ProgramNode* a);
-
-    int visitNode(AST::IntConstNode* a);
+    // From AST::AbstractAST
+    using AST::AbstractAST::visitNode;
+    void visitNode(AST::BinaryOperationNode* a) override;
+    void visitNode(AST::TernaryOperationNode* a) override;
+    void visitNode(AST::TypeNode* a) override;
+    void visitNode(AST::IdentifierNode* a) override;
+    void visitNode(AST::BlockStatementNode* a) override;
+    void visitNode(AST::ReturnStatementNode* a) override;
+    void visitNode(AST::FunctionNode* a) override;
+    void visitNode(AST::FunctionArgumentNode* a) override;
+    void visitNode(AST::FunctionCallNode* a) override;
+    void visitNode(AST::ProgramNode* a) override;
+    void visitNode(AST::IntConstNode* a) override;
 
     std::string toText(AST::BinaryOperationNode*);
     std::string toText(AST::TernaryOperationNode*);
     std::string toText(AST::TypeNode*);
     std::string toText(AST::IdentifierNode*);
-
     std::string toText(AST::BlockStatementNode*);
     std::string toText(AST::ReturnStatementNode*);
-
     std::string toText(AST::FunctionNode*);
     std::string toText(AST::FunctionArgumentNode*);
     std::string toText(AST::FunctionCallNode*);
-
     std::string toText(AST::ProgramNode*);
-
     std::string toText(AST::IntConstNode*);
 
-    int m_tin;
+    int m_tin { -1 };
+    int m_level { 0 };
+    std::vector<std::pair<int, int>> m_childrenStack;
     std::vector<std::vector<int>> m_children;
     std::vector<std::string> m_labels;
     std::string m_saveTo;

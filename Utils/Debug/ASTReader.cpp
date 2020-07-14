@@ -1,4 +1,5 @@
 #include "ASTReader.h"
+#include <cassert>
 #include <fstream>
 #include <string>
 #include <time.h>
@@ -35,10 +36,8 @@ void Visualizer::genDotDescriptor(AST::Node* node, std::string filename)
 {
     startVisitingTree(node);
 
-    if (m_tin == -1) {
-        std::cout << "something went wrong\n";
-        return;
-    }
+    assert(m_tin != -1);
+    assert(m_level == 0);
 
     std::ofstream file;
     file.open(filename);
@@ -78,69 +77,52 @@ void Visualizer::genTreePng(AST::Node* node)
     m_children.clear();
 }
 
-// Node to text
+void Visualizer::pushTin(int tin)
+{
+    m_childrenStack.push_back(std::make_pair(m_level, tin));
+}
 
+std::vector<int> Visualizer::popChildrenTins()
+{
+    std::vector<int> res;
+    while (!m_childrenStack.empty()) {
+        if (m_childrenStack.back().first == m_level + 1) {
+            res.push_back(m_childrenStack.back().second);
+            m_childrenStack.pop_back();
+        } else {
+            break;
+        }
+    }
+    return res;
+}
+
+// Warning: If you want ot create a reader of new node, please, use the same
+// structure as used in existed visitNode, overwise this could break the whole
+// reader, since it works on stack, and if won't push or pop, you can get the
+// wrong result.
 void Visualizer::startVisitingTree(AST::Node* node)
 {
     m_tin = -1;
+    m_level = 0;
     m_labels.clear();
     m_children.clear();
 
     visitNode(node);
 }
 
-// It tries to convert the node into diverted type, if it's possible and leave the function.
-#define tryConvertTo(x, y)                                                                          \
-    if (node->type() == y) {                                                                        \
-        auto* ptr = dynamic_cast<x*>(node);                                                         \
-        if (ptr) {                                                                                  \
-            return visitNode(ptr);                                                                  \
-        }                                                                                           \
-        std::cout << "\nError: dynamic_cast can't convert, but type shows that it's possible!!!\n"; \
-    }
-
-// Do NOT change @node param name since it's used in define (which is upper).
-int Visualizer::visitNode(AST::Node* node)
+void Visualizer::visitNode(AST::BinaryOperationNode* node)
 {
-    if (!node) {
-        std::cout << "The ast has a null ptr\n";
-        return 0;
-    }
-    
-    // TODO: Work on define, too many params now.
-    tryConvertTo(AST::IntConstNode, AST::NodeType::Const);
+    increaseLevel();
+    int myTin = tin();
 
-    tryConvertTo(AST::BinaryOperationNode, AST::NodeType::BinaryOperation);
-    tryConvertTo(AST::TernaryOperationNode, AST::NodeType::TernaryOperation);
+    visitNode(node->leftChild());
+    visitNode(node->rightChild());
 
-    tryConvertTo(AST::TypeNode, AST::NodeType::Type);
-    tryConvertTo(AST::IdentifierNode, AST::NodeType::Identifier);
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
 
-    tryConvertTo(AST::BlockStatementNode, AST::NodeType::BlockStatement);
-    tryConvertTo(AST::ReturnStatementNode, AST::NodeType::ReturnStatement);
-
-    tryConvertTo(AST::FunctionNode, AST::NodeType::Function);
-    tryConvertTo(AST::FunctionArgumentNode, AST::NodeType::FunctionArgument);
-    tryConvertTo(AST::FunctionCallNode, AST::NodeType::FunctionCallExpression);
-
-    tryConvertTo(AST::ProgramNode, AST::NodeType::Program);
-    return -1; // Means no translation for a node found.
-}
-
-int Visualizer::visitNode(AST::BinaryOperationNode* node)
-{
-    int myTin = ++m_tin;
-
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
-
-    int leftTin = visitNode(node->leftChild());
-    int rightTin = visitNode(node->rightChild());
-
-    m_children[myTin].push_back(leftTin);
-    m_children[myTin].push_back(rightTin);
-
-    return myTin;
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::BinaryOperationNode* node)
@@ -150,22 +132,20 @@ std::string Visualizer::toText(AST::BinaryOperationNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::TernaryOperationNode* node)
+void Visualizer::visitNode(AST::TernaryOperationNode* node)
 {
-    int myTin = ++m_tin;
+    increaseLevel();
+    int myTin = tin();
 
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
+    visitNode(node->leftChild());
+    visitNode(node->middleChild());
+    visitNode(node->rightChild());
 
-    int leftTin  = visitNode(node->leftChild());
-    int midTin   = visitNode(node->middleChild());
-    int rightTin = visitNode(node->rightChild());
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
 
-    m_children[myTin].push_back(leftTin);
-    m_children[myTin].push_back(midTin);
-    m_children[myTin].push_back(rightTin);
-
-    return myTin;
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::TernaryOperationNode* node)
@@ -174,14 +154,16 @@ std::string Visualizer::toText(AST::TernaryOperationNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::TypeNode* node)
+void Visualizer::visitNode(AST::TypeNode* node)
 {
-    int myTin = ++m_tin;
+    increaseLevel();
+    int myTin = tin();
 
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
-    
-    return myTin;
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
+
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::TypeNode* node)
@@ -191,14 +173,16 @@ std::string Visualizer::toText(AST::TypeNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::IdentifierNode* node)
+void Visualizer::visitNode(AST::IdentifierNode* node)
 {
-    int myTin = ++m_tin;
+    increaseLevel();
+    int myTin = tin();
 
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
-    
-    return myTin;
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
+
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::IdentifierNode* node)
@@ -208,24 +192,20 @@ std::string Visualizer::toText(AST::IdentifierNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::BlockStatementNode* node)
+void Visualizer::visitNode(AST::BlockStatementNode* node)
 {
-    int myTin = ++m_tin;
-
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
-
-    std::vector<int>tmpChildren;
+    increaseLevel();
+    int myTin = tin();
 
     for (auto* statment : node->statements()) {
-        tmpChildren.push_back(visitNode(statment));
-    }
-    
-    for (auto i : tmpChildren) {
-        m_children[myTin].push_back(i);
+        visitNode(statment);
     }
 
-    return myTin;
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
+
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::BlockStatementNode* node)
@@ -234,17 +214,18 @@ std::string Visualizer::toText(AST::BlockStatementNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::ReturnStatementNode* node)
+void Visualizer::visitNode(AST::ReturnStatementNode* node)
 {
-    int myTin = ++m_tin;
+    increaseLevel();
+    int myTin = tin();
 
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
+    visitNode(node->returnedExpression());
 
-    int childTin = visitNode(node->returnedExpression());
-    m_children[myTin].push_back(childTin);
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
 
-    return myTin;
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::ReturnStatementNode* node)
@@ -253,26 +234,21 @@ std::string Visualizer::toText(AST::ReturnStatementNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::FunctionNode* node)
+void Visualizer::visitNode(AST::FunctionNode* node)
 {
-    int myTin = ++m_tin;
+    increaseLevel();
+    int myTin = tin();
 
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
-
-    std::vector<int>argsTin;
-
-    int statementTin = visitNode(node->statement());
+    visitNode(node->statement());
     for (auto* arg : node->arguments()) {
-        argsTin.push_back(visitNode(arg));
+        visitNode(arg);
     }
-    
-    for (auto i : argsTin) {
-        m_children[myTin].push_back(i);
-    }
-    m_children[myTin].push_back(statementTin);
 
-    return myTin;
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
+
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::FunctionNode* node)
@@ -284,14 +260,16 @@ std::string Visualizer::toText(AST::FunctionNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::FunctionArgumentNode* node)
+void Visualizer::visitNode(AST::FunctionArgumentNode* node)
 {
-    int myTin = ++m_tin;
+    increaseLevel();
+    int myTin = tin();
 
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
 
-    return myTin;
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::FunctionArgumentNode* node)
@@ -303,24 +281,20 @@ std::string Visualizer::toText(AST::FunctionArgumentNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::FunctionCallNode* node)
+void Visualizer::visitNode(AST::FunctionCallNode* node)
 {
-    int myTin = ++m_tin;
-
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
-
-    std::vector<int>argsTin;
+    increaseLevel();
+    int myTin = tin();
 
     for (auto* arg : node->arguments()) {
-        argsTin.push_back(visitNode(arg));
-    }
-    
-    for (auto i : argsTin) {
-        m_children[myTin].push_back(i);
+        visitNode(arg);
     }
 
-    return myTin;
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
+
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::FunctionCallNode* node)
@@ -330,25 +304,20 @@ std::string Visualizer::toText(AST::FunctionCallNode* node)
     return res;
 }
 
-
-int Visualizer::visitNode(AST::ProgramNode* node)
+void Visualizer::visitNode(AST::ProgramNode* node)
 {
-    int myTin = ++m_tin;
-
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
-
-    std::vector<int>funcsTin;
+    increaseLevel();
+    int myTin = tin();
 
     for (auto* arg : node->funcs()) {
-        funcsTin.push_back(visitNode(arg));
+        visitNode(arg);
     }
-    
-    for (auto i : funcsTin) {
-        m_children[myTin].push_back(i);
-    }
-    
-    return myTin;
+
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
+
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::ProgramNode* node)
@@ -357,14 +326,16 @@ std::string Visualizer::toText(AST::ProgramNode* node)
     return res;
 }
 
-int Visualizer::visitNode(AST::IntConstNode* node)
+void Visualizer::visitNode(AST::IntConstNode* node)
 {
-    int myTin = ++m_tin;
+    increaseLevel();
+    int myTin = tin();
 
-    m_labels.push_back(toText(node));
-    m_children.push_back(std::vector<int>());
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
 
-    return myTin;
+    pushTin(myTin);
+    decreaseLevel();
 }
 
 std::string Visualizer::toText(AST::IntConstNode* node)
