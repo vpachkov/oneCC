@@ -40,14 +40,23 @@ std::string Token::typeToString(const Token& tt)
         case Bigger:        return "Bigger";
         case Plus:      return "Plus";
         case Multiply:      return "Multiply";
+        case Assign:      return "Assign";
+        case EndOfStatement:      return "EOS";
 
         // Brackets
         case OpenRoundBracket:      return "OpenRoundBracket";
         case CloseRoundBracket:     return  "CloseRoundBracket";
+        case OpenCurlyBracket:      return "OpenCurlyBracket";
+        case CloseCurlyBracket:      return "CloseCurlyBracket";
+
+        // Punctuation
+        case Comma:      return "Comma";
 
         // Others
         case EndOfFile:     return "EOF";
         case Error:         return "ERR";
+        case Return:         return "Return";
+
         default:            return "[Unknown]";
     }
 }

@@ -60,7 +60,7 @@ public:
     }
 
     virtual void visitNode(BinaryOperationNode*) {}
-    virtual void visitNode(TernaryOperationNode*) {} 
+    virtual void visitNode(TernaryOperationNode*) {}
     virtual void visitNode(TypeNode*) {}
     virtual void visitNode(IdentifierNode*) {}
 
