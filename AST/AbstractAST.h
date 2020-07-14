@@ -59,21 +59,21 @@ public:
         convertASTNode(AST::ProgramNode);
     }
 
-    virtual void visitNode(BinaryOperationNode*) = 0;
-    virtual void visitNode(TernaryOperationNode*) = 0;
-    virtual void visitNode(TypeNode*) = 0;
-    virtual void visitNode(IdentifierNode*) = 0;
+    virtual void visitNode(BinaryOperationNode*) {}
+    virtual void visitNode(TernaryOperationNode*) {} 
+    virtual void visitNode(TypeNode*) {}
+    virtual void visitNode(IdentifierNode*) {}
 
-    virtual void visitNode(BlockStatementNode*) = 0;
-    virtual void visitNode(ReturnStatementNode*) = 0;
+    virtual void visitNode(BlockStatementNode*) {}
+    virtual void visitNode(ReturnStatementNode*) {}
 
-    virtual void visitNode(FunctionNode*) = 0;
-    virtual void visitNode(FunctionArgumentNode*) = 0;
-    virtual void visitNode(FunctionCallNode*) = 0;
+    virtual void visitNode(FunctionNode*) {}
+    virtual void visitNode(FunctionArgumentNode*) {}
+    virtual void visitNode(FunctionCallNode*) {}
 
-    virtual void visitNode(ProgramNode*) = 0;
+    virtual void visitNode(ProgramNode*) {}
 
-    virtual void visitNode(IntConstNode*) = 0;
+    virtual void visitNode(IntConstNode*) {}
 
     void setRoot(Node* root)
     {
