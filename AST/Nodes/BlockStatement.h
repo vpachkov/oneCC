@@ -8,18 +8,18 @@ namespace oneCC::AST {
 class BlockStatementNode : public Node {
 public:
     BlockStatementNode()
-        : Node(BlockStatement)
+        : Node(servedType())
     {
     }
 
     explicit BlockStatementNode(const std::vector<Node*>& statements)
-        : Node(BlockStatement)
+        : Node(servedType())
         , m_statements(statements)
     {
     }
     
     explicit BlockStatementNode(std::vector<Node*>&& statements)
-        : Node(BlockStatement)
+        : Node(servedType())
         , m_statements(std::move(statements))
     {
     }
@@ -27,6 +27,8 @@ public:
     ~BlockStatementNode() override = default;
 
     const std::vector<Node*>& statements() const { return m_statements; }
+
+    static NodeType servedType() { return BlockStatement; }
 
 private:
     std::vector<Node*> m_statements {};

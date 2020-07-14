@@ -7,18 +7,18 @@ namespace oneCC::AST {
 class IdentifierNode : public Node {
 public:
     IdentifierNode()
-        : Node(Identifier)
+        : Node(servedType())
     {
     }
 
     explicit IdentifierNode(const std::string& value)
-        : Node(Identifier)
+        : Node(servedType())
         , m_value(value)
     {
     }
 
     explicit IdentifierNode(std::string&& value)
-        : Node(Identifier)
+        : Node(servedType())
         , m_value(std::move(value))
     {
     }
@@ -26,6 +26,8 @@ public:
     ~IdentifierNode() override = default;
 
     const std::string& value() const { return m_value; }
+
+    static NodeType servedType() { return Identifier; }
 
 private:
     std::string m_value {};

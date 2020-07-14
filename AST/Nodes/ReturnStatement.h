@@ -8,12 +8,12 @@ namespace oneCC::AST {
 class ReturnStatementNode : public Node {
 public:
     ReturnStatementNode()
-        : Node(ReturnStatement)
+        : Node(servedType())
     {
     }
     
     explicit ReturnStatementNode(Node* returnedExpression)
-        : Node(ReturnStatement)
+        : Node(servedType())
         , m_returnedExpression(returnedExpression)
     {
     }
@@ -21,6 +21,8 @@ public:
     ~ReturnStatementNode() override = default;
 
     Node* returnedExpression() const { return m_returnedExpression; }
+
+    static NodeType servedType() { return ReturnStatement; }
 
 private:
     Node* m_returnedExpression;
