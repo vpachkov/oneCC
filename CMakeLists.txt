@@ -29,9 +29,8 @@ add_executable(
         Tests/Lexer/LexerTest.cpp
 #        Tests/main.cpp
         main.cpp
-        AST/Nodes/TernaryOperaion.h AST/Nodes/Identifier.h AST/Nodes/Type.h
         Utils/Debug/ASTReader.cpp
-        AST/Nodes/Function.h AST/Nodes/IfStatement.h AST/Nodes/WhileStatement.h AST/Nodes/ReturnStatement.h AST/Nodes/BlockStatement.h AST/Nodes/FunctionCall.h)
+        AST/Nodes/Function.h AST/Nodes/IfStatement.h AST/Nodes/WhileStatement.h AST/Nodes/ReturnStatement.h AST/Nodes/BlockStatement.h AST/Nodes/FunctionCall.h SemanticAnalyzer/SemanticAnalyzer.cpp SemanticAnalyzer/SemanticAnalyzer.h SemanticAnalyzer/FunctionCollector/FunctionCollector.h)
 
 file(
     COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/assign_expression.txt
@@ -39,6 +38,11 @@ file(
 )
 file(
     COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/lexer.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Tests/Lexer/Data/
+)
+
+file(
+    COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/example.txt
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Tests/Lexer/Data/
 )
 

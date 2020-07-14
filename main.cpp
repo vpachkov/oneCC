@@ -1,6 +1,7 @@
 #include "Lexer/Lexer.h"
 #include "Parser/Parser.h"
 #include "Utils/Debug/ASTReader.h"
+#include "SemanticAnalyzer/FunctionCollector/FunctionCollector.h"
 #include "Utils/Utils.h"
 #include <iostream>
 #include <vector>
@@ -13,7 +14,7 @@ inline bool exists_test0(const std::string& name)
 
 int main()
 {
-    auto ifstreamPtr = std::make_unique<std::ifstream>("Tests/Lexer/Data/assign_expression.txt");
+    auto ifstreamPtr = std::make_unique<std::ifstream>("Tests/Lexer/Data/example.txt");
     auto lexer = oneCC::Lexer::Lexer(std::move(ifstreamPtr));
 
     try {
@@ -32,7 +33,7 @@ int main()
         }
     }
     std::cout << "\n\n";
-    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("Tests/Lexer/Data/assign_expression.txt");
+    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("Tests/Lexer/Data/example.txt");
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
 
     //    try {
@@ -60,6 +61,8 @@ int main()
         std::cout << "\n" << e.what() << "\n";
         return 1;
     }
+
+    auto a = oneCC::SemanticAnalyzer::FunctionCollector().getFunctions(root);
 
     std::cout << "Parsed\n";
     std::cout.flush();
