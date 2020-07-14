@@ -116,7 +116,7 @@ AST::Node* Parser::factor()
         return factor;
     }
 
-    if (token.type() == Lexer::TokenType::Identifier && lookupToken(1).type() == Lexer::TokenType::OpenRoundBracket){
+    if (token.type() == Lexer::TokenType::Identifier && lookupToken(2).type() == Lexer::TokenType::OpenRoundBracket){
         return functionCall();
     }
 
@@ -365,6 +365,7 @@ AST::Node* Parser::program()
         checkNode(func);
         funcs.push_back(func);
     }
+
     return new AST::ProgramNode(funcs);
 }
 
