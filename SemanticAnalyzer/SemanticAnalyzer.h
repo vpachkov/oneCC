@@ -16,18 +16,17 @@ public:
     bool processTree(AST::Node* program);
 
 private:
-    void startVisitingTree(AST::Node* node);
 
     // From AST::AbstractAST
     using AST::AbstractAST::visitNode;
     void visitNode(AST::BinaryOperationNode* a) override;
     void visitNode(AST::TernaryOperationNode* a) override;
-    void visitNode(AST::TypeNode* a) override;
+//    void visitNode(AST::TypeNode* a) override;
     void visitNode(AST::IdentifierNode* a) override;
     void visitNode(AST::BlockStatementNode* a) override;
-    void visitNode(AST::ReturnStatementNode* a) override;
+//    void visitNode(AST::ReturnStatementNode* a) override;
     void visitNode(AST::FunctionNode* a) override;
-    void visitNode(AST::FunctionArgumentNode* a) override;
+//    void visitNode(AST::FunctionArgumentNode* a) override;
     void visitNode(AST::FunctionCallNode* a) override;
     void visitNode(AST::ProgramNode* a) override;
     // void visitNode(AST::IntConstNode* a) override;
@@ -36,6 +35,6 @@ private:
     std::map<std::string, AST::FunctionNode*> m_functions {};
     std::stack<AST::Node*> m_identifiers {};
     Scoper m_scoper {};
-    bool m_errorFlag = false;
+    bool m_errorFlag { false };
 };
 }
