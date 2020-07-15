@@ -31,6 +31,9 @@ private:
     void visitNode(AST::ProgramNode* a) override;
     // void visitNode(AST::IntConstNode* a) override;
 
+    bool isConvertationCorrect(Lexer::TokenType a, Lexer::TokenType b) {
+        return true;
+    }
 
     std::map<std::string, AST::FunctionNode*> m_functions {};
     std::stack<AST::Node*> m_identifiers {};

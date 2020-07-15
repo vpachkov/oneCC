@@ -55,7 +55,7 @@ void SemanticAnalyzer::visitNode(AST::BinaryOperationNode* binaryOperation) {
     visitNode(binaryOperation->leftChild());
     visitNode(binaryOperation->rightChild());
 
-    // TODO: support implicit conversion (int * float, int / int)
+    // TODO: support implicit conversion (int * float, int / int), as soon as we add more types
     switch (binaryOperation->operation()) {
         case Lexer::TokenType::Equal: {
             binaryOperation->setExpressionType(Lexer::TokenType::TypeBoolean);
@@ -80,26 +80,44 @@ void SemanticAnalyzer::visitNode(AST::IdentifierNode* identifier) {
 void SemanticAnalyzer::visitNode(AST::FunctionCallNode* functionCall) {
     if (m_functions.count(functionCall->name()) == 0) {
         std::cout << "Function " << functionCall->name() << " isn\'t defined" << std::endl;
+        m_errorFlag = true;
         return;
     }
     auto definedFunction = m_functions[functionCall->name()];
     if (definedFunction->arguments().size() < functionCall->arguments().size()) {
-        std::cout << "Too much arguments for function " << functionCall->name() << std::endl;
+        std::cout << functionCall->name() << " requires " << definedFunction->arguments().size()
+                  << " arguments, given " << functionCall->arguments().size() << std::endl;
+        m_errorFlag = true;
+        return;
     }
 
-    // TODO: here goes checking for type and existence each argument in the scope
+    // Here goes checking for type and existence each argument in the scope
+    int index = 0;
     for (auto* arg: functionCall->arguments()) {
         visitNode(arg);
-        auto argName = reinterpret_cast<AST::FunctionArgumentNode*>(arg)->name(); // TODO: expression here
-        auto* var = m_scoper.findVar(argName);
-        if (!var) {
-            std::cout << "Variable " << argName << " referenced before assignment" << std::endl;
-            m_errorFlag = true;
-            return;
+        auto argType = static_cast<AST::Expression*>(arg)->expressionType(); // TODO: expression here
+        auto definedFunctionArgType = reinterpret_cast<AST::FunctionArgumentNode*>(definedFunction->arguments()[index])->type();
+        if (definedFunctionArgType != argType) {
+            if (!isConvertationCorrect(argType, definedFunctionArgType)) {
+                std::cout << "Convertation";
+                m_errorFlag = true;
+                return;
+            }
         }
-        // TODO: all expressions should be inherited from expression class with type field, then check this way
-        // if (var->type() != currentArg
+        index++;
     }
+
+    // TODO: support arguments with default value, then uncomment
+//    while (index < definedFunction->arguments().size()) {
+//        if (!reinterpret_cast<AST::FunctionArgumentNode*>(definedFunction->arguments()[index]).defaultExpression()){
+//            std::cout << functionCall->name() << " requires " << definedFunction->arguments().size()
+//                      << " arguments, given " << index << std::endl;
+//            m_errorFlag = true;
+//            return;
+//        }
+//    }
+
+    functionCall->setExpressionType(definedFunction->type());
 }
 
 }
