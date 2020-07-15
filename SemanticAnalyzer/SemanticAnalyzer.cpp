@@ -40,7 +40,7 @@ void SemanticAnalyzer::visitNode(AST::BlockStatementNode* blockStatement) {
 void SemanticAnalyzer::visitNode(AST::TernaryOperationNode* ternaryOperation) {
     if (ternaryOperation->operation() == Lexer::TokenType::Assign) {
         visitNode(ternaryOperation->rightChild());
-        reinterpret_cast<AST::IdentifierNode*>(ternaryOperation->middleChild())->setType(reinterpret_cast<AST::TypeNode*>(ternaryOperation->leftChild())->type());
+        reinterpret_cast<AST::IdentifierNode*>(ternaryOperation->middleChild())->setExpressionType(reinterpret_cast<AST::TypeNode*>(ternaryOperation->leftChild())->type());
         if (!m_scoper.addNode(reinterpret_cast<AST::IdentifierNode*>(ternaryOperation->middleChild()))) {
             //TODO: output more information
             std::cout << "Redefinition of variable" << std::endl;
@@ -58,12 +58,12 @@ void SemanticAnalyzer::visitNode(AST::BinaryOperationNode* binaryOperation) {
     // TODO: support implicit conversion (int * float, int / int)
     switch (binaryOperation->operation()) {
         case Lexer::TokenType::Equal: {
-            binaryOperation->setType(Lexer::TokenType::TypeBoolean);
+            binaryOperation->setExpressionType(Lexer::TokenType::TypeBoolean);
             break;
         }
         case Lexer::TokenType::Plus:
         case Lexer::TokenType::Minus:
-        case Lexer::TokenType::Multiply: binaryOperation->setType(Lexer::TokenType::TypeInt);
+        case Lexer::TokenType::Multiply: binaryOperation->setExpressionType(Lexer::TokenType::TypeInt);
         default: break;
     }
 }

@@ -22,7 +22,7 @@ public:
 
 private:
     std::vector<std::pair<AST::IdentifierNode*, int>> m_vars {};
-    int m_scopeLevel = 0;
+    int m_scopeLevel { 0 };
 };
 
 }
