@@ -33,6 +33,7 @@ enum TokenType {
 
     TypeInt,
     TypeFloat,
+    TypeBoolean,
 
     // Brackets
     OpenRoundBracket,
