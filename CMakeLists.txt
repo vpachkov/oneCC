@@ -30,7 +30,7 @@ add_executable(
 #        Tests/main.cpp
         main.cpp
         Utils/Debug/ASTReader.cpp
-        AST/Nodes/Function.h AST/Nodes/IfStatement.h AST/Nodes/WhileStatement.h AST/Nodes/ReturnStatement.h AST/Nodes/BlockStatement.h AST/Nodes/FunctionCall.h SemanticAnalyzer/SemanticAnalyzer.cpp SemanticAnalyzer/SemanticAnalyzer.h SemanticAnalyzer/FunctionCollector/FunctionCollector.h)
+        AST/Nodes/Function.h AST/Nodes/IfStatement.h AST/Nodes/WhileStatement.h AST/Nodes/ReturnStatement.h AST/Nodes/BlockStatement.h AST/Nodes/FunctionCall.h SemanticAnalyzer/SemanticAnalyzer.cpp SemanticAnalyzer/SemanticAnalyzer.h SemanticAnalyzer/FunctionCollector/FunctionCollector.h SemanticAnalyzer/Scoper/Scoper.cpp SemanticAnalyzer/Scoper/Scoper.h)
 
 file(
     COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/assign_expression.txt

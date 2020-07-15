@@ -11,7 +11,7 @@ namespace oneCC::SemanticAnalyzer {
 class FunctionCollector : public AST::AbstractAST {
 public:
     FunctionCollector() = default;
-    std::map<std::string, AST::Node*> getFunctions(AST::Node* program){
+    std::map<std::string, AST::FunctionNode*>& getFunctions(AST::Node* program){
         FunctionCollector::visitNode(program);
         return m_functionMap;
     }
@@ -19,6 +19,7 @@ private:
     // From AST::AbstractAST
     using AST::AbstractAST::visitNode;
     void visitNode(AST::FunctionNode* a) override {
+        // TODO: 1) support function overloading (may be use std::vector here)
         m_functionMap[a->name()] = a;
     }
     void visitNode(AST::ProgramNode* a) override {
@@ -27,7 +28,7 @@ private:
         }
     }
 
-    std::map<std::string, AST::Node*> m_functionMap;
+    std::map<std::string, AST::FunctionNode*> m_functionMap;
 };
 
 }
