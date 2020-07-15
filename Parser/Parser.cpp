@@ -314,6 +314,7 @@ AST::Node* Parser::statement()
 }
 
 AST::Node* Parser::declareFunctionArguments() {
+    // TODO: support arguments with default value
     auto type = lookupToken();
     eatToken(Lexer::TokenType::TypeInt);
     auto varName = lookupToken();
