@@ -19,7 +19,7 @@
 #ifndef convertASTNode
 // It tries to convert the node into diverted type, if it's possible and leave the function.
 #define convertASTNode(x)                       \
-    if (node->type() == x::servedType()) {      \
+    if (node->nodeType() == x::servedType()) {      \
         auto* ptr = reinterpret_cast<x*>(node); \
         visitNode(ptr);                         \
         return;                                 \

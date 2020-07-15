@@ -29,13 +29,13 @@ enum NodeType {
 
 class Node {
 public:
-    const NodeType& type() const { return m_type; }
+    const NodeType& nodeType() const { return m_nodeType; }
     virtual ~Node() = default;
 protected:
-    Node(NodeType type) : m_type(type) {}
+    Node(NodeType type) : m_nodeType(type) {}
 
 private:
-    NodeType m_type;
+    NodeType m_nodeType;
 };
 
 }
