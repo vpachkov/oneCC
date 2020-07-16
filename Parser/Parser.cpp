@@ -209,6 +209,18 @@ AST::Node* Parser::createInt()
     return new AST::TernaryOperationNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), parsedExpr, Lexer::TokenType::Assign);
 }
 
+AST::Node* Parser::reassignInt()
+{
+    auto identifier = lookupToken();
+    eatToken(Lexer::TokenType::Identifier);
+    eatToken(Lexer::TokenType::Assign);
+    auto* parsedExpr = expression();
+    checkNode(parsedExpr);
+    eatToken(Lexer::TokenType::EndOfStatement);
+    return new AST::BinaryOperationNode(new AST::IdentifierNode(identifier.lexeme()), parsedExpr, Lexer::TokenType::Assign);
+
+}
+
 AST::Node* Parser::ifStatement()
 {
     auto ifToken = lookupToken();
@@ -299,12 +311,14 @@ AST::Node* Parser::statement()
     if (isType(nextToken)) {
         // Since we are in statment, we expect only var delcs.
         return createInt();
+    } else if (nextToken.type() == Lexer::TokenType::Identifier && lookupToken(1).type() == Lexer::TokenType::Assign) {
+        return reassignInt();
+    } else if (nextToken.type() == Lexer::TokenType::Identifier) {
+        return callFunctionStatement();
     } else if (nextToken.type() == Lexer::TokenType::OpenCurlyBracket) {
         return blockStatement();
     } else if (nextToken.type() == Lexer::TokenType::Return) {
         return returnStatement();
-    } else if (nextToken.type() == Lexer::TokenType::Identifier) {
-        return callFunctionStatement();
     } else if (nextToken.type() == Lexer::TokenType::If) {
          return ifStatement();
      } else if (nextToken.type() == Lexer::TokenType::While) {
