@@ -7,5 +7,6 @@ int main (int kek, int lol)
 {
     int a = 2;
     int b = 5;
+    b = 3;
     return func(a, b);
 }
