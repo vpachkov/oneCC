@@ -221,7 +221,7 @@ AST::Node* Parser::reassignInt()
 
 }
 
-AST::Node* Parser::ifStatement()
+AST::Node* Parser::ifStatement(AST::Node* function)
 {
     auto ifToken = lookupToken();
 
@@ -235,11 +235,11 @@ AST::Node* Parser::ifStatement()
         checkNode(expr);
         eatToken(Lexer::TokenType::CloseRoundBracket);
 
-        auto trueStatement = statement();
+        auto trueStatement = statement(function);
 
         auto elseToken = lookupToken();
         if (elseToken.type() == Lexer::TokenType::Else) {
-            auto falseStatement = statement();
+            auto falseStatement = statement(function);
             return new AST::IfStatementNode(expr, trueStatement, falseStatement);
         }
         return new AST::IfStatementNode(expr, trueStatement, NULL);
@@ -248,7 +248,7 @@ AST::Node* Parser::ifStatement()
     return NULL;
 }
 
-AST::Node* Parser::whileStatement()
+AST::Node* Parser::whileStatement(AST::Node* function)
 {
     auto whileToken = lookupToken();
     if (whileToken.type() == Lexer::TokenType::While) {
@@ -261,7 +261,7 @@ AST::Node* Parser::whileStatement()
         eatToken(Lexer::TokenType::CloseRoundBracket);
         eatToken(Lexer::TokenType::OpenCurlyBracket);
 
-        auto stat = statement();
+        auto stat = statement(function);
 
         eatToken(Lexer::TokenType::CloseCurlyBracket);
 
@@ -271,14 +271,14 @@ AST::Node* Parser::whileStatement()
     return NULL;
 }
 
-AST::Node* Parser::blockStatement()
+AST::Node* Parser::blockStatement(AST::Node* function)
 {
     std::vector<AST::Node*> statements;
 
     eatToken(Lexer::TokenType::OpenCurlyBracket);
 
     while (lookupToken().type() != Lexer::TokenType::CloseCurlyBracket) {
-        auto* child = statement();
+        auto* child = statement(function);
         checkNode(child);
         statements.push_back(child);
     }
@@ -288,13 +288,13 @@ AST::Node* Parser::blockStatement()
     return new AST::BlockStatementNode(statements);
 }
 
-AST::Node* Parser::returnStatement()
+AST::Node* Parser::returnStatement(AST::Node* function)
 {
     // FIXME: may be used without return values (just return;)
     eatToken(Lexer::TokenType::Return);
     auto res = expression();
     eatToken(Lexer::TokenType::EndOfStatement);
-    return new AST::ReturnStatementNode(res);
+    return new AST::ReturnStatementNode(res, function);
 }
 
 AST::Node* Parser::callFunctionStatement()
@@ -304,7 +304,7 @@ AST::Node* Parser::callFunctionStatement()
     return funcCall;
 }
 
-AST::Node* Parser::statement()
+AST::Node* Parser::statement(AST::Node* function)
 {
     auto nextToken = lookupToken();
 
@@ -316,13 +316,13 @@ AST::Node* Parser::statement()
     } else if (nextToken.type() == Lexer::TokenType::Identifier) {
         return callFunctionStatement();
     } else if (nextToken.type() == Lexer::TokenType::OpenCurlyBracket) {
-        return blockStatement();
+        return blockStatement(function);
     } else if (nextToken.type() == Lexer::TokenType::Return) {
-        return returnStatement();
+        return returnStatement(function);
     } else if (nextToken.type() == Lexer::TokenType::If) {
-         return ifStatement();
+         return ifStatement(function);
      } else if (nextToken.type() == Lexer::TokenType::While) {
-         return whileStatement();
+         return whileStatement(function);
      }
     return NULL;
 }
@@ -372,9 +372,11 @@ AST::Node* Parser::defineFunction()
         // FIXME: Add support for function declaration
         return NULL;
     } else {
-        auto blockStat = blockStatement();
+        auto functionNode = new AST::FunctionNode(type.type(), funcName.lexeme(), arguments, NULL);
+        auto blockStat = blockStatement(functionNode);
         checkNode(blockStat);
-        return new AST::FunctionNode(type.type(), funcName.lexeme(), arguments, blockStat);
+        functionNode->setStatement(blockStat);
+        return functionNode;
     }
 }
 

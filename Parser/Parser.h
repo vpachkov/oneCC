@@ -30,12 +30,12 @@ private:
     AST::Node* expression();
     AST::Node* functionCall();
 
-    AST::Node* ifStatement();
-    AST::Node* whileStatement();
-    AST::Node* blockStatement();
-    AST::Node* returnStatement();
+    AST::Node* ifStatement(AST::Node* function=NULL);
+    AST::Node* whileStatement(AST::Node* function=NULL);
+    AST::Node* blockStatement(AST::Node* function=NULL);
+    AST::Node* returnStatement(AST::Node* function=NULL);
     AST::Node* callFunctionStatement();
-    AST::Node* statement();
+    AST::Node* statement(AST::Node* function=NULL);
 
     AST::Node* defineFunction();
     AST::Node* declareFunctionArguments();
