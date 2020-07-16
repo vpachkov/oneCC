@@ -2,6 +2,7 @@
 #include "Parser/Parser.h"
 #include "Utils/Debug/ASTReader.h"
 #include "SemanticAnalyzer/FunctionCollector/FunctionCollector.h"
+#include "SemanticAnalyzer/SemanticAnalyzer.h"
 #include "Utils/Utils.h"
 #include <iostream>
 #include <vector>
@@ -10,6 +11,15 @@ inline bool exists_test0(const std::string& name)
 {
     std::ifstream f(name.c_str());
     return f.good();
+}
+
+int kek(){
+    {
+        {
+            return 1;
+        }
+        return 1;
+    }
 }
 
 int main()
@@ -62,13 +72,13 @@ int main()
         return 1;
     }
 
-    auto a = oneCC::SemanticAnalyzer::FunctionCollector().getFunctions(root);
+    auto a = oneCC::SemanticAnalyzer::SemanticAnalyzer().processTree(root);
 
     std::cout << "Parsed\n";
     std::cout.flush();
 
-    auto viz = oneCC::ASTUtils::Visualizer();
-    viz.genTreePng(root);
+     // auto viz = oneCC::ASTUtils::Visualizer();
+     // viz.genTreePng(root);
 
     return 0;
 }
