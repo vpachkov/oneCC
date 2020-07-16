@@ -314,12 +314,18 @@ AST::Node* Parser::statement()
 }
 
 AST::Node* Parser::declareFunctionArguments() {
-    // TODO: support arguments with default value
     auto type = lookupToken();
     eatToken(Lexer::TokenType::TypeInt);
     auto varName = lookupToken();
     eatToken(Lexer::TokenType::Identifier);
-    return new AST::FunctionArgumentNode(type.type(), varName.lexeme());
+    //TODO: where's createInt()? Consider moving it back here
+
+    AST::Node* expr = NULL;
+    if (lookupToken().type() == Lexer::TokenType::Assign) {
+        eatToken(Lexer::TokenType::Assign);
+        expr = expression();
+    }
+    return new AST::FunctionArgumentNode(type.type(), varName.lexeme(), expr);
 }
 
 AST::Node* Parser::defineFunction()
