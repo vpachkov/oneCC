@@ -12,26 +12,26 @@ public:
     {
     }
 
-    ProgramNode(const std::vector<Node*>& funcs)
+    ProgramNode(const std::vector<Node*>& nodes)
         : Node(servedType())
-        , m_funcs(funcs)
+        , m_nodes(nodes)
     {
     }
 
-    ProgramNode(std::vector<Node*>&& funcs)
+    ProgramNode(std::vector<Node*>&& nodes)
         : Node(servedType())
-        , m_funcs(std::move(funcs))
+        , m_nodes(std::move(nodes))
     {
     }
 
     ~ProgramNode() override = default;
 
-    const std::vector<Node*>& funcs() const { return m_funcs; }
+    const std::vector<Node*>& nodes() const { return m_nodes; }
 
     static NodeType servedType() { return Program; }
 
 private:
-    std::vector<Node*> m_funcs {};
+    std::vector<Node*> m_nodes {};
 };
 
 }

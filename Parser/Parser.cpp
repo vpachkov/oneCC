@@ -311,7 +311,7 @@ AST::Node* Parser::statement()
     if (isType(nextToken)) {
         // Since we are in statment, we expect only var delcs.
         return createInt();
-    } else if (nextToken.type() == Lexer::TokenType::Identifier && lookupToken(1).type() == Lexer::TokenType::Assign) {
+    } else if (nextToken.type() == Lexer::TokenType::Identifier && lookupToken(2).type() == Lexer::TokenType::Assign) {
         return reassignInt();
     } else if (nextToken.type() == Lexer::TokenType::Identifier) {
         return callFunctionStatement();
@@ -380,14 +380,23 @@ AST::Node* Parser::defineFunction()
 
 AST::Node* Parser::program()
 {
-    std::vector<AST::Node*> funcs;
+    std::vector<AST::Node*> nodes;
     while (lookupToken().type() != Lexer::TokenType::EndOfFile) {
-        auto func = defineFunction();
-        checkNode(func);
-        funcs.push_back(func);
+        AST::Node* node = NULL;
+        if (isType(lookupToken().type())) {
+            if (lookupToken(3).type() == Lexer::TokenType::OpenRoundBracket) {
+                node = defineFunction();
+            } else {
+                node = createInt();
+            }
+        } else if (lookupToken().type() == Lexer::TokenType::Identifier) {
+            node = reassignInt();
+        }
+        checkNode(node);
+        nodes.push_back(node);
     }
 
-    return new AST::ProgramNode(funcs);
+    return new AST::ProgramNode(nodes);
 }
 
 // Entry point

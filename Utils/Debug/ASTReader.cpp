@@ -309,7 +309,7 @@ void Visualizer::visitNode(AST::ProgramNode* node)
     increaseLevel();
     int myTin = tin();
 
-    for (auto* arg : node->funcs()) {
+    for (auto* arg : node->nodes()) {
         visitNode(arg);
     }
 

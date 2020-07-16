@@ -2,6 +2,8 @@ int func (int a, int b, int c = 0) {
     return a + b;
 }
 
+int lol = func(1,2,3);
+
 // It a main func
 int main (int kek, int lol)
 {

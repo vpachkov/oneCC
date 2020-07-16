@@ -23,7 +23,7 @@ private:
         m_functionMap[a->name()] = a;
     }
     void visitNode(AST::ProgramNode* a) override {
-        for (auto* arg : a->funcs()) {
+        for (auto* arg : a->nodes()) {
             visitNode(arg);
         }
     }
