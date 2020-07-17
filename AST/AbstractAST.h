@@ -4,6 +4,7 @@
 #include "Nodes/BinaryOperation.h"
 #include "Nodes/BlockStatement.h"
 #include "Nodes/IfStatement.h"
+#include "Nodes/WhileStatement.h"
 #include "Nodes/Function.h"
 #include "Nodes/FunctionArgument.h"
 #include "Nodes/FunctionCall.h"
@@ -69,6 +70,7 @@ public:
     virtual void visitNode(BlockStatementNode*) {}
     virtual void visitNode(ReturnStatementNode*) {}
     virtual void visitNode(IfStatementNode*) {}
+    virtual void visitNode(WhileStatementNode*) {}
 
     virtual void visitNode(FunctionNode*) {}
     virtual void visitNode(FunctionArgumentNode*) {}
