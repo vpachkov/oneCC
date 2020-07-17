@@ -1,4 +1,4 @@
-int func (int a, int b, int c = 0) {
+int func(int a, int b, int c, int d = 0, int e) {
     return a + b;
 }
 
@@ -7,8 +7,7 @@ int lol = func(1,2,3);
 // It a main func
 int main (int kek, int lol)
 {
-    int a = 2;
+    int a = 1;
     int b = 5;
     b = 3;
-    return func(a, b);
 }
