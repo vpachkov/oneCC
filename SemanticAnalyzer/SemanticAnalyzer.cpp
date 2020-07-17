@@ -89,6 +89,21 @@ void SemanticAnalyzer::visitNode(AST::ReturnStatementNode* returnNode) {
     }
 }
 
+
+void SemanticAnalyzer::visitNode(AST::IfStatementNode* a) {
+    visitNode(a->expression());
+    assertCorrect();
+    if (!isConvertationCorrect(reinterpret_cast<AST::Expression*>(a->expression())->expressionType(), Lexer::TokenType::TypeBoolean)) {
+        //TODO: more information here
+        error("Convertation")
+    }
+    visitNode(a->trueStatement());
+    assertCorrect();
+    if (a->falseStatement()){
+        visitNode(a->falseStatement());
+    }
+}
+
 void SemanticAnalyzer::visitNode(AST::BinaryOperationNode* binaryOperation) {
     visitNode(binaryOperation->leftChild());
     assertCorrect();
@@ -112,7 +127,7 @@ void SemanticAnalyzer::visitNode(AST::BinaryOperationNode* binaryOperation) {
 void SemanticAnalyzer::visitNode(AST::IdentifierNode* identifier) {
     auto* var = m_scoper.findVar(identifier->value());
     if (!var){
-        error("Variable " << identifier->value() << " referenced before assignment");
+        error("Variable \"" << identifier->value() << "\" referenced before assignment");
     }
 }
 

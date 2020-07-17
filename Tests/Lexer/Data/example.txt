@@ -1,4 +1,4 @@
-int func(int a, int b, int c, int d = 0, int e) {
+int func(int a, int b, int c) {
     return a + b;
 }
 
@@ -13,7 +13,7 @@ int main (int kek, int lol)
     if (a == b){
         return 1;
     } else {
-        return 0;
+        return 1;
     }
 
     b = 3;
