@@ -1,5 +1,6 @@
 #pragma once
 #include "../ASTNode.h"
+#include "Identifier.h"
 #include <utility>
 #include <vector>
 #include <string>
@@ -13,19 +14,17 @@ public:
     {
     }
 
-    FunctionNode(Lexer::TokenType type, const std::string& name, const std::vector<Node*>& arguments, Node* statement)
+    FunctionNode(IdentifierNode* identifier, const std::vector<Node*>& arguments, Node* statement)
         : Node(servedType())
-        , m_type(type)
-        , m_name(name)
+        , m_identifier(identifier)
         , m_arguments(arguments)
         , m_statement(statement)
     {
     }
 
-    FunctionNode(Lexer::TokenType type, const std::string& name, std::vector<Node*>&& arguments, Node* statement)
+    FunctionNode(IdentifierNode* identifier, std::vector<Node*>&& arguments, Node* statement)
         : Node(servedType())
-        , m_type(type)
-        , m_name(name)
+        , m_identifier(identifier)
         , m_arguments(std::move(arguments))
         , m_statement(statement)
     {
@@ -33,21 +32,19 @@ public:
 
     ~FunctionNode() override = default;
 
-    void setType(Lexer::TokenType type) { m_type = type; }
-    void setName(const std::string& name) { m_name = name; }
+    void setIdentifier(IdentifierNode* identifier) {m_identifier = identifier; }
     void setArguments(std::vector<Node*> arguments) { m_arguments = arguments; }
     void setArguments(std::vector<Node*>&& arguments) { m_arguments = arguments; }
+    void setStatement(Node* statement) { m_statement = statement; }
 
-    Lexer::TokenType type() const { return m_type; }
-    const std::string& name() const { return m_name; }
+    IdentifierNode* identifier() const { return m_identifier; }
     Node* statement() const { return m_statement; }
     const std::vector<Node*>& arguments() const { return m_arguments; }
 
     static NodeType servedType() { return Function; }
 
 private:
-    Lexer::TokenType m_type {};
-    std::string m_name {};
+    IdentifierNode* m_identifier {};
     std::vector<Node*> m_arguments {};
     Node* m_statement {};
 };

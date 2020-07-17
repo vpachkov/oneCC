@@ -256,7 +256,7 @@ std::string Visualizer::toText(AST::FunctionNode* node)
     std::string res;
     res += Visualizer::tokenTypeToString(node->type());
     res += " ";
-    res += node->name();
+    res += node->identifier()->value();
     return res;
 }
 
@@ -277,7 +277,7 @@ std::string Visualizer::toText(AST::FunctionArgumentNode* node)
     std::string res;
     res += Visualizer::tokenTypeToString(node->type());
     res += ' ';
-    res += node->name();
+    res += node->identifier()->value();
     return res;
 }
 

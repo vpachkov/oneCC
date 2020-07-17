@@ -17,6 +17,12 @@ public:
     {
     }
 
+    explicit IdentifierNode(const std::string& value, Lexer::TokenType token)
+            : Expression(servedType(), token)
+            , m_value(value)
+    {
+    }
+
     explicit IdentifierNode(std::string&& value)
         : Expression(servedType())
         , m_value(std::move(value))
