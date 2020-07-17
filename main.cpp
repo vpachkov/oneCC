@@ -1,7 +1,6 @@
 #include "Lexer/Lexer.h"
 #include "Parser/Parser.h"
 #include "Utils/Debug/ASTReader.h"
-#include "SemanticAnalyzer/FunctionCollector/FunctionCollector.h"
 #include "SemanticAnalyzer/SemanticAnalyzer.h"
 #include "Utils/Utils.h"
 #include <iostream>
