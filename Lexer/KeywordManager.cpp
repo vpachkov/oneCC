@@ -36,6 +36,7 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
     man->addKeyword(Token("+", TokenType::Plus));
     man->addKeyword(Token("*", TokenType::Multiply));
     man->addKeyword(Token("/", TokenType::Divide));
+    man->addKeyword(Token("==", TokenType::Equal));
     man->addKeyword(Token("=", TokenType::Assign));
 
     // Types
@@ -51,6 +52,8 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
 
     // Keywords
     man->addKeyword(Token("return", TokenType::Return));
+    man->addKeyword(Token("if", TokenType::If));
+    man->addKeyword(Token("else", TokenType::Else));
 
     // Comments, used only inside Lexer
     man->addKeyword(Token("//", TokenType::OneLineComment));

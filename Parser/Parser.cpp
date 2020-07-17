@@ -70,6 +70,12 @@ inline bool Parser::isType(const Lexer::Token& token)
     return token.type() == Lexer::TokenType::TypeInt || token.type() == Lexer::TokenType::TypeFloat;
 }
 
+inline bool Parser::isBooleanOperation(const Lexer::Token &token)
+{
+    // TODO: add more operations
+    return token.type() == Lexer::TokenType::Equal;
+}
+
 inline Lexer::Token Parser::lookupToken(int offset)
 {
     return m_lexer->lookupToken(offset);
@@ -150,7 +156,7 @@ AST::Node* Parser::multiplyDivide()
     return root;
 }
 
-AST::Node* Parser::expression()
+AST::Node* Parser::sum()
 {
     auto* root = multiplyDivide();
     checkNode(root);
@@ -169,6 +175,37 @@ AST::Node* Parser::expression()
     }
 
     return root;
+}
+
+AST::Node* Parser::booleanOperation()
+{
+    auto* root = sum();
+    checkNode(root);
+
+    while (isBooleanOperation(lookupToken().type())) {
+        auto* newNode = new AST::BinaryOperationNode();
+        newNode->setOperation(lookupToken().type());
+
+        m_lexer->skipToken();
+
+        auto* rightSide = sum();
+        checkNode(rightSide);
+
+        newNode->setChildren(root, rightSide);
+        root = newNode;
+    }
+
+    return root;
+
+}
+
+// entry point for expression (
+//     will be easier to add new expressions
+//     just change to new root here
+// )
+AST::Node* Parser::expression()
+{
+    return booleanOperation();
 }
 
 AST::Node* Parser::functionCall()
@@ -239,6 +276,7 @@ AST::Node* Parser::ifStatement(AST::Node* function)
 
         auto elseToken = lookupToken();
         if (elseToken.type() == Lexer::TokenType::Else) {
+            eatToken(Lexer::TokenType::Else);
             auto falseStatement = statement(function);
             return new AST::IfStatementNode(expr, trueStatement, falseStatement);
         }
