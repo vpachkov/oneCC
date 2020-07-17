@@ -339,7 +339,7 @@ AST::Node* Parser::declareFunctionArguments() {
         eatToken(Lexer::TokenType::Assign);
         expr = expression();
     }
-    return new AST::FunctionArgumentNode(type.type(), varName.lexeme(), expr);
+    return new AST::FunctionArgumentNode(new AST::IdentifierNode(varName.lexeme(), type.type()), expr);
 }
 
 AST::Node* Parser::defineFunction()
@@ -372,7 +372,7 @@ AST::Node* Parser::defineFunction()
         // FIXME: Add support for function declaration
         return NULL;
     } else {
-        auto functionNode = new AST::FunctionNode(type.type(), funcName.lexeme(), arguments, NULL);
+        auto functionNode = new AST::FunctionNode(new AST::IdentifierNode(funcName.lexeme(), type.type()), arguments, NULL);
         auto blockStat = blockStatement(functionNode);
         checkNode(blockStat);
         functionNode->setStatement(blockStat);
