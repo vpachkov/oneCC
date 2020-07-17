@@ -13,6 +13,7 @@ public:
 
     bool isConstant(Lexer::Token& token);
     bool isType(const Lexer::Token& token);
+    bool isBooleanOperation(const Lexer::Token& token);
 
     AST::Node* parse();
 
@@ -25,6 +26,8 @@ private:
 
     AST::Node* factor();
     AST::Node* multiplyDivide();
+    AST::Node* sum();
+    AST::Node* booleanOperation();
     AST::Node* createInt();
     AST::Node* reassignInt();
     AST::Node* expression();

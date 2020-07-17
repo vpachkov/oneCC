@@ -9,5 +9,12 @@ int main (int kek, int lol)
 {
     int a = 1;
     int b = 5;
+
+    if (a == b){
+        return 1;
+    } else {
+        return 0;
+    }
+
     b = 3;
 }

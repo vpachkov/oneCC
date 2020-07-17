@@ -41,6 +41,7 @@ std::string Token::typeToString(const Token& tt)
         case Plus:      return "Plus";
         case Multiply:      return "Multiply";
         case Assign:      return "Assign";
+        case Equal:      return "Equal";
         case EndOfStatement:      return "EOS";
 
         // Brackets
