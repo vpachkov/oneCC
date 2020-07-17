@@ -1,4 +1,7 @@
 int func(int a, int b, int c) {
+    while (a == b) {
+        a = b + ff;
+    }
     return a + b;
 }
 
@@ -14,6 +17,10 @@ int main (int kek, int lol)
         return 1;
     } else {
         return 1;
+    }
+
+    while (a == b) {
+        a = b + ff;
     }
 
     b = 3;

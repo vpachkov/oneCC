@@ -293,8 +293,7 @@ AST::Node* Parser::whileStatement(AST::Node* function)
         eatToken(Lexer::TokenType::While);
         eatToken(Lexer::TokenType::OpenRoundBracket);
 
-        // TODO: Create isn't lowest expression
-        auto expression = createInt();
+        auto expr = expression();
 
         eatToken(Lexer::TokenType::CloseRoundBracket);
         eatToken(Lexer::TokenType::OpenCurlyBracket);
@@ -303,7 +302,7 @@ AST::Node* Parser::whileStatement(AST::Node* function)
 
         eatToken(Lexer::TokenType::CloseCurlyBracket);
 
-        return new AST::WhileStatementNode(expression, stat);
+        return new AST::WhileStatementNode(expr, stat);
     }
 
     return NULL;

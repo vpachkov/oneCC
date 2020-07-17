@@ -28,7 +28,7 @@ public:
 
 private:
     Node* m_returnedExpression;
-    Node* m_function;
+    Node* m_function; // contains pointer to function, we will need it in semantic analyzer
 };
 
 }

@@ -32,7 +32,7 @@ public:
 
     ~FunctionNode() override = default;
 
-    void setIdentifier(IdentifierNode* identifier) {m_identifier = identifier; }
+    void setIdentifier(IdentifierNode* identifier) { m_identifier = identifier; }
     void setArguments(std::vector<Node*> arguments) { m_arguments = arguments; }
     void setArguments(std::vector<Node*>&& arguments) { m_arguments = arguments; }
     void setStatement(Node* statement) { m_statement = statement; }

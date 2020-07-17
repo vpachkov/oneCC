@@ -53,6 +53,7 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
     // Keywords
     man->addKeyword(Token("return", TokenType::Return));
     man->addKeyword(Token("if", TokenType::If));
+    man->addKeyword(Token("while", TokenType::While));
     man->addKeyword(Token("else", TokenType::Else));
 
     // Comments, used only inside Lexer

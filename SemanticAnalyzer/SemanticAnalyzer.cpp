@@ -56,8 +56,12 @@ void SemanticAnalyzer::visitNode(AST::FunctionNode* function) {
 
 void SemanticAnalyzer::visitNode(AST::BlockStatementNode* blockStatement) {
     m_scoper.enterScope();
-    for (auto* statement : blockStatement->statements()){
-        visitNode(statement);
+    for (auto* statement : blockStatement->statements()) {
+        if (statement->type() == AST::WhileStatement)
+            visitNode(reinterpret_cast<AST::WhileStatementNode*>(statement));
+        else {
+            visitNode(statement);
+        }
         assertCorrect();
     }
     m_scoper.exitScope();
@@ -102,6 +106,17 @@ void SemanticAnalyzer::visitNode(AST::IfStatementNode* a) {
     if (a->falseStatement()){
         visitNode(a->falseStatement());
     }
+}
+
+void SemanticAnalyzer::visitNode(AST::WhileStatementNode* a) {
+    visitNode(a->expression());
+    assertCorrect();
+    if (!isConvertationCorrect(reinterpret_cast<AST::Expression*>(a->expression())->expressionType(), Lexer::TokenType::TypeBoolean)) {
+        //TODO: more information here
+        error("Convertation")
+    }
+    visitNode(a->statement());
+    assertCorrect();
 }
 
 void SemanticAnalyzer::visitNode(AST::BinaryOperationNode* binaryOperation) {
