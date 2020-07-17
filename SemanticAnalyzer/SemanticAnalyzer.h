@@ -24,6 +24,7 @@ private:
     void visitNode(AST::IdentifierNode* a) override;
     void visitNode(AST::BlockStatementNode* a) override;
     void visitNode(AST::ReturnStatementNode* a) override;
+    void visitNode(AST::IfStatementNode* a) override;
     void visitNode(AST::FunctionNode* a) override;
     void visitNode(AST::FunctionCallNode* a) override;
     void visitNode(AST::ProgramNode* a) override;
