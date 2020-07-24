@@ -1,33 +1,34 @@
 #pragma once
 
 #include "../AST/AbstractAST.h"
-#include "../Lexer/Token.h"
-#include <cstdint>
-#include <iostream>
-#include <string>
-#include <map>
-#include <stack>
+#include "x86-32/CodeGenerator.h"
 
 namespace oneCC::CodeGenerator {
 
-class CodeGenerator final : public AST::AbstractAST {
+enum TargetPlatform {
+    x86_32,
+    UNKNOWN,
+};
+
+class CodeGenerator {
 public:
-    CodeGenerator() = default;
-    bool processTree(AST::Node* program);
+    CodeGenerator()
+    {
+    }
+
+    CodeGenerator(TargetPlatform pltf)
+    {
+        m_genX86_32 = new X86_32::CodeGeneratorX86_32();
+        m_platform = pltf;
+    }
+
+    void start()
+    {
+    }
 
 private:
-    // From AST::AbstractAST
-    using AST::AbstractAST::visitNode;
-    void visitNode(AST::BinaryOperationNode* a) override;
-    void visitNode(AST::TernaryOperationNode* a) override;
-    void visitNode(AST::IdentifierNode* a) override;
-    void visitNode(AST::BlockStatementNode* a) override;
-    void visitNode(AST::ReturnStatementNode* a) override;
-    void visitNode(AST::IfStatementNode* a) override;
-    void visitNode(AST::WhileStatementNode* a) override;
-    void visitNode(AST::FunctionNode* a) override;
-    void visitNode(AST::FunctionCallNode* a) override;
-    void visitNode(AST::ProgramNode* a) override;
+    TargetPlatform m_platform { UNKNOWN };
+    X86_32::CodeGeneratorX86_32* m_genX86_32;
 };
 
 }
