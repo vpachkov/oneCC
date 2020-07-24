@@ -34,7 +34,7 @@ public:
 
     void setIdentifier(IdentifierNode* identifier) { m_identifier = identifier; }
     void setArguments(std::vector<Node*> arguments) { m_arguments = arguments; }
-    void setArguments(std::vector<Node*>&& arguments) { m_arguments = arguments; }
+    void setArguments(std::vector<Node*>&& arguments) { m_arguments = std::move(arguments); }
     void setStatement(Node* statement) { m_statement = statement; }
 
     IdentifierNode* identifier() const { return m_identifier; }
