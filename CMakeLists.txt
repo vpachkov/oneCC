@@ -2,35 +2,56 @@ cmake_minimum_required(VERSION 3.15)
 project(oneCC)
 
 set(CMAKE_CXX_STANDARD 20)
+string(APPEND CMAKE_CURRENT_SOURCE_DIR "/src")
 
-include_directories(ArgsParser)
-include_directories(AST)
-include_directories(Config)
-include_directories(Lexer)
-include_directories(Parser)
-include_directories(Tests)
-include_directories(Tests/ArgsParser)
-include_directories(Tests/Config)
-include_directories(Tests/Lexer)
-include_directories(Utils)
-include_directories(Utils/Debug)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ArgsParser)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/AST)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Config)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Lexer)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Parser)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Tests)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Tests/ArgsParser)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Tests/Config)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Utils)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Utils/ASTReader)
 
-add_executable(
-        oneCC_executable
-        ArgsParser/ArgsParser.cpp
-        Config/Config.cpp
-        Lexer/KeywordManager.cpp
-        Lexer/Lexer.cpp
-        Lexer/TextSequencer.cpp
-        Lexer/Token.cpp
-        Parser/Parser.cpp
-        Tests/ArgsParser/ArgsParserTest.cpp
-        Tests/Config/ConfigTest.cpp
-        Tests/Lexer/LexerTest.cpp
-#        Tests/main.cpp
-        main.cpp
-        Utils/Debug/ASTReader.cpp
-        AST/Nodes/Function.h AST/Nodes/IfStatement.h AST/Nodes/WhileStatement.h AST/Nodes/ReturnStatement.h AST/Nodes/BlockStatement.h AST/Nodes/FunctionCall.h SemanticAnalyzer/SemanticAnalyzer.cpp SemanticAnalyzer/SemanticAnalyzer.h SemanticAnalyzer/Scoper/Scoper.cpp SemanticAnalyzer/Scoper/Scoper.h AST/Nodes/Expression.h CodeGenerator/CodeGenerator.cpp CodeGenerator/CodeGenerator.h CodeGenerator/RegisterManager/RegisterManager.cpp CodeGenerator/RegisterManager/RegisterManager.h)
+set(COMMON_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/ArgsParser/ArgsParser.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Config/Config.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Lexer/KeywordManager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Lexer/Lexer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Lexer/TextSequencer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Lexer/Token.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Parser/Parser.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Utils/ASTReader/ASTReader.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/Function.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/IfStatement.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/WhileStatement.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/ReturnStatement.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/BlockStatement.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/FunctionCall.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/SemanticAnalyzer/SemanticAnalyzer.cpp 
+        ${CMAKE_CURRENT_SOURCE_DIR}/SemanticAnalyzer/SemanticAnalyzer.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/SemanticAnalyzer/Scoper/Scoper.cpp 
+        ${CMAKE_CURRENT_SOURCE_DIR}/SemanticAnalyzer/Scoper/Scoper.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/Expression.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/CodeGenerator.cpp 
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/CodeGenerator.h 
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/RegisterManager/RegisterManager.cpp 
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/RegisterManager/RegisterManager.h)
+
+set(TARGET_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+set(TEST_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/Tests/ArgsParser/ArgsParserTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Config/ConfigTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/LexerTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Tests/main.cpp)
+
+
+add_executable(oneCC_executable ${COMMON_SOURCES} ${TARGET_SOURCES})
+add_executable(oneCC_test ${COMMON_SOURCES} ${TEST_SOURCES})
 
 file(
     COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/assign_expression.txt
