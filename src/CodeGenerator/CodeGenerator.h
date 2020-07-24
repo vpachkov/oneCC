@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../AST/AbstractAST.h"
-#include "x86-32/CodeGenerator.h"
+#include "x86_32/CodeGenerator.h"
 
 namespace oneCC::CodeGenerator {
 
