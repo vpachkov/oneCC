@@ -1,12 +1,11 @@
 #pragma once
-#include "../../AST/AbstractAST.h"
 #include "../../AST/ASTNode.h"
-#include "Token.h"
+#include "../../AST/AbstractAST.h"
 #include <cstdint>
 #include <iostream>
-#include <string>
 #include <map>
 #include <stack>
+#include <string>
 
 namespace oneCC::SemanticAnalyzer {
 
@@ -17,7 +16,7 @@ public:
     bool addNode(AST::IdentifierNode* node, int shift);
     void enterScope();
     void exitScope();
-    bool checkScope(AST::IdentifierNode* node, int shift=0);
+    bool checkScope(AST::IdentifierNode* node, int shift = 0);
     AST::IdentifierNode* findVar(const std::string& node);
 
 private:
@@ -26,5 +25,3 @@ private:
 };
 
 }
-
-

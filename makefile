@@ -17,13 +17,17 @@ PASS_VARS = CXX="$(CXX)" CXX_STANDARD_FLAGS="$(CXX_STANDARD_FLAGS)" CXX_WARNING_
 # Sources
 ###########
 
+BASE_PATH = src
+
 SUBDIRS += \
-		Lexer \
-		Config \
-		ArgsParser \
-		Parser \
-		AST \
-		Utils \
+		${BASE_PATH}/Lexer \
+		${BASE_PATH}/Config \
+		${BASE_PATH}/ArgsParser \
+		${BASE_PATH}/Parser \
+		${BASE_PATH}/AST \
+		${BASE_PATH}/Utils \
+		${BASE_PATH}/SemanticAnalyzer \
+		${BASE_PATH}/CodeGenerator \
 
 SRCS := $(shell find $(SUBDIRS) -name "*.cpp")
 OBJS := $(patsubst %.cpp, %.o, $(SRCS))
@@ -35,7 +39,7 @@ OBJS := $(patsubst %.cpp, %.o, $(SRCS))
 ###########
 
 SUBDIRS_TEST += \
-		Tests \
+		${BASE_PATH}/Tests \
 
 SRCS_TEST := $(shell find $(SUBDIRS) $(SUBDIRS_TEST) -name "*.cpp")
 OBJS_TEST := $(patsubst %.cpp, %.o, $(SRCS_TEST))
@@ -73,11 +77,11 @@ build_debug: CXX_STANDARD_FLAGS += -g
 build_debug: $(PROGRAM_DEBUG)
 build_debug: $(PROGRAM_SYMBOLS)
 
-$(PROGRAM): $(OBJS) main.o
+$(PROGRAM): $(OBJS) ${BASE_PATH}/main.o
 	@echo "$(notdir $(CURDIR)): LINK $@"
 	$(QUIET) $(CXX) $^ -o $@
 
-$(PROGRAM_DEBUG): $(OBJS) main.o
+$(PROGRAM_DEBUG): $(OBJS) ${BASE_PATH}/main.o
 	@echo "$(notdir $(CURDIR)): LINK $@"
 	$(QUIET) $(CXX) $^ -o $@
 
@@ -95,6 +99,6 @@ $(PROGRAM_TEST): $(OBJS_TEST)
 
 clean:
 	@echo "$(notdir $(CURDIR)): CLEANED"
-	$(QUIET) rm -rf $(PROGRAM) $(PROGRAM_TEST) $(PROGRAM_DEBUG) $(PROGRAM_SYMBOLS) $(OBJS_TEST) main.o
+	$(QUIET) rm -rf $(PROGRAM) $(PROGRAM_TEST) $(PROGRAM_DEBUG) $(PROGRAM_SYMBOLS) $(OBJS_TEST) ${BASE_PATH}/main.o
 
 .PHONY: all clean run test debug build build_test build_debug $(PROGRAM_TEST) $(PROGRAM_DEBUG) $(PROGRAM_SYMBOLS)
