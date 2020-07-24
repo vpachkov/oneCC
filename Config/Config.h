@@ -14,7 +14,7 @@ public:
     std::string filename;
 
     //test arg, please keep your paws away
-    std::string testСonfigArgument = "";
+    std::string testConfigArgument = "";
 
 private:
     static Config* m_instance;

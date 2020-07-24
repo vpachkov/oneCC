@@ -35,18 +35,18 @@ void ArgsParserTest::test()
     argsParser->loadArgs(argc, argv);
 
     // Get argument by short key.
-    argsParser->registerArgument(configInstnace->testСonfigArgument, "--lol", "-s");
-    this->assertEqual(std::string("test"), configInstnace->testСonfigArgument);
+    argsParser->registerArgument(configInstnace->testConfigArgument, "--lol", "-s");
+    this->assertEqual(std::string("test"), configInstnace->testConfigArgument);
 
     // Get argument by long key.
-    argsParser->registerArgument(configInstnace->testСonfigArgument, "--argument-long", "-g");
-    this->assertEqual(std::string("example"), configInstnace->testСonfigArgument);
+    argsParser->registerArgument(configInstnace->testConfigArgument, "--argument-long", "-g");
+    this->assertEqual(std::string("example"), configInstnace->testConfigArgument);
 
     // Make sure that exceptions work.
-    auto registerByWrongKey = [&]() { argsParser->registerArgument(configInstnace->testСonfigArgument, "f", "-g"); };
+    auto registerByWrongKey = [&]() { argsParser->registerArgument(configInstnace->testConfigArgument, "f", "-g"); };
     this->assertThrows<oneCC::Exceptions::BadArgumentKey>(registerByWrongKey);
 
-    auto registerByUnknownArg = [&]() { argsParser->registerArgument(configInstnace->testСonfigArgument, "--fff", "-g", true); };
+    auto registerByUnknownArg = [&]() { argsParser->registerArgument(configInstnace->testConfigArgument, "--fff", "-g", true); };
     this->assertThrows<oneCC::Exceptions::MissingArgument>(registerByUnknownArg);
 }
 
