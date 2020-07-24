@@ -35,11 +35,10 @@ set(COMMON_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/SemanticAnalyzer/SemanticAnalyzer.h 
         ${CMAKE_CURRENT_SOURCE_DIR}/SemanticAnalyzer/Scoper/Scoper.cpp 
         ${CMAKE_CURRENT_SOURCE_DIR}/SemanticAnalyzer/Scoper/Scoper.h 
-        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/Expression.h 
-        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/CodeGenerator.cpp 
-        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/CodeGenerator.h 
-        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/RegisterManager/RegisterManager.cpp 
-        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/RegisterManager/RegisterManager.h)
+        ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/Expression.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/CodeGenerator.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/RegisterManager/RegisterManager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/RegisterManager/RegisterManager.h)
 
 set(TARGET_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
