@@ -13,7 +13,7 @@
 #include "../AST/Nodes/Type.h"
 #include "../AST/Nodes/WhileStatement.h"
 #include "../Exceptions.h"
-#include "../Utils/Debug/ASTReader.h"
+#include "../Utils/ASTReader/ASTReader.h"
 #include <iostream>
 #include <stdlib.h>
 #include <vector>

@@ -1,7 +1,8 @@
 #include "Lexer/Lexer.h"
 #include "Parser/Parser.h"
-#include "Utils/Debug/ASTReader.h"
+#include "Utils/ASTReader/ASTReader.h"
 #include "SemanticAnalyzer/SemanticAnalyzer.h"
+#include "CodeGenerator/CodeGenerator.h"
 #include "Utils/Utils.h"
 #include <iostream>
 #include <vector>
