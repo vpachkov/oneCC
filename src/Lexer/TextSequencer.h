@@ -7,7 +7,8 @@
 namespace oneCC::Lexer {
 class TextSequencer {
 protected:
-    TextSequencer(std::unique_ptr<std::ifstream> fileStream);
+    TextSequencer(const char* filename);
+    TextSequencer(std::unique_ptr<std::ifstream>&& fileStream);
     ~TextSequencer();
     char nextChar();
     char lookupChar(int offset);

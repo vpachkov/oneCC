@@ -10,7 +10,8 @@
 namespace oneCC::Lexer {
 class Lexer : TextSequencer {
 public:
-    Lexer(std::unique_ptr<std::ifstream> fileStream);
+    Lexer(const char* filename);
+    Lexer(std::unique_ptr<std::ifstream>&& fileStream);
     bool tokinizeFile();
     Token lookupToken(int offset);
     Token lookupToken();

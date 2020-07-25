@@ -4,7 +4,19 @@
 #include <utility>
 
 namespace oneCC::Lexer {
-TextSequencer::TextSequencer(std::unique_ptr<std::ifstream> fileStream)
+
+TextSequencer::TextSequencer(const char* filename)
+    : m_fileStream(std::make_unique<std::ifstream>(filename))
+    , m_currentLine("")
+    , m_switchLine(true)
+    , m_fileEnded(false)
+    , m_passed(0)
+    , m_linesSwitched(0)
+{
+    assert(m_fileStream->is_open());
+}
+
+TextSequencer::TextSequencer(std::unique_ptr<std::ifstream>&& fileStream)
     : m_fileStream(std::move(fileStream))
     , m_currentLine("")
     , m_switchLine(true)
