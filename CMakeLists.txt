@@ -39,7 +39,15 @@ set(COMMON_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/Expression.h
         ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/CodeGenerator.h
         ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/RegisterManager/RegisterManager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/RegisterManager/RegisterManager.h)
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/RegisterManager/RegisterManager.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Common/ModRM.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Common/Regs.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Common/TypesX86_32.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Translators/AbstractX86_32Translator.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Translators/AsmTranslator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Translators/AsmTranslator.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Common/Regs.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Common/Regs.h)
 
 set(TARGET_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
