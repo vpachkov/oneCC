@@ -8,7 +8,6 @@ class ByteCodeTranslator final : public AbstractAarch32Translator {
 public:
     ByteCodeTranslator() = default;
 
-    
 };
 
 }
