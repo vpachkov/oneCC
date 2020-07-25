@@ -19,8 +19,7 @@ inline bool exists_test0(const std::string& name)
 int main()
 {
 #ifdef DEBUG_TOKINIZE_FILE
-    auto ifstreamPtr = std::make_unique<std::ifstream>("demos/example.txt");
-    auto lexer = oneCC::Lexer::Lexer(std::move(ifstreamPtr));
+    auto lexer = oneCC::Lexer::Lexer("demos/example.txt");
 
     try {
         lexer.tokinizeFile();
