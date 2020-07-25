@@ -1,6 +1,6 @@
 int func(int a, int b, int c) {
     while (a == b) {
-        a = b + ff;
+        a = b;
     }
     return a + b;
 }
@@ -20,7 +20,7 @@ int main (int kek, int lol)
     }
 
     while (a == b) {
-        a = b + ff;
+        a = b;
     }
 
     b = 3;
