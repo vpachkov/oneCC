@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Regs.h"
-#include <cstdint>
+#include "TypesX86_32.h"
 
 namespace oneCC::CodeGenerator::X86_32 {
 
