@@ -47,7 +47,9 @@ set(COMMON_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Translators/AsmTranslator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Translators/AsmTranslator.h
         ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Common/Regs.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Common/Regs.h)
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/Common/Regs.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/CodeGenerator.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGenerator/x86_32/CodeGenerator.cpp)
 
 set(TARGET_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
