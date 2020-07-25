@@ -13,7 +13,7 @@ namespace oneCC::CodeGenerator::X86_32 {
 class CodeGeneratorX86_32 final : public AST::AbstractAST {
 public:
     CodeGeneratorX86_32() = default;
-    bool processTree(AST::Node* program);
+    int processTree(AST::Node* program);
 
 private:
     // From AST::AbstractAST
