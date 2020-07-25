@@ -158,10 +158,10 @@ class CppFunc:
             fst = False
             res += self.op4 + " op4"
 
-        res += ") {}"
+        res += ") { NOT_IMPL(); }"
         return res
 
-
+# Defines for more comfortable access to table cells
 pf = 0
 pref0x = 1
 po = 2
@@ -191,14 +191,31 @@ for table in soup.find_all('table'):
                 if (data[-1].endswith('+r')):
                     # Align cells in such a row
                     data.append("")
-        # print(data[mnemonic])
-
-        cpp_generated_funcs.append(CppFunc(data[mnemonic], data[op1], data[op2], data[op3], data[op4]))
+        if data[mnemonic] != "" and data[mnemonic] != "no mnemonic":
+            cpp_generated_funcs.append(CppFunc(data[mnemonic], data[op1], data[op2], data[op3], data[op4]))
     
     break
 
-for i in range(10): 
-    print(cpp_generated_funcs[i].get_init_cpp())
+GET_FIRST = 17
 
-for i in range(10): 
-    print(cpp_generated_funcs[i].get_impl_cpp("AsmGenerator"))
+file_init = open("init_cpp_funcs.tmp", "w")
+file_impl = open("impl_cpp_funcs.tmp", "w")
+
+init_cpp_funcs = []
+for i in range(GET_FIRST):
+    init_cpp_funcs.append(cpp_generated_funcs[i].get_init_cpp())
+init_cpp_funcs.sort()
+
+for entry in init_cpp_funcs:
+    file_init.write(entry + "\n")
+
+impl_cpp_funcs = []
+for i in range(GET_FIRST): 
+    impl_cpp_funcs.append(cpp_generated_funcs[i].get_impl_cpp("AsmTranslator"))
+impl_cpp_funcs.sort()
+
+for entry in impl_cpp_funcs:
+    file_impl.write(entry + "\n")
+
+file_init.close()
+file_impl.close()
