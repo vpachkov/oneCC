@@ -412,7 +412,7 @@ AST::Node* Parser::defineFunction()
         auto functionNode = new AST::FunctionNode(new AST::IdentifierNode(funcName.lexeme(), type.type()), arguments, NULL);
         auto blockStat = blockStatement(functionNode);
         checkNode(blockStat);
-        functionNode->setStatement(blockStat);
+        functionNode->setStatement((AST::BlockStatementNode*)(blockStat));
         return functionNode;
     }
 }
