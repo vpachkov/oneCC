@@ -24,7 +24,7 @@ int kek(){
 
 int main()
 {
-    auto ifstreamPtr = std::make_unique<std::ifstream>("Tests/Lexer/Data/example.txt");
+    auto ifstreamPtr = std::make_unique<std::ifstream>("demos/example.txt");
     auto lexer = oneCC::Lexer::Lexer(std::move(ifstreamPtr));
 
     try {
@@ -43,7 +43,7 @@ int main()
         }
     }
     std::cout << "\n\n";
-    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("Tests/Lexer/Data/example.txt");
+    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("demos/example.txt");
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
 
     //    try {

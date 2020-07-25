@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(oneCC)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CURRENT_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 string(APPEND CMAKE_CURRENT_SOURCE_DIR "/src")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ArgsParser)
@@ -53,17 +54,18 @@ add_executable(oneCC_executable ${COMMON_SOURCES} ${TARGET_SOURCES})
 add_executable(oneCC_test ${COMMON_SOURCES} ${TEST_SOURCES})
 
 file(
-    COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/assign_expression.txt
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Tests/Lexer/Data/
-)
-file(
-    COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/lexer.txt
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Tests/Lexer/Data/
+    COPY ${CMAKE_CURRENT_BASE_DIR}/demos/assign_expression.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/demos/
 )
 
 file(
-    COPY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Lexer/Data/example.txt
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Tests/Lexer/Data/
+    COPY ${CMAKE_CURRENT_BASE_DIR}/demos/example.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/demos/
+)
+
+file(
+    COPY ${CMAKE_CURRENT_BASE_DIR}/demos/function_definition.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/demos/
 )
 
 enable_testing()
