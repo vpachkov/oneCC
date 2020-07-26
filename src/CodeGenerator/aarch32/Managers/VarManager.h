@@ -12,25 +12,36 @@ class VarManager {
 public:
     VarManager() = default;
 
-    int addStackVarible(std::string alias, int offset)
+    // Offset shows where in stack var is stored.
+    // Returns 0 on success.
+    int setOffset(int varId, int offset) { m_offsetStorage[varId] = offset; return 0; }
+    int setOffset(const std::string& alias, int offset)
     {
-        m_storage[std::make_pair(alias, m_level)] = offset;
+        if (getId(alias) == 0) {
+            return -1;
+        }
+        m_offsetStorage[getId(alias)] = offset;
         return 0;
     }
 
-    // Will return 0, if no such value
-    int getStackVarible(std::string alias)
-    {
-        return m_storage[std::make_pair(alias, m_level)];
+    int getOffset(int varId) { return m_offsetStorage[varId]; }
+    int getOffset(const std::string& alias) { return m_offsetStorage[getId(alias)]; }
+    
+    int addVariable(const std::string& alias)
+    { 
+        m_idStorage[std::make_pair(alias, m_level)] = ++m_nextId;
+        return m_nextId;
     }
+    int getId(const std::string& alias) { return m_idStorage[std::make_pair(alias, m_level)]; }
 
     void enterScope() { m_level++; }
 
     void leaveScope()
     {
-        auto it = m_storage.begin();
-        while (m_storage.end() != (it = std::find_if(m_storage.begin(), m_storage.end(), [this](auto p) { return p.first.second == m_level; }))) {
-            m_storage.erase(it);
+        auto idStorageEntry = m_idStorage.begin();
+        while (m_idStorage.end() != (idStorageEntry = std::find_if(m_idStorage.begin(), m_idStorage.end(), [this](auto p) { return p.first.second == m_level; }))) {
+            m_idStorage.erase(idStorageEntry);
+            m_offsetStorage.erase(idStorageEntry->second);
         }
         m_level--;
     }
@@ -38,15 +49,26 @@ public:
     void dump()
     {
         std::cout << "--- VarManager Storage Dump ---\n";
-        for (auto entry : m_storage) {
-            std::cout << entry.first.first << " " << entry.first.second << " = " << entry.second << "\n";
+        for (auto entry : m_idStorage) {
+            std::cout << entry.first.first << " " << entry.first.second << ": " << entry.second << " id\n";
+        }
+        for (auto entry : m_offsetStorage) {
+            std::cout << entry.first << " = " << entry.second << "\n";
         }
         std::cout << "--- VarManager Storage End ----\n";
     }
 
 private:
     int m_level { 0 };
-    std::map<std::pair<std::string, int>, int> m_storage;
+    int m_nextId { 0 };
+    
+    // Key: <var alias, scope level>
+    // Value: id
+    std::map<std::pair<std::string, int>, int> m_idStorage {};
+    
+    // Key: id
+    // Value: offset in stack (relative frame pointer)
+    std::map<int, int> m_offsetStorage {};
 };
 
 }
