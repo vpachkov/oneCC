@@ -4,7 +4,7 @@ namespace oneCC::CodeGenerator::Aarch32 {
 
 std::string Register::textAlias()
 {
-    const char* data[] = {
+    static const char* data[] = {
         "r0",
         "r1",
         "r2",
