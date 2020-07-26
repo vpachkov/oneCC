@@ -1,10 +1,12 @@
 #pragma once
 
+#include <functional>
 #include <string>
+#include <vector>
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
-constexpr int registerCount = 15;
+const int RegistersCount = 15;
 
 enum RegisterAlias {
     r0,
@@ -30,95 +32,115 @@ public:
     RegisterAlias alias() const { return m_alias; }
     std::string textAlias();
 
-
     // All 15 registers of a machine :^)
-    static Register& R0() {
+    static Register& R0()
+    {
         static Register reg(RegisterAlias::r0);
         return reg;
     }
 
-    static Register& R1() {
+    static Register& R1()
+    {
         static Register reg(RegisterAlias::r1);
         return reg;
     }
 
-    static Register& R2() {
+    static Register& R2()
+    {
         static Register reg(RegisterAlias::r2);
         return reg;
     }
 
-    static Register& R3() {
+    static Register& R3()
+    {
         static Register reg(RegisterAlias::r3);
         return reg;
     }
 
-    static Register& R4() {
+    static Register& R4()
+    {
         static Register reg(RegisterAlias::r4);
         return reg;
     }
 
-    static Register& R5() {
+    static Register& R5()
+    {
         static Register reg(RegisterAlias::r5);
         return reg;
     }
 
-    static Register& R6() {
+    static Register& R6()
+    {
         static Register reg(RegisterAlias::r6);
         return reg;
     }
 
-    static Register& R7() {
+    static Register& R7()
+    {
         static Register reg(RegisterAlias::r7);
         return reg;
     }
 
-    static Register& R8() {
+    static Register& R8()
+    {
         static Register reg(RegisterAlias::r8);
         return reg;
     }
 
-    static Register& R9() {
+    static Register& R9()
+    {
         static Register reg(RegisterAlias::r9);
         return reg;
     }
 
-    static Register& R10() {
+    static Register& R10()
+    {
         static Register reg(RegisterAlias::r10);
         return reg;
     }
 
-    static Register& FP() {
+    static Register& FP()
+    {
         static Register reg(RegisterAlias::fp);
         return reg;
     }
 
-    static Register& IP() {
+    static Register& IP()
+    {
         static Register reg(RegisterAlias::ip);
         return reg;
     }
 
-    static Register& SP() {
+    static Register& SP()
+    {
         static Register reg(RegisterAlias::sp);
         return reg;
     }
 
-    static Register& LR() {
+    static Register& LR()
+    {
         static Register reg(RegisterAlias::lr);
         return reg;
     }
 
-    static Register& PC() {
+    static Register& PC()
+    {
         static Register reg(RegisterAlias::pc);
         return reg;
     }
 
 private:
-    Register(RegisterAlias alias) : m_alias(alias) {}
+    Register(RegisterAlias alias)
+        : m_alias(alias)
+    {
+    }
     Register(Register const&) = delete;
-    Register& operator= (Register const&) = delete;
+    Register& operator=(Register const&) = delete;
     ~Register() = default;
 
     RegisterAlias m_alias;
 };
+
+typedef std::vector<std::reference_wrapper<Register>> RegisterList;
 
 }

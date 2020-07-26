@@ -1,7 +1,6 @@
 #pragma once
 
-// #include "../Common/Regs.h"
-#include "../Common/TypesAarch32.h"
+#include "../Common/Regs.h"
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
