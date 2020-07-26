@@ -27,12 +27,18 @@ public:
     ~BlockStatementNode() override = default;
 
     const std::vector<Node*>& statements() const { return m_statements; }
-    std::vector<Node*> statementsWithType(NodeType type) const
+    
+    template<class T>
+    std::vector<T*> statementsWithType() const
     {
-        std::vector<Node*> res;
+        std::vector<T*> res;
+        if (!std::is_base_of<AST::Node, T>::value) [[unlikely]] {
+            return res;
+        }
+
         for (auto node : m_statements) {
-            if (node->type() == type) {
-                res.push_back(node);
+            if (node->type() == T::servedType()) {
+                res.push_back(reinterpret_cast<T*>(node));
             }
         }
         return res;
