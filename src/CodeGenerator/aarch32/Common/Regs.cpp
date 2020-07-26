@@ -1,7 +1,8 @@
 #include "Regs.h"
 
 namespace oneCC::CodeGenerator::Aarch32 {
-std::string toString(Register a)
+
+std::string Register::textAlias()
 {
     const char* data[] = {
         "r0",
@@ -21,6 +22,7 @@ std::string toString(Register a)
         "lr",
         "pc",
     };
-    return std::string(data[(int)a]);
+    return std::string(data[(int)m_alias]);
 }
+
 }
