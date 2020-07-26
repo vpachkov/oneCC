@@ -2,6 +2,9 @@
 
 #include "../../AST/AbstractAST.h"
 #include "../../Lexer/Token.h"
+#include "Common/Regs.h"
+#include "Managers/VarManager.h"
+#include "Managers/RegisterManager.h"
 #include "Translators/AsmTranslator.h"
 #include <cstdint>
 #include <iostream>
@@ -12,13 +15,18 @@
 namespace oneCC::CodeGenerator::Aarch32 {
 
 enum StorageKeys {
+    FUNC_PROCESSING,
+    FUNC_ARG_VARS,
     FUNC_LOCAL_VARS,
+    LAUNCH_TRANSACTION,
 };
 
 class CodeGeneratorAarch32 final : public AST::AbstractAST {
 public:
     CodeGeneratorAarch32()
         : m_translator()
+        , m_varManager()
+        , m_registerManager()
         , m_storage()
     {
     }
@@ -26,7 +34,6 @@ public:
     int processTree(AST::Node* program);
 
 private:
-
     // From AST::AbstractAST
     using AST::AbstractAST::visitNode;
     void visitNode(AST::BinaryOperationNode* a) override;
@@ -39,11 +46,19 @@ private:
     void visitNode(AST::FunctionNode* a) override;
     void visitNode(AST::FunctionCallNode* a) override;
     void visitNode(AST::ProgramNode* a) override;
+    void visitNode(AST::IntConstNode* a) override;
 
     void initStackFrame(AST::FunctionNode* func);
     void restoreStackFrame(AST::FunctionNode* func);
+    int allocateArgVars(AST::FunctionNode* func);
+    int allocateLocalVars(AST::FunctionNode* func);
 
     AsmTranslator m_translator;
+    RegisterManager m_registerManager;
+    VarManager m_varManager;
+
+    // Storage is used as a unique place to store some values and
+    // delivery some values through functions.
     std::unordered_map<int, int> m_storage;
 };
 

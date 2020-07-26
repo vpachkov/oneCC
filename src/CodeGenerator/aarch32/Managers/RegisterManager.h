@@ -1,38 +1,26 @@
 #pragma once
 
 #include "../Common/Regs.h"
+#include "Transaction.h"
+#include <vector>
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
 class RegisterManager {
 public:
-    RegisterManager()
-    {
-        m_regs = {
-            Register::R0(),
-            Register::R1(),
-            Register::R2(),
-            Register::R3(),
-            Register::R4(),
-            Register::R5(),
-            Register::R6(),
-            Register::R7(),
-            Register::R8(),
-            Register::R9(),
-            Register::R10(),
-            Register::FP(),
-            Register::IP(),
-            Register::SP(),
-            Register::LR(),
-            Register::PC()
-        };
-    }
+    RegisterManager() = default;
 
-    int allocateRegister();
-    int freeRegister();
+    Transaction& initiateTransaction(bool ignoreForbiddenRegisters = false);
+    Transaction& activeTransaction();
+    void didTransaction(Transaction&);
+
+    Register& chooseRegister();
 
 private:
-    RegisterList m_regs;
+    int m_opId { 0 };
+    bool m_inTransaction { false };
+    std::vector<Transaction> m_transactions;
+    
 };
 
 }
