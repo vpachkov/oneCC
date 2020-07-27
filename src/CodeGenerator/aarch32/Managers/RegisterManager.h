@@ -10,11 +10,15 @@ class RegisterManager {
 public:
     RegisterManager() = default;
 
-    Transaction& initiateTransaction(bool ignoreForbiddenRegisters = false);
+    void initiateTransaction(bool ignoreForbiddenRegisters = false);
     Transaction& activeTransaction();
-    void didTransaction(Transaction&);
+    void didTransaction();
 
     Register& chooseRegister();
+    Register& chooseRegister(const RegisterData& data);
+
+    int save(Register& reg, const RegisterData& data);
+    Register& has(const RegisterData& data);
 
 private:
     int m_opId { 0 };
