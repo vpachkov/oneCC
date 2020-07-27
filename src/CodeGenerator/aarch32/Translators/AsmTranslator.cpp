@@ -10,6 +10,22 @@
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
+void AsmTranslator::ADD_reg(Register& Rd, Register& Rn, Register& Rm)
+{
+    std::cout << "add " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << "\n";
+}
+
+void AsmTranslator::ADD_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount)
+{
+    std::cout << "add " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << ", (rrx)" << amount << "\n";
+}
+
+void AsmTranslator::ADD_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount)
+{
+    amount &= 31;
+    std::cout << "add " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << ", " << stype << ", #" << amount << "\n";
+}
+
 void AsmTranslator::ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12)
 {
     imm12 = imm12 & 0xfff; // making it 12bit long
@@ -19,6 +35,20 @@ void AsmTranslator::ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12)
 void AsmTranslator::BX(Register& Rm)
 {
     std::cout << "bx " << Rm.textAlias() << "\n";
+}
+
+void AsmTranslator::MOV_reg(Register& Rd, Register& Rm)
+{
+    std::cout << "mov " << Rd.textAlias() << ", " << Rm.textAlias() << "\n";
+}
+void AsmTranslator::MOV_reg_rrx(Register& Rd, Register& Rm, uint32_t amount)
+{
+    std::cout << "mov " << Rd.textAlias() << ", " << Rm.textAlias() << ", (rrx)" << amount << "\n";
+}
+void AsmTranslator::MOV_reg_shift_or_rotate(Register& Rd, Register& Rm, ShiftType stype, uint32_t amount)
+{
+    amount &= 31;
+    std::cout << "mov " << Rd.textAlias() << ", " << Rm.textAlias() << ", " << stype << ", #" << amount << "\n";
 }
 
 void AsmTranslator::MOV_imm16(Register& Rd, uint16_t imm16)

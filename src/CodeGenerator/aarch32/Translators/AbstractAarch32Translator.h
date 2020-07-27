@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Common/Regs.h"
+#include "../Common/TypesAarch32.h"
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
@@ -9,9 +10,15 @@ public:
     AbstractAarch32Translator() = default;
 
     // TODO: Add <q> and <c> from dev arm page.
+    virtual void ADD_reg(Register& Rd, Register& Rn, Register& Rm) {}
+    virtual void ADD_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount) {}
+    virtual void ADD_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount) {}
     virtual void ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12) {}
     virtual void BX(Register& Rm) {}
     // virtual void MOV(Register& Rd, ModifiedConst) {}
+    virtual void MOV_reg(Register& Rd, Register& Rm) {}
+    virtual void MOV_reg_rrx(Register& Rd, Register& Rm, uint32_t amount) {}
+    virtual void MOV_reg_shift_or_rotate(Register& Rd, Register& Rm, ShiftType stype, uint32_t amount) {}
     virtual void MOV_imm16(Register& Rd, uint16_t imm16) {}
     virtual void MOVT_imm16(Register& Rd, uint16_t imm16) {}
     virtual void MOVV_imm32(Register& Rd, uint32_t imm32) {} // virtual

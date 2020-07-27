@@ -16,3 +16,14 @@ typedef uint8_t* uint8_ptr;
 typedef uint16_t* uint16_ptr;
 typedef uint32_t* uint32_ptr;
 typedef uint64_t* uint64_ptr;
+
+namespace oneCC::CodeGenerator::Aarch32 {
+
+enum ShiftType {
+    LSL,
+    LSR,
+    ASR,
+    ROR,
+};
+
+}

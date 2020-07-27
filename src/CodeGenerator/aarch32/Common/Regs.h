@@ -6,6 +6,41 @@
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
+enum RegisterDataType {
+    DataVariable,
+    DataConst,
+    DataMem,
+    DataNone,
+};
+
+class RegisterData {
+public:
+    RegisterData() = default;
+    RegisterData(RegisterDataType type, uint32_t value)
+        : m_type(type)
+        , m_value(value)
+    {
+    }
+
+    void set(const RegisterData& data)
+    {
+        m_type = data.m_type;
+        m_value = data.m_value;
+    }
+
+    bool isSame(const RegisterData& data)
+    {
+        return m_type == data.m_type && m_value == data.m_value;
+    }
+
+    RegisterDataType type() { return m_type; }
+    uint32_t value() { return m_value; }
+
+private:
+    RegisterDataType m_type;
+    uint32_t m_value { 0 };
+};
+
 const int RegistersCount = 15;
 
 enum RegisterAlias {
@@ -25,12 +60,17 @@ enum RegisterAlias {
     sp,
     lr,
     pc,
+    bad,
 };
 
 class Register {
 public:
     RegisterAlias alias() const { return m_alias; }
     std::string textAlias();
+
+    RegisterData& data() { return m_data; }
+
+    bool isBad() const { return m_bad; }
 
     // All 15 registers of a machine :^)
     static Register& R0()
@@ -129,6 +169,12 @@ public:
         return reg;
     }
 
+    static Register& Bad()
+    {
+        static Register reg(RegisterAlias::bad, true);
+        return reg;
+    }
+
     static std::vector<std::reference_wrapper<Register>>& RegisterList()
     {
         static std::vector<std::reference_wrapper<Register>> m_regs {
@@ -157,11 +203,19 @@ private:
         : m_alias(alias)
     {
     }
+
+    Register(RegisterAlias alias, bool bad)
+        : m_alias(alias)
+        , m_bad(bad)
+    {
+    }
     Register(Register const&) = delete;
     Register& operator=(Register const&) = delete;
     ~Register() = default;
 
     RegisterAlias m_alias;
+    RegisterData m_data;
+    bool m_bad { false };
 };
 
 typedef std::vector<std::reference_wrapper<Register>> RegisterList;
