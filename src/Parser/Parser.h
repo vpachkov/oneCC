@@ -1,5 +1,6 @@
 #pragma once
 #include "../AST/ASTNode.h"
+#include "../AST/Nodes/FunctionArgument.h"
 #include "../Lexer/Lexer.h"
 #include "../Lexer/Token.h"
 #include <memory>
@@ -43,9 +44,8 @@ private:
     AST::Node* functionCallStatement();
     AST::Node* statement(AST::Node* function = NULL);
 
-    AST::Node* eatFunctionArgument();
+    AST::FunctionArgumentNode* eatFunctionArgument();
     AST::Node* declareFunction();
-    
 
     AST::Node* program();
 

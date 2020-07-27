@@ -21,7 +21,7 @@
 
 namespace oneCC::Parser {
 
-AST::Node* Parser::eatFunctionArgument()
+AST::FunctionArgumentNode* Parser::eatFunctionArgument()
 {
     auto type = lookupToken();
     eatToken(Lexer::TokenType::TypeInt);
@@ -47,7 +47,7 @@ AST::Node* Parser::declareFunction()
     eatToken(Lexer::TokenType::OpenRoundBracket);
 
     // Eating args
-    std::vector<AST::Node*> arguments;
+    std::vector<AST::FunctionArgumentNode*> arguments;
     if (isType(lookupToken())) {
         auto* argDecl = eatFunctionArgument();
         softAssertNode(argDecl);
