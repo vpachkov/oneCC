@@ -1,5 +1,6 @@
 #include "RegisterManager.h"
 #include <cassert>
+#include <iostream>
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
@@ -37,7 +38,7 @@ Register& RegisterManager::chooseRegister()
     }
 
     for (int reg = 0; reg < RegistersCount; reg++) {
-        if (mask & (uint32_t)(1 << reg) > 0) {
+        if ((mask & (uint32_t)(1 << reg)) > 0) {
             return Register::RegisterList()[reg];
         }
     }
