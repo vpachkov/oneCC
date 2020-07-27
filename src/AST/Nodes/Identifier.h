@@ -1,5 +1,6 @@
 #pragma once
 #include "../ASTNode.h"
+#include "Expression.h"
 #include <string>
 
 namespace oneCC::AST {
@@ -18,8 +19,8 @@ public:
     }
 
     explicit IdentifierNode(const std::string& value, Lexer::TokenType token)
-            : Expression(servedType(), token)
-            , m_value(value)
+        : Expression(servedType(), token)
+        , m_value(value)
     {
     }
 
