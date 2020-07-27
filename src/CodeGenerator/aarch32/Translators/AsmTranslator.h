@@ -15,6 +15,12 @@ public:
     void MOVV_imm32(Register& Rd, uint32_t imm32) override;
     void POP_multiple_registers(RegisterList list) override;
     void PUSH_multiple_registers(RegisterList list) override;
+    void STR_imm_offset(Register& Rt, Register& Rn, int16_t imm12) override;
+    void STR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12) override;
+    void STR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12) override;
+    void STR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) override;
+    void STR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) override;
+    void STR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) override;
     void SUB_imm12(Register& Rd, Register& Rn, uint16_t imm12) override;
 
     void addLabel(const char* text);
