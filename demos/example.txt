@@ -1,27 +1,11 @@
-int func(int a, int b, int c) {
-    while (a == b) {
-        a = b;
-    }
-    return a + b;
+int func (int a, int b, int c) {
+    return a + b + c;
 }
 
-int lol = func(1,2,3);
-
-// It a main func
-int main (int kek, int lol)
+int main ()
 {
     int a = 1;
     int b = 5;
 
-    if (a == b){
-        return 1;
-    } else {
-        return 1;
-    }
-
-    while (a == b) {
-        a = b;
-    }
-
-    b = 3;
+    b = func(1, a, 3);
 }

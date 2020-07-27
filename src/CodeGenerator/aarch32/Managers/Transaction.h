@@ -2,6 +2,7 @@
 
 #include "../Common/Regs.h"
 #include <cassert>
+#include <iostream>
 #include <cstdint>
 
 namespace oneCC::CodeGenerator::Aarch32 {
@@ -36,7 +37,10 @@ public:
         }
     }
 
-    void setResultRegister(const Register& reg) { m_resultRegister = reg.alias(); }
+    void setResultRegister(const Register& reg) { 
+        m_resultRegister = reg.alias(); 
+    }
+    
     Register& getResultRegister() 
     { 
         assert((uint32_t)m_resultRegister < RegistersCount);

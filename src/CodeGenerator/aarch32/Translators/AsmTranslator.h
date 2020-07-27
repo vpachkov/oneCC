@@ -8,8 +8,14 @@ class AsmTranslator final : public AbstractAarch32Translator {
 public:
     AsmTranslator() = default;
 
+    void ADD_reg(Register& Rd, Register& Rn, Register& Rm) override;
+    void ADD_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount) override;
+    void ADD_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount) override;
     void ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12) override;
     void BX(Register& Rm) override;
+    void MOV_reg(Register& Rd, Register& Rm) override;
+    void MOV_reg_rrx(Register& Rd, Register& Rm, uint32_t amount) override;
+    void MOV_reg_shift_or_rotate(Register& Rd, Register& Rm, ShiftType stype, uint32_t amount) override;
     void MOV_imm16(Register& Rd, uint16_t imm16) override;
     void MOVT_imm16(Register& Rd, uint16_t imm16) override;
     void MOVV_imm32(Register& Rd, uint32_t imm32) override;
