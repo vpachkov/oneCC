@@ -31,6 +31,18 @@ char Visualizer::tokenTypeToString(int tokenType)
         return '&';
     case Lexer::TokenType::Or:
         return '|';
+    case Lexer::TokenType::EndOfStatement:
+        return ';';
+    case Lexer::TokenType::OpenSquareBracket:
+        return '[';
+    case Lexer::TokenType::CloseSquareBracket:
+        return ']';
+    case Lexer::TokenType::OpenCurlyBracket:
+        return '{';
+    case Lexer::TokenType::CloseCurlyBracket:
+        return '}';
+    case Lexer::TokenType::Identifier:
+        return 'I';
     default:
         return '?';
     }
