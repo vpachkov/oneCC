@@ -17,6 +17,12 @@ public:
     virtual void MOVV_imm32(Register& Rd, uint32_t imm32) {} // virtual
     virtual void POP_multiple_registers(RegisterList list) {}
     virtual void PUSH_multiple_registers(RegisterList list) {}
+    virtual void STR_imm_offset(Register& Rt, Register& Rn, int16_t imm12) {}
+    virtual void STR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12) {}
+    virtual void STR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12) {}
+    virtual void STR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
+    virtual void STR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
+    virtual void STR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
     virtual void SUB_imm12(Register& Rd, Register& Rn, uint16_t imm12) {}
 };
 

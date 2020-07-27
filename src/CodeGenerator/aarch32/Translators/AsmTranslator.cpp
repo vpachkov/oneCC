@@ -54,6 +54,36 @@ void AsmTranslator::PUSH_multiple_registers(RegisterList list)
     std::cout << "}\n";
 }
 
+void AsmTranslator::STR_imm_offset(Register& Rt, Register& Rn, int16_t imm12)
+{
+    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << ", #" << int(imm12) << "]\n";
+}
+
+void AsmTranslator::STR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12)
+{
+    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << ", #" << int(imm12) << "]!\n";
+}
+
+void AsmTranslator::STR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12)
+{
+    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << "], #" << int(imm12) << "\n";
+}
+
+void AsmTranslator::STR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+{
+    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << ", " << Rm.textAlias() << ", " << shift << "]\n";
+}
+
+void AsmTranslator::STR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+{
+    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << ", " << Rm.textAlias() << ", " << shift << "]!\n";
+}
+
+void AsmTranslator::STR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+{
+    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << "], " << Rm.textAlias() << ", " << shift << "\n";
+}
+
 void AsmTranslator::SUB_imm12(Register& Rd, Register& Rn, uint16_t imm12)
 {
     imm12 = imm12 & 0xfff; // making it 12bit long

@@ -18,7 +18,7 @@ void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node)
             auto* identifierNode = reinterpret_cast<AST::IdentifierNode*>(node->middleChild());
             auto& assignTransaciton = m_registerManager.initiateTransaction();
             visitNode(node->rightChild());
-            std::cout << "Store " << assignTransaciton.getResultRegister().textAlias() << " at [fp -" << m_varManager.getOffset(identifierNode->value()) << "]\n";
+            m_translator.STR_imm_offset(assignTransaciton.getResultRegister(), Register::FP(), -m_varManager.getOffset(identifierNode->value()));
             m_registerManager.didTransaction(assignTransaciton);
         }
     } else {
