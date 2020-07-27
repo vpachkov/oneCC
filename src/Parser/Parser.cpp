@@ -35,6 +35,9 @@ void Parser::generateErrorText(Lexer::TokenType tokenType)
     m_err += std::to_string(m_lexer->lineIndex());
     m_err += ", ";
     m_err += std::to_string(m_lexer->lineOffset());
+
+    m_err += "\nBut found: ";
+    m_err += oneCC::ASTUtils::Visualizer::tokenTypeToString(lookupToken(-1).type());
 }
 
 void Parser::generateErrorText(const std::vector<Lexer::TokenType>& tokenTypes)

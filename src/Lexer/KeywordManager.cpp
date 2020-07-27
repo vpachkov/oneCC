@@ -35,6 +35,7 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
     auto man = std::make_shared<KeywordManager>();
     // Binary
     man->addKeyword(Token("+", TokenType::Plus));
+    man->addKeyword(Token("-", TokenType::Minus));
     man->addKeyword(Token("*", TokenType::Multiply));
     man->addKeyword(Token("/", TokenType::Divide));
     man->addKeyword(Token("=", TokenType::Assign));
