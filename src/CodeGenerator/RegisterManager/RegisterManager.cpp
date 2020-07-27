@@ -7,7 +7,7 @@ RegisterManager::RegisterManager(std::vector<int> registers) : m_freeRegisters(s
 
 int RegisterManager::allocateRegister() {
     if (m_freeRegisters.empty()){
-        return NULL;
+        return 0;
     }
     int reg =  m_freeRegisters.back();
     m_freeRegisters.pop_back();
