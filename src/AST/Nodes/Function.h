@@ -1,6 +1,7 @@
 #pragma once
 #include "../ASTNode.h"
 #include "BlockStatement.h"
+#include "FunctionArgument.h"
 #include "Identifier.h"
 #include <string>
 #include <utility>
@@ -15,7 +16,7 @@ public:
     {
     }
 
-    FunctionNode(IdentifierNode* identifier, const std::vector<Node*>& arguments, BlockStatementNode* statement)
+    FunctionNode(IdentifierNode* identifier, const std::vector<FunctionArgumentNode*>& arguments, BlockStatementNode* statement)
         : Node(servedType())
         , m_identifier(identifier)
         , m_arguments(arguments)
@@ -23,7 +24,7 @@ public:
     {
     }
 
-    FunctionNode(IdentifierNode* identifier, std::vector<Node*>&& arguments, BlockStatementNode* statement)
+    FunctionNode(IdentifierNode* identifier, std::vector<FunctionArgumentNode*>&& arguments, BlockStatementNode* statement)
         : Node(servedType())
         , m_identifier(identifier)
         , m_arguments(std::move(arguments))
@@ -34,19 +35,19 @@ public:
     ~FunctionNode() override = default;
 
     void setIdentifier(IdentifierNode* identifier) { m_identifier = identifier; }
-    void setArguments(std::vector<Node*> arguments) { m_arguments = arguments; }
-    void setArguments(std::vector<Node*>&& arguments) { m_arguments = std::move(arguments); }
+    void setArguments(std::vector<FunctionArgumentNode*> arguments) { m_arguments = arguments; }
+    void setArguments(std::vector<FunctionArgumentNode*>&& arguments) { m_arguments = std::move(arguments); }
     void setStatement(BlockStatementNode* statement) { m_statement = statement; }
 
     IdentifierNode* identifier() const { return m_identifier; }
     BlockStatementNode* statement() const { return m_statement; }
-    const std::vector<Node*>& arguments() const { return m_arguments; }
+    const std::vector<FunctionArgumentNode*>& arguments() const { return m_arguments; }
 
     static NodeType servedType() { return Function; }
 
 private:
     IdentifierNode* m_identifier {};
-    std::vector<Node*> m_arguments {};
+    std::vector<FunctionArgumentNode*> m_arguments {};
     BlockStatementNode* m_statement {};
 };
 
