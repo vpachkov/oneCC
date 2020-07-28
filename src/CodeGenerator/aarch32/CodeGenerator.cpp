@@ -44,15 +44,6 @@ void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node)
     }
 }
 
-void CodeGeneratorAarch32::visitNode(AST::IdentifierNode* node) 
-{
-    int varId = m_varManager.getId(node->value());
-    auto& resRegister = m_registerManager.chooseRegister(RegisterData(DataVariable, varId));
-    // m_translator.MOVV_imm32(resRegister, );
-    std::cout << "Load " << resRegister.textAlias() << " -" << m_varManager.getOffset(varId) << "\n";
-    m_registerManager.activeTransaction().setResultRegister(resRegister);
-}
-
 void CodeGeneratorAarch32::visitNode(AST::BlockStatementNode* blk) 
 {
     for (auto* node : blk->statements()) {
@@ -111,10 +102,28 @@ void CodeGeneratorAarch32::visitNode(AST::ProgramNode* program)
     }
 }
 
+void CodeGeneratorAarch32::visitNode(AST::IdentifierNode* node) 
+{
+    int varId = m_varManager.getId(node->value());
+    auto data = RegisterData(DataVariable, varId);
+
+    auto& resRegister = m_registerManager.chooseRegister(data);
+    if (!resRegister.data().isSame(data)) {
+        m_translator.LDR_imm_offset(resRegister, Register::FP(), -m_varManager.getOffset(varId));
+    }
+
+    m_registerManager.activeTransaction().setResultRegister(resRegister);
+}
+
 void CodeGeneratorAarch32::visitNode(AST::IntConstNode* node) 
 {
-    auto& resRegister = m_registerManager.chooseRegister();
-    m_translator.MOVV_imm32(resRegister, node->value());
+    auto data = RegisterData(DataConst, node->value());
+
+    auto& resRegister = m_registerManager.chooseRegister(data);
+    if (!resRegister.data().isSame(data)) {
+        m_translator.MOVV_imm32(resRegister, node->value());
+    }
+
     m_registerManager.activeTransaction().setResultRegister(resRegister);
 }
 
@@ -170,8 +179,6 @@ int CodeGeneratorAarch32::allocateLocalVars(AST::FunctionNode* func)
             m_varManager.setOffset(varId, offset);
         }
     }
-
-    m_varManager.dump();
 
     m_storage[FUNC_LOCAL_VARS] = localVarsCount;
     m_translator.SUB_imm12(Register::SP(), Register::SP(), offset);
