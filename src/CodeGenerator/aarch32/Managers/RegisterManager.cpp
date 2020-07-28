@@ -24,7 +24,7 @@ Transaction& RegisterManager::activeTransaction()
 void RegisterManager::didTransaction()
 {
     m_transactions.pop_back();
-    m_inTransaction = m_transactions.empty();
+    m_inTransaction = !m_transactions.empty();
 }
 
 Register& RegisterManager::chooseRegister()

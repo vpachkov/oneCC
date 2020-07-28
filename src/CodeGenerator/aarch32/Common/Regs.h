@@ -10,7 +10,7 @@ enum RegisterDataType {
     DataVariable,
     DataConst,
     DataMem,
-    DataNone,
+    DataTmp,
 };
 
 class RegisterData {
@@ -26,6 +26,12 @@ public:
     {
         m_type = data.m_type;
         m_value = data.m_value;
+    }
+
+    void markAsTmp()
+    {
+        m_type = DataTmp;
+        m_value = 0;
     }
 
     bool isSame(const RegisterData& data)
@@ -71,6 +77,16 @@ public:
     RegisterData& data() { return m_data; }
 
     bool isBad() const { return m_bad; }
+
+    inline bool operator==(const Register& b)
+    {
+        return alias() == b.alias();
+    }
+
+    inline bool operator!=(const Register& b)
+    {
+        return alias() != b.alias();
+    }
 
     // All 15 registers of a machine :^)
     static Register& R0()
