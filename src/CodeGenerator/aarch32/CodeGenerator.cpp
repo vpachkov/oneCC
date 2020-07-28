@@ -3,25 +3,33 @@
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
+CodeGeneratorAarch32::CodeGeneratorAarch32()
+    : m_translator()
+    , m_varManager()
+    , m_registerManager(*this)
+    , m_storage()
+{
+}
+
 int CodeGeneratorAarch32::processTree(AST::Node* program)
 {
     visitNode(program);
     return 0;
 }
 
-void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node) 
+void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
 {
     if (node->operation() == Lexer::TokenType::Plus) {
         m_registerManager.initiateTransaction();
         visitNode(node->leftChild());
         Register& regL = m_registerManager.activeTransaction().getResultRegister();
-        
+
         m_registerManager.activeTransaction().forbidRegister(regL);
         visitNode(node->rightChild());
         Register& regR = m_registerManager.activeTransaction().getResultRegister();
-        
+
         m_registerManager.didTransaction();
-        
+
         Register& resReg = m_registerManager.chooseRegister();
         m_translator.ADD_reg(resReg, regL, regR);
         resReg.data().markAsTmp();
@@ -29,37 +37,39 @@ void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
     }
 
     if (node->operation() == Lexer::TokenType::Assign) {
+        // TODO: We don't need to load value
         m_registerManager.initiateTransaction();
         visitNode(node->leftChild());
         Register& regL = m_registerManager.activeTransaction().getResultRegister();
-        
+
         m_registerManager.activeTransaction().forbidRegister(regL);
         visitNode(node->rightChild());
         Register& regR = m_registerManager.activeTransaction().getResultRegister();
-        
+
         m_registerManager.didTransaction();
-        
-        Register& resReg = m_registerManager.chooseRegister();
-        m_translator.ADD_reg(resReg, regL, regR);
-        resReg.data().markAsTmp();
-        m_registerManager.activeTransaction().setResultRegister(resReg);
+
+        m_translator.MOV_reg(regL, regR);
+        m_registerManager.put(regL, regR.data());
+
+        m_registerManager.activeTransaction().setResultRegister(regL);
     }
 }
 
-void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node) 
+void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node)
 {
     if (m_storage[FUNC_PROCESSING] == 1) {
         if (node->rightChild()) {
             auto* identifierNode = reinterpret_cast<AST::IdentifierNode*>(node->middleChild());
+            
             m_registerManager.initiateTransaction();
             visitNode(node->rightChild());
-            
+
             Register& reg = m_registerManager.activeTransaction().getResultRegister();
-            
             int varId = m_varManager.getId(identifierNode->value());
-            
+
             m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
-            m_registerManager.save(reg, RegisterData(DataVariable, varId));
+            m_registerManager.put(reg, RegisterData(DataVariable, varId));
+            
             m_registerManager.didTransaction();
         }
     } else {
@@ -67,20 +77,20 @@ void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node)
     }
 }
 
-void CodeGeneratorAarch32::visitNode(AST::BlockStatementNode* blk) 
+void CodeGeneratorAarch32::visitNode(AST::BlockStatementNode* blk)
 {
     for (auto* node : blk->statements()) {
         visitNode(node);
     }
 }
-void CodeGeneratorAarch32::visitNode(AST::ReturnStatementNode* ret) 
+void CodeGeneratorAarch32::visitNode(AST::ReturnStatementNode* ret)
 {
     // TODO: Allow to set preferable register
     m_registerManager.initiateTransaction();
     visitNode(ret->returnedExpression());
     Register& resultRegister = m_registerManager.activeTransaction().getResultRegister();
     m_registerManager.didTransaction();
-    
+
     if (Register::R0() != resultRegister) {
         m_translator.MOV_reg(Register::R0(), resultRegister);
         Register::R0().data().markAsTmp();
@@ -95,7 +105,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
     m_storage[FUNC_PROCESSING] = 1;
     m_translator.addLabel(func->identifier()->value().c_str());
     initStackFrame(func);
-    
+
     // Saving args to stack
     for (int argId = 0; argId < func->arguments().size(); argId++) {
         if (argId <= 4) {
@@ -103,9 +113,9 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
             // We use this hack, since args are in r0-r4 which has RegisterAlias = 0-4;
             Register& reg = Register::RegisterList()[argId];
             int varId = m_varManager.getId(func->arguments()[argId]->identifier()->value());
-            
+
             m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
-            m_registerManager.save(reg, RegisterData(DataVariable, varId));
+            m_registerManager.put(reg, RegisterData(DataVariable, varId));
         }
     }
 
@@ -119,16 +129,66 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
     m_storage[FUNC_PROCESSING] = 0;
 }
 
-void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* a) {}
+void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
+{
+    bool wasR0busy = false;
+    m_registerManager.initiateTransaction();
+    for (int argId = 0; argId < node->arguments().size(); argId++) {
+        if (argId <= 4) {
+            // in register
+            // We use this hack, since args are in r0-r4 which has RegisterAlias = 0-4;
 
-void CodeGeneratorAarch32::visitNode(AST::ProgramNode* program) 
+            Register& putTo = Register::RegisterList()[argId];
+            if (!m_registerManager.canUse(putTo)) {
+                if (argId == 0) {
+                    wasR0busy = true;
+                }
+                m_registerManager.resolveForbiddenRegister(putTo);
+            }
+            assert(m_registerManager.canUse(putTo));
+
+            visitNode(node->arguments()[argId]);
+            Register& reg = m_registerManager.activeTransaction().getResultRegister();
+
+            if (reg != putTo) {
+                m_translator.MOV_reg(putTo, reg);
+                m_registerManager.put(putTo, reg.data());
+            }
+
+            m_registerManager.activeTransaction().forbidRegister(putTo);
+            // m_registerManager.put(reg, RegisterData(DataVariable, varId));
+        }
+    }
+
+    std::cout << "bl " << node->name() << "\n";
+
+    if (wasR0busy) {
+        // Allow param registers.
+        for (int argId = 1; argId < node->arguments().size(); argId++) {
+            Register& paramReg = Register::RegisterList()[argId];
+            m_registerManager.activeTransaction().allowRegister(paramReg);
+        }
+        Register& reg = m_registerManager.chooseRegister();
+
+        m_translator.MOV_reg(reg, Register::R0());
+        m_registerManager.put(reg, Register::R0().data());
+
+        m_registerManager.didTransaction();
+        m_registerManager.activeTransaction().setResultRegister(reg);
+    } else {
+        m_registerManager.didTransaction();
+        m_registerManager.activeTransaction().setResultRegister(Register::R0());
+    }
+}
+
+void CodeGeneratorAarch32::visitNode(AST::ProgramNode* program)
 {
     for (auto* node : program->nodes()) {
         visitNode(node);
     }
 }
 
-void CodeGeneratorAarch32::visitNode(AST::IdentifierNode* node) 
+void CodeGeneratorAarch32::visitNode(AST::IdentifierNode* node)
 {
     int varId = m_varManager.getId(node->value());
     auto data = RegisterData(DataVariable, varId);
@@ -136,20 +196,20 @@ void CodeGeneratorAarch32::visitNode(AST::IdentifierNode* node)
     auto& resRegister = m_registerManager.chooseRegister(data);
     if (!resRegister.data().isSame(data)) {
         m_translator.LDR_imm_offset(resRegister, Register::FP(), -m_varManager.getOffset(varId));
-        m_registerManager.save(resRegister, data);
+        m_registerManager.put(resRegister, data);
     }
 
     m_registerManager.activeTransaction().setResultRegister(resRegister);
 }
 
-void CodeGeneratorAarch32::visitNode(AST::IntConstNode* node) 
+void CodeGeneratorAarch32::visitNode(AST::IntConstNode* node)
 {
     auto data = RegisterData(DataConst, node->value());
 
     auto& resRegister = m_registerManager.chooseRegister(data);
     if (!resRegister.data().isSame(data)) {
         m_translator.MOVV_imm32(resRegister, node->value());
-        m_registerManager.save(resRegister, data);
+        m_registerManager.put(resRegister, data);
     }
 
     m_registerManager.activeTransaction().setResultRegister(resRegister);
