@@ -83,17 +83,17 @@ void AsmTranslator::MOV_reg_shift_or_rotate(Register& Rd, Register& Rm, ShiftTyp
 
 void AsmTranslator::MOV_imm16(Register& Rd, uint16_t imm16)
 {
-    std::cout << "mov " << Rd.textAlias() << " " << (int)imm16 << "\n";
+    std::cout << "mov " << Rd.textAlias() << ", #" << (int)imm16 << "\n";
 }
 
 void AsmTranslator::MOVT_imm16(Register& Rd, uint16_t imm16)
 {
-    std::cout << "movt " << Rd.textAlias() << " " << (int)imm16 << "\n";
+    std::cout << "movt " << Rd.textAlias() << ", #" << (int)imm16 << "\n";
 }
 
 void AsmTranslator::MOVV_imm32(Register& Rd, uint32_t imm32)
 {
-    std::cout << "mov " << Rd.textAlias() << " " << (int)imm32 << " @virt\n";
+    std::cout << "mov " << Rd.textAlias() << ", #" << (int)imm32 << " @virt\n";
 }
 
 void AsmTranslator::POP_multiple_registers(RegisterList list)

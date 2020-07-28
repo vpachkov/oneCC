@@ -11,22 +11,39 @@ int CodeGeneratorAarch32::processTree(AST::Node* program)
 
 void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node) 
 {
-    m_registerManager.initiateTransaction();
-    visitNode(node->leftChild());
-    Register& regL = m_registerManager.activeTransaction().getResultRegister();
-    
-    m_registerManager.activeTransaction().forbidRegister(regL);
-    visitNode(node->rightChild());
-    Register& regR = m_registerManager.activeTransaction().getResultRegister();
-    
-    m_registerManager.didTransaction();
-    
-    Register& resReg = m_registerManager.chooseRegister();
     if (node->operation() == Lexer::TokenType::Plus) {
+        m_registerManager.initiateTransaction();
+        visitNode(node->leftChild());
+        Register& regL = m_registerManager.activeTransaction().getResultRegister();
+        
+        m_registerManager.activeTransaction().forbidRegister(regL);
+        visitNode(node->rightChild());
+        Register& regR = m_registerManager.activeTransaction().getResultRegister();
+        
+        m_registerManager.didTransaction();
+        
+        Register& resReg = m_registerManager.chooseRegister();
         m_translator.ADD_reg(resReg, regL, regR);
+        resReg.data().markAsTmp();
+        m_registerManager.activeTransaction().setResultRegister(resReg);
     }
-    
-    m_registerManager.activeTransaction().setResultRegister(resReg);
+
+    if (node->operation() == Lexer::TokenType::Assign) {
+        m_registerManager.initiateTransaction();
+        visitNode(node->leftChild());
+        Register& regL = m_registerManager.activeTransaction().getResultRegister();
+        
+        m_registerManager.activeTransaction().forbidRegister(regL);
+        visitNode(node->rightChild());
+        Register& regR = m_registerManager.activeTransaction().getResultRegister();
+        
+        m_registerManager.didTransaction();
+        
+        Register& resReg = m_registerManager.chooseRegister();
+        m_translator.ADD_reg(resReg, regL, regR);
+        resReg.data().markAsTmp();
+        m_registerManager.activeTransaction().setResultRegister(resReg);
+    }
 }
 
 void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node) 
@@ -36,7 +53,13 @@ void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node)
             auto* identifierNode = reinterpret_cast<AST::IdentifierNode*>(node->middleChild());
             m_registerManager.initiateTransaction();
             visitNode(node->rightChild());
-            m_translator.STR_imm_offset(m_registerManager.activeTransaction().getResultRegister(), Register::FP(), -m_varManager.getOffset(identifierNode->value()));
+            
+            Register& reg = m_registerManager.activeTransaction().getResultRegister();
+            
+            int varId = m_varManager.getId(identifierNode->value());
+            
+            m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
+            m_registerManager.save(reg, RegisterData(DataVariable, varId));
             m_registerManager.didTransaction();
         }
     } else {
@@ -57,7 +80,11 @@ void CodeGeneratorAarch32::visitNode(AST::ReturnStatementNode* ret)
     visitNode(ret->returnedExpression());
     Register& resultRegister = m_registerManager.activeTransaction().getResultRegister();
     m_registerManager.didTransaction();
-    m_translator.MOV_reg(Register::R0(), resultRegister);
+    
+    if (Register::R0() != resultRegister) {
+        m_translator.MOV_reg(Register::R0(), resultRegister);
+        Register::R0().data().markAsTmp();
+    }
 }
 
 void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* a) {}
@@ -76,18 +103,17 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
             // We use this hack, since args are in r0-r4 which has RegisterAlias = 0-4;
             Register& reg = Register::RegisterList()[argId];
             int varId = m_varManager.getId(func->arguments()[argId]->identifier()->value());
-            m_registerManager.save(reg, RegisterData(DataVariable, varId));
+            
             m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
-        } else {
-            // on stack
+            m_registerManager.save(reg, RegisterData(DataVariable, varId));
         }
     }
 
-    m_translator.addLabel("...");
+    m_translator.addLabel("");
 
     visitNode(func->statement());
 
-    m_translator.addLabel("...");
+    m_translator.addLabel("");
     restoreStackFrame(func);
     m_translator.addLabel("");
     m_storage[FUNC_PROCESSING] = 0;
@@ -110,6 +136,7 @@ void CodeGeneratorAarch32::visitNode(AST::IdentifierNode* node)
     auto& resRegister = m_registerManager.chooseRegister(data);
     if (!resRegister.data().isSame(data)) {
         m_translator.LDR_imm_offset(resRegister, Register::FP(), -m_varManager.getOffset(varId));
+        m_registerManager.save(resRegister, data);
     }
 
     m_registerManager.activeTransaction().setResultRegister(resRegister);
@@ -122,6 +149,7 @@ void CodeGeneratorAarch32::visitNode(AST::IntConstNode* node)
     auto& resRegister = m_registerManager.chooseRegister(data);
     if (!resRegister.data().isSame(data)) {
         m_translator.MOVV_imm32(resRegister, node->value());
+        m_registerManager.save(resRegister, data);
     }
 
     m_registerManager.activeTransaction().setResultRegister(resRegister);
