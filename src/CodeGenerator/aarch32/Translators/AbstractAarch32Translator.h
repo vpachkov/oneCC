@@ -15,6 +15,12 @@ public:
     virtual void ADD_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount) {}
     virtual void ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12) {}
     virtual void BX(Register& Rm) {}
+    virtual void LDR_imm_offset(Register& Rt, Register& Rn, int16_t imm12) {}
+    virtual void LDR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12) {}
+    virtual void LDR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12) {}
+    virtual void LDR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
+    virtual void LDR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
+    virtual void LDR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
     // virtual void MOV(Register& Rd, ModifiedConst) {}
     virtual void MOV_reg(Register& Rd, Register& Rm) {}
     virtual void MOV_reg_rrx(Register& Rd, Register& Rm, uint32_t amount) {}
