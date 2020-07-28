@@ -23,15 +23,10 @@ enum StorageKeys {
 
 class CodeGeneratorAarch32 final : public AST::AbstractAST {
 public:
-    CodeGeneratorAarch32()
-        : m_translator()
-        , m_varManager()
-        , m_registerManager()
-        , m_storage()
-    {
-    }
+    CodeGeneratorAarch32();
 
     int processTree(AST::Node* program);
+    AsmTranslator& translator() { return m_translator; }
 
 private:
     // From AST::AbstractAST

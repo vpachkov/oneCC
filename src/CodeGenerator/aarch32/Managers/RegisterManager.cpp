@@ -1,8 +1,14 @@
 #include "RegisterManager.h"
+#include "../CodeGenerator.h"
 #include <cassert>
 #include <iostream>
 
 namespace oneCC::CodeGenerator::Aarch32 {
+
+RegisterManager::RegisterManager(CodeGeneratorAarch32& codeGen)
+    : m_codeGenerator(codeGen)
+{
+}
 
 void RegisterManager::initiateTransaction(bool ignoreForbiddenRegisters)
 {
@@ -23,20 +29,59 @@ Transaction& RegisterManager::activeTransaction()
 
 void RegisterManager::didTransaction()
 {
+    assert(!m_transactions.empty());
+
+    m_transactions.back().restoreReplaces([&](std::pair<Register&, Register&>& replace) {
+        m_codeGenerator.translator().MOV_reg(replace.first, replace.second);
+        put(replace.first, replace.first.data());
+    });
+
     m_transactions.pop_back();
     m_inTransaction = !m_transactions.empty();
 }
 
-Register& RegisterManager::chooseRegister()
+bool RegisterManager::canUse(const Register& reg)
 {
     uint32_t mask = (uint32_t)TransactionMask::GeneralPurposeOnly;
     if (m_inTransaction) {
         mask = activeTransaction().mask();
     }
 
+    return ((mask & (uint32_t)(1 << reg.alias())) > 0);
+}
+
+// This is a bad solution, we need to plan this in advance.
+int RegisterManager::resolveForbiddenRegister(Register& reg)
+{
+    if (canUse(reg)) {
+        return 0;
+    }
+    Register& with = chooseRegisterFromBack();
+    activeTransaction().replaceForbidRegister(reg, with);
+    m_codeGenerator.translator().MOV_reg(with, reg);
+    put(with, reg.data());
+    return 0;
+}
+
+Register& RegisterManager::chooseRegister()
+{
     for (int reg = 0; reg < RegistersCount; reg++) {
-        if ((mask & (uint32_t)(1 << reg)) > 0) {
-            return Register::RegisterList()[reg];
+        Register& tmpreg = Register::RegisterList()[reg];
+        if (canUse(tmpreg)) {
+            return tmpreg;
+        }
+    }
+
+    assert(0 && "No regs found");
+    return Register::Bad();
+}
+
+Register& RegisterManager::chooseRegisterFromBack()
+{
+    for (int reg = RegistersCount - 1; reg >= 0; reg--) {
+        Register& tmpreg = Register::RegisterList()[reg];
+        if (canUse(tmpreg)) {
+            return tmpreg;
         }
     }
 
@@ -53,7 +98,7 @@ Register& RegisterManager::chooseRegister(const RegisterData& data)
 
     for (int reg = RegistersCount - 1; reg >= 0; reg--) {
         Register& tmpreg = Register::RegisterList()[reg];
-        if ((mask & (uint32_t)(1 << reg)) > 0) {
+        if (canUse(tmpreg)) {
             if (tmpreg.data().isSame(data)) {
                 return Register::RegisterList()[reg];
             }
@@ -61,8 +106,9 @@ Register& RegisterManager::chooseRegister(const RegisterData& data)
     }
 
     for (int reg = 0; reg < RegistersCount; reg++) {
-        if ((mask & (uint32_t)(1 << reg)) > 0) {
-            return Register::RegisterList()[reg];
+        Register& tmpreg = Register::RegisterList()[reg];
+        if (canUse(tmpreg)) {
+            return tmpreg;
         }
     }
 
@@ -70,15 +116,11 @@ Register& RegisterManager::chooseRegister(const RegisterData& data)
     return Register::Bad();
 }
 
-int RegisterManager::save(Register& reg, const RegisterData& data)
+int RegisterManager::put(Register& reg, const RegisterData& data)
 {
     assert((!reg.isBad()));
-    uint32_t mask = (uint32_t)TransactionMask::All;
-    if (m_inTransaction) {
-        mask = activeTransaction().mask();
-    }
 
-    if ((mask & (uint32_t)(1 << (uint32_t)reg.alias())) > 0) {
+    if (canUse(reg)) {
         reg.data().set(data);
         return 0;
     }
