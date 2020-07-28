@@ -37,6 +37,36 @@ void AsmTranslator::BX(Register& Rm)
     std::cout << "bx " << Rm.textAlias() << "\n";
 }
 
+void AsmTranslator::LDR_imm_offset(Register& Rt, Register& Rn, int16_t imm12)
+{
+    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << ", #" << int(imm12) << "]\n";
+}
+
+void AsmTranslator::LDR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12)
+{
+    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << ", #" << int(imm12) << "]!\n";
+}
+
+void AsmTranslator::LDR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12)
+{
+    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << "], #" << int(imm12) << "\n";
+}
+
+void AsmTranslator::LDR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+{
+    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << ", " << Rm.textAlias() << ", " << shift << "]\n";
+}
+
+void AsmTranslator::LDR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+{
+    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << ", " << Rm.textAlias() << ", " << shift << "]!\n";
+}
+
+void AsmTranslator::LDR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+{
+    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << "], " << Rm.textAlias() << ", " << shift << "\n";
+}
+
 void AsmTranslator::MOV_reg(Register& Rd, Register& Rm)
 {
     std::cout << "mov " << Rd.textAlias() << ", " << Rm.textAlias() << "\n";
