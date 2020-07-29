@@ -36,6 +36,9 @@ public:
     virtual void STR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
     virtual void STR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
     virtual void STR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift = 0) {}
+    virtual void SUB_reg(Register& Rd, Register& Rn, Register& Rm) {}
+    virtual void SUB_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount) {}
+    virtual void SUB_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount) {}
     virtual void SUB_imm12(Register& Rd, Register& Rn, uint16_t imm12) {}
 };
 
