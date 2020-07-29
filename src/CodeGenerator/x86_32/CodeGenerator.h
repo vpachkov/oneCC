@@ -2,6 +2,7 @@
 
 #include "../../AST/AbstractAST.h"
 #include "../../Lexer/Token.h"
+#include "../../SemanticAnalyzer/Scoper/Scoper.h"
 #include "../RegisterManager/RegisterManager.h"
 #include "Translators/AsmTranslator.h"
 #include "Common/Regs.h"
@@ -37,7 +38,11 @@ private:
 
     RegisterManager m_registerManager {};
     AsmTranslator m_asmTranslator {};
-    uint64_t m_labelCount {0};
+    SemanticAnalyzer::Scoper m_scoper {};
+
+    std::map<AST::IdentifierNode*, std::string> m_functionLabels;
+    uint64_t m_labelCount { 0 };
+    uint64_t m_basePointerOffset { 0 };
 };
 
 }
