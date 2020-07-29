@@ -45,8 +45,9 @@ void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node)
             m_transactionManager.end();
 
             int varId = m_varManager.getId(identifierNode->value());
-            m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
-            m_registerManager.put(reg, RegisterData(DataVariable, varId));
+            if (m_registerManager.put(reg, RegisterData(DataVariable, varId)) == 0) {
+                m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
+            }
         }
     } else {
         // We are no in func, seems a global
@@ -68,8 +69,9 @@ void CodeGeneratorAarch32::visitNode(AST::ReturnStatementNode* ret)
     m_transactionManager.end();
 
     if (Register::R0() != resultRegister) {
-        m_translator.MOV_reg(Register::R0(), resultRegister);
-        Register::R0().data().markAsTmp();
+        if (m_registerManager.put(Register::R0(), RegisterData::Tmp()) == 0) {
+            m_translator.MOV_reg(Register::R0(), resultRegister);
+        }
     }
 }
 
@@ -90,8 +92,9 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
             Register& reg = Register::RegisterList()[argId];
             int varId = m_varManager.getId(func->arguments()[argId]->identifier()->value());
 
-            m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
-            m_registerManager.put(reg, RegisterData(DataVariable, varId));
+            if (m_registerManager.put(reg, RegisterData(DataVariable, varId)) == 0) {
+                m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
+            }
         }
     }
 
@@ -127,8 +130,9 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
             Register& reg = m_transactionManager.active().resultRegister();
 
             if (reg != putTo) {
-                m_translator.MOV_reg(putTo, reg);
-                m_registerManager.put(putTo, reg.data());
+                if (m_registerManager.put(putTo, reg.data()) == 0) {
+                    m_translator.MOV_reg(putTo, reg);
+                }
             }
 
             m_transactionManager.active().forbidRegister(putTo);
@@ -146,8 +150,9 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
         }
         Register& reg = m_registerManager.chooseRegister();
 
-        m_translator.MOV_reg(reg, Register::R0());
-        m_registerManager.put(reg, Register::R0().data());
+        if (m_registerManager.put(reg, Register::R0().data()) == 0) {
+            m_translator.MOV_reg(reg, Register::R0());
+        }
 
         m_transactionManager.end();
         m_transactionManager.active().setResultRegister(reg);
@@ -171,8 +176,9 @@ void CodeGeneratorAarch32::visitNode(AST::IdentifierNode* node)
 
     auto& resRegister = m_registerManager.chooseRegister(data);
     if (!resRegister.data().isSame(data)) {
-        m_translator.LDR_imm_offset(resRegister, Register::FP(), -m_varManager.getOffset(varId));
-        m_registerManager.put(resRegister, data);
+        if (m_registerManager.put(resRegister, data) == 0) {
+            m_translator.LDR_imm_offset(resRegister, Register::FP(), -m_varManager.getOffset(varId));
+        }
     }
 
     m_transactionManager.active().setResultRegister(resRegister);
@@ -184,8 +190,9 @@ void CodeGeneratorAarch32::visitNode(AST::IntConstNode* node)
 
     auto& resRegister = m_registerManager.chooseRegister(data);
     if (!resRegister.data().isSame(data)) {
-        m_translator.MOVV_imm32(resRegister, node->value());
-        m_registerManager.put(resRegister, data);
+        if (m_registerManager.put(resRegister, data) == 0) {
+            m_translator.MOVV_imm32(resRegister, node->value());
+        }
     }
 
     m_transactionManager.active().setResultRegister(resRegister);
@@ -206,8 +213,9 @@ void CodeGeneratorAarch32::genBinaryMathOperation(AST::BinaryOperationNode* node
 
     // Saving result right operand
     Register& resultReg = m_registerManager.chooseRegister();
-    genAsm(resultReg, leftReg, rightReg);
-    resultReg.data().markAsTmp();
+    if (m_registerManager.put(resultReg, RegisterData::Tmp()) == 0) {
+        genAsm(resultReg, leftReg, rightReg);
+    }
     m_transactionManager.active().setResultRegister(resultReg);
 }
 
@@ -224,7 +232,9 @@ void CodeGeneratorAarch32::genBinaryAssign(AST::BinaryOperationNode* node)
     Register& rightReg = m_transactionManager.active().resultRegister();
     m_transactionManager.end();
 
-    m_translator.MOV_reg(leftReg, rightReg);
+    if (m_registerManager.put(leftReg, leftData) == 0) {
+        m_translator.MOV_reg(leftReg, rightReg);
+    }
     m_transactionManager.active().setResultRegister(leftReg);
 }
 
