@@ -144,6 +144,22 @@ void AsmTranslator::STR_reg_post_indexed(Register& Rt, Register& Rn, Register& R
     std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << "], " << Rm.textAlias() << ", " << shift << "\n";
 }
 
+void AsmTranslator::SUB_reg(Register& Rd, Register& Rn, Register& Rm)
+{
+    std::cout << "sub " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << "\n";
+}
+
+void AsmTranslator::SUB_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount)
+{
+    std::cout << "sub " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << ", (rrx)" << amount << "\n";
+}
+
+void AsmTranslator::SUB_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount)
+{
+    amount &= 31;
+    std::cout << "sub " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << ", " << stype << ", #" << amount << "\n";
+}
+
 void AsmTranslator::SUB_imm12(Register& Rd, Register& Rn, uint16_t imm12)
 {
     imm12 = imm12 & 0xfff; // making it 12bit long

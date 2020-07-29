@@ -3,9 +3,9 @@
 #include "../../AST/AbstractAST.h"
 #include "../../Lexer/Token.h"
 #include "Common/Regs.h"
-#include "Managers/VarManager.h"
 #include "Managers/RegisterManager.h"
 #include "Managers/TransactionManager.h"
+#include "Managers/VarManager.h"
 #include "Translators/AsmTranslator.h"
 #include <cstdint>
 #include <iostream>
@@ -27,7 +27,7 @@ public:
     CodeGeneratorAarch32();
 
     int processTree(AST::Node* program);
-    
+
     AsmTranslator& translator() { return m_translator; }
     RegisterManager& registerManager() { return m_registerManager; }
     TransactionManager& transactionManager() { return m_transactionManager; }
@@ -48,6 +48,9 @@ private:
     void visitNode(AST::ProgramNode* a) override;
     void visitNode(AST::IntConstNode* a) override;
 
+    template <typename Callback>
+    void genBinaryMathOperation(AST::BinaryOperationNode* node, Callback genAsm);
+    void genBinaryAssign(AST::BinaryOperationNode* node);
     void initStackFrame(AST::FunctionNode* func);
     void restoreStackFrame(AST::FunctionNode* func);
     int allocateArgVars(AST::FunctionNode* func);
