@@ -12,6 +12,8 @@ enum TransactionMask {
     All = 0b111111111111111, // sr0-r15 are avail.
 };
 
+// Transaction can be used before every visitNode in code generation
+// to control the resources sharing inside this visitNode.
 class Transaction {
 public:
     Transaction(int id)
@@ -73,7 +75,7 @@ public:
         m_resultRegister = reg.alias();
     }
 
-    Register& getResultRegister()
+    Register& resultRegister()
     {
         assert((uint32_t)m_resultRegister < RegistersCount);
         return Register::RegisterList()[(uint32_t)m_resultRegister];
