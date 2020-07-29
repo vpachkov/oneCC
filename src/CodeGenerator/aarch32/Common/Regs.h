@@ -35,6 +35,12 @@ public:
         m_value = 0;
     }
 
+    static RegisterData& Tmp()
+    {
+        static RegisterData data(DataTmp, 0);
+        return data;
+    }
+
     bool isSame(const RegisterData& data)
     {
         return m_type == data.m_type && m_value == data.m_value;

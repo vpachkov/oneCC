@@ -81,6 +81,17 @@ int RegisterManager::put(Register& reg, const RegisterData& data)
     assert((!reg.isBad()));
 
     if (canUse(reg)) {
+        if (reg.data().type() == DataTmp) {
+            return 0;
+        }
+
+        if (reg.data().isSame(data)) {
+            return 1;
+        }
+        // if (reg.data().type() == DataVariable) {
+        //     int offset = m_codeGenerator.varManager().getOffset(reg.data().value());
+        //     m_codeGenerator.translator().STR_imm_offset(reg, Register::FP(), -offset);
+        // }
         reg.data().set(data);
         return 0;
     }
