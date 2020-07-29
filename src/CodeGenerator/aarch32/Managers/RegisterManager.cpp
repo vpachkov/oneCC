@@ -10,44 +10,15 @@ RegisterManager::RegisterManager(CodeGeneratorAarch32& codeGen)
 {
 }
 
-void RegisterManager::initiateTransaction(bool ignoreForbiddenRegisters)
-{
-    m_inTransaction = true;
-    m_transactions.emplace_back(m_opId++);
-
-    // Forbid registers which have been forbidden in prev transaction
-    if (!ignoreForbiddenRegisters && m_transactions.size() > 1) {
-        uint32_t mask = m_transactions[m_transactions.size() - 2].mask();
-        m_transactions.back().setWhiteListRegisters(mask);
-    }
-}
-
-Transaction& RegisterManager::activeTransaction()
-{
-    return m_transactions.back();
-}
-
-void RegisterManager::didTransaction()
-{
-    assert(!m_transactions.empty());
-
-    m_transactions.back().restoreReplaces([&](std::pair<Register&, Register&>& replace) {
-        m_codeGenerator.translator().MOV_reg(replace.first, replace.second);
-        put(replace.first, replace.first.data());
-    });
-
-    m_transactions.pop_back();
-    m_inTransaction = !m_transactions.empty();
-}
-
+// Returns if the register can be used in this transaction.
 bool RegisterManager::canUse(const Register& reg)
 {
     uint32_t mask = (uint32_t)TransactionMask::GeneralPurposeOnly;
-    if (m_inTransaction) {
-        mask = activeTransaction().mask();
+    if (m_codeGenerator.transactionManager().in()) {
+        mask = m_codeGenerator.transactionManager().active().mask();
     }
 
-    return ((mask & (uint32_t)(1 << reg.alias())) > 0);
+    return (mask & (uint32_t)(1 << reg.alias()));
 }
 
 // This is a bad solution, we need to plan this in advance.
@@ -57,7 +28,7 @@ int RegisterManager::resolveForbiddenRegister(Register& reg)
         return 0;
     }
     Register& with = chooseRegisterFromBack();
-    activeTransaction().replaceForbidRegister(reg, with);
+    m_codeGenerator.transactionManager().active().replaceForbidRegister(reg, with);
     m_codeGenerator.translator().MOV_reg(with, reg);
     put(with, reg.data());
     return 0;
@@ -89,13 +60,9 @@ Register& RegisterManager::chooseRegisterFromBack()
     return Register::Bad();
 }
 
+// Looks if a register has such data and returns if so, or return other register.
 Register& RegisterManager::chooseRegister(const RegisterData& data)
 {
-    uint32_t mask = (uint32_t)TransactionMask::GeneralPurposeOnly;
-    if (m_inTransaction) {
-        mask = activeTransaction().mask();
-    }
-
     for (int reg = RegistersCount - 1; reg >= 0; reg--) {
         Register& tmpreg = Register::RegisterList()[reg];
         if (canUse(tmpreg)) {
@@ -105,17 +72,10 @@ Register& RegisterManager::chooseRegister(const RegisterData& data)
         }
     }
 
-    for (int reg = 0; reg < RegistersCount; reg++) {
-        Register& tmpreg = Register::RegisterList()[reg];
-        if (canUse(tmpreg)) {
-            return tmpreg;
-        }
-    }
-
-    assert(0 && "No regs found");
-    return Register::Bad();
+    return chooseRegister();
 }
 
+// Sets data to the register
 int RegisterManager::put(Register& reg, const RegisterData& data)
 {
     assert((!reg.isBad()));
@@ -128,6 +88,7 @@ int RegisterManager::put(Register& reg, const RegisterData& data)
     return -1;
 }
 
+// Returns if there is a register with such data.
 Register& RegisterManager::has(const RegisterData& data)
 {
     for (int reg = 0; reg < RegistersCount; reg++) {
