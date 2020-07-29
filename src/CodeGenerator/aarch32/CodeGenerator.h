@@ -5,6 +5,7 @@
 #include "Common/Regs.h"
 #include "Managers/VarManager.h"
 #include "Managers/RegisterManager.h"
+#include "Managers/TransactionManager.h"
 #include "Translators/AsmTranslator.h"
 #include <cstdint>
 #include <iostream>
@@ -26,7 +27,11 @@ public:
     CodeGeneratorAarch32();
 
     int processTree(AST::Node* program);
+    
     AsmTranslator& translator() { return m_translator; }
+    RegisterManager& registerManager() { return m_registerManager; }
+    TransactionManager& transactionManager() { return m_transactionManager; }
+    VarManager& varManager() { return m_varManager; }
 
 private:
     // From AST::AbstractAST
@@ -50,6 +55,7 @@ private:
 
     AsmTranslator m_translator;
     RegisterManager m_registerManager;
+    TransactionManager m_transactionManager;
     VarManager m_varManager;
 
     // Storage is used as a unique place to store some values and

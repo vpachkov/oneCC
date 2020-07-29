@@ -28,6 +28,7 @@ public:
         m_value = data.m_value;
     }
 
+    // We use markAsTmp when we don't know what kind of data stored where.
     void markAsTmp()
     {
         m_type = DataTmp;
