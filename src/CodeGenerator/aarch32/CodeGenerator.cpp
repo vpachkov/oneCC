@@ -21,33 +21,15 @@ int CodeGeneratorAarch32::processTree(AST::Node* program)
 void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
 {
     if (node->operation() == Lexer::TokenType::Plus) {
-        m_transactionManager.create();
-        visitNode(node->leftChild());
-        Register& leftReg = m_transactionManager.active().resultRegister();
-        m_transactionManager.active().forbidRegister(leftReg);
-        visitNode(node->rightChild());
-        Register& rightReg = m_transactionManager.active().resultRegister();
-        m_transactionManager.end();
-
-        // Saving result right operand
-        Register& resultReg = m_registerManager.chooseRegister();
-        m_translator.ADD_reg(resultReg, leftReg, rightReg);
-        resultReg.data().markAsTmp();
-        m_transactionManager.active().setResultRegister(resultReg);
+        genBinaryMathOperation(node, [&](Register& res, Register& l, Register& r) {
+            m_translator.ADD_reg(res, l, r);
+        });
+    } else if (node->operation() == Lexer::TokenType::Minus) {
+        genBinaryMathOperation(node, [&](Register& res, Register& l, Register& r) {
+            m_translator.SUB_reg(res, l, r);
+        });
     } else if (node->operation() == Lexer::TokenType::Assign) {
-        auto identifierNode = reinterpret_cast<AST::IdentifierNode*>(node->leftChild());
-        auto leftData = RegisterData(DataVariable, m_varManager.getId(identifierNode->value()));
-        Register& leftReg = m_registerManager.chooseRegister(leftData);
-        leftReg.data().set(leftData);
-
-        m_transactionManager.create();
-        m_transactionManager.active().forbidRegister(leftReg);
-        visitNode(node->rightChild());
-        Register& rightReg = m_transactionManager.active().resultRegister();
-        m_transactionManager.end();
-
-        m_translator.MOV_reg(leftReg, rightReg);
-        m_transactionManager.active().setResultRegister(leftReg);
+        genBinaryAssign(node);
     }
 }
 
@@ -207,6 +189,43 @@ void CodeGeneratorAarch32::visitNode(AST::IntConstNode* node)
     }
 
     m_transactionManager.active().setResultRegister(resRegister);
+}
+
+// Help generators
+
+template <typename Callback>
+void CodeGeneratorAarch32::genBinaryMathOperation(AST::BinaryOperationNode* node, Callback genAsm)
+{
+    m_transactionManager.create();
+    visitNode(node->leftChild());
+    Register& leftReg = m_transactionManager.active().resultRegister();
+    m_transactionManager.active().forbidRegister(leftReg);
+    visitNode(node->rightChild());
+    Register& rightReg = m_transactionManager.active().resultRegister();
+    m_transactionManager.end();
+
+    // Saving result right operand
+    Register& resultReg = m_registerManager.chooseRegister();
+    genAsm(resultReg, leftReg, rightReg);
+    resultReg.data().markAsTmp();
+    m_transactionManager.active().setResultRegister(resultReg);
+}
+
+void CodeGeneratorAarch32::genBinaryAssign(AST::BinaryOperationNode* node)
+{
+    auto identifierNode = reinterpret_cast<AST::IdentifierNode*>(node->leftChild());
+    auto leftData = RegisterData(DataVariable, m_varManager.getId(identifierNode->value()));
+    Register& leftReg = m_registerManager.chooseRegister(leftData);
+    leftReg.data().set(leftData);
+
+    m_transactionManager.create();
+    m_transactionManager.active().forbidRegister(leftReg);
+    visitNode(node->rightChild());
+    Register& rightReg = m_transactionManager.active().resultRegister();
+    m_transactionManager.end();
+
+    m_translator.MOV_reg(leftReg, rightReg);
+    m_transactionManager.active().setResultRegister(leftReg);
 }
 
 void CodeGeneratorAarch32::initStackFrame(AST::FunctionNode* func)
