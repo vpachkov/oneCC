@@ -9,6 +9,13 @@
 
 namespace oneCC::SemanticAnalyzer {
 
+class Variable {
+public:
+    AST::IdentifierNode* identifier {};
+    int scopeLevel {0};
+    int memoryPosition {0}; // keeps position relative to base pointer
+};
+
 class Scoper {
 public:
     Scoper() = default;
@@ -17,10 +24,16 @@ public:
     void enterScope();
     void exitScope();
     bool checkScope(AST::IdentifierNode* node, int shift = 0);
+
+    bool setMemoryPosition(AST::IdentifierNode* node, int memoryPosition);
+    bool setMemoryPosition(std::string& node, int memoryPosition);
+
+    int getMemoryPosition(AST::IdentifierNode* node);
+
     AST::IdentifierNode* findVar(const std::string& node);
 
 private:
-    std::vector<std::pair<AST::IdentifierNode*, int>> m_vars {};
+    std::vector<Variable> m_vars {};
     int m_scopeLevel { 0 };
 };
 
