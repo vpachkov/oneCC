@@ -7,7 +7,7 @@ void Scoper::enterScope() {
 }
 
 void Scoper::exitScope() {
-    while(!m_vars.empty() && m_vars.back().second == m_scopeLevel) {
+    while(!m_vars.empty() && m_vars.back().scopeLevel == m_scopeLevel) {
         m_vars.pop_back();
     }
     m_scopeLevel--;
@@ -15,15 +15,15 @@ void Scoper::exitScope() {
 
 bool Scoper::addNode(AST::IdentifierNode* node) {
     if (checkScope(node)) {
-        m_vars.emplace_back(node, m_scopeLevel);
+        m_vars.push_back(Variable{ node, m_scopeLevel });
         return true;
     }
     return false;
 }
 
-bool Scoper::addNode(AST::IdentifierNode *node, int shift) {
+bool Scoper::addNode(AST::IdentifierNode* node, int shift) {
     if (checkScope(node)) {
-        m_vars.emplace_back(node, m_scopeLevel + shift);
+        m_vars.push_back(Variable{ node, m_scopeLevel + shift });
         return true;
     }
     return false;
@@ -31,14 +31,43 @@ bool Scoper::addNode(AST::IdentifierNode *node, int shift) {
 
 bool Scoper::checkScope(AST::IdentifierNode* node, int shift) {
     auto var = m_vars.rbegin();
-    for (; var != m_vars.rend() && (*var).second == m_scopeLevel + shift && (*var).first->value() != node->value() ; var++);
-    return var == m_vars.rend() || (*var).first->value() != node->value();
+    for (; var != m_vars.rend() && (*var).scopeLevel == m_scopeLevel + shift && (*var).identifier->value() != node->value() ; var++);
+    return var == m_vars.rend() || (*var).identifier->value() != node->value();
 }
 
 AST::IdentifierNode* Scoper::findVar(const std::string& node) {
     auto var = m_vars.rbegin();
-    for (; var != m_vars.rend() && (*var).first->value() != node; var++ );
-    return var == m_vars.rend() ? NULL : (*var).first;
+    for (; var != m_vars.rend() && (*var).identifier->value() != node; var++ );
+    return var == m_vars.rend() ? NULL : (*var).identifier;
 }
+
+    bool Scoper::setMemoryPosition(AST::IdentifierNode* node, int memoryPosition) {
+        auto var = m_vars.rbegin();
+        for (; var != m_vars.rend() && (*var).identifier->value() != node->value(); var++ );
+        if (var == m_vars.rend()) {
+            return false;
+        }
+        (*var).memoryPosition = memoryPosition;
+        return true;
+    }
+
+    bool Scoper::setMemoryPosition(std::string &node, int memoryPosition) {
+        auto var = m_vars.rbegin();
+        for (; var != m_vars.rend() && (*var).identifier->value() != node; var++ );
+        if (var == m_vars.rend()) {
+            return false;
+        }
+        (*var).memoryPosition = memoryPosition;
+        return true;
+    }
+
+    int Scoper::getMemoryPosition(AST::IdentifierNode* node) {
+        auto var = m_vars.rbegin();
+        for (; var != m_vars.rend() && (*var).identifier->value() != node->value(); var++ );
+        if (var == m_vars.rend()) {
+            return -1;
+        }
+        return (*var).memoryPosition;
+    }
 
 }
