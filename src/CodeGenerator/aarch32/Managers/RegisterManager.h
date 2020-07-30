@@ -17,7 +17,8 @@ public:
     Register& chooseRegisterFromBack();
     int resolveForbiddenRegister(Register& reg);
 
-    int put(Register& reg, const RegisterData& data);
+    int write(Register& reg);
+    int replace(Register& reg, const RegisterData& data);
     Register& has(const RegisterData& data);
 
 private:

@@ -30,7 +30,7 @@ int RegisterManager::resolveForbiddenRegister(Register& reg)
     Register& with = chooseRegisterFromBack();
     m_codeGenerator.transactionManager().active().replaceForbidRegister(reg, with);
     m_codeGenerator.translator().MOV_reg(with, reg);
-    put(with, reg.data());
+    replace(with, reg.data());
     return 0;
 }
 
@@ -75,8 +75,8 @@ Register& RegisterManager::chooseRegister(const RegisterData& data)
     return chooseRegister();
 }
 
-// Sets data to the register
-int RegisterManager::put(Register& reg, const RegisterData& data)
+// Replace the original register data with a new one
+int RegisterManager::replace(Register& reg, const RegisterData& data)
 {
     assert((!reg.isBad()));
 
@@ -88,12 +88,43 @@ int RegisterManager::put(Register& reg, const RegisterData& data)
         if (reg.data().isSame(data)) {
             return 1;
         }
-        // if (reg.data().type() == DataVariable) {
-        //     int offset = m_codeGenerator.varManager().getOffset(reg.data().value());
-        //     m_codeGenerator.translator().STR_imm_offset(reg, Register::FP(), -offset);
-        // }
+        
+        if (reg.data().type() == DataVariable && reg.data().edited()) {
+            int offset = m_codeGenerator.varManager().getOffset(reg.data().value());
+            m_codeGenerator.translator().STR_imm_offset(reg, Register::FP(), -offset);
+        }
+
+        if (reg.data().type() == DataMem && reg.data().edited()) {
+            int offset = m_codeGenerator.varManager().getOffset(reg.data().value());
+            std::cout << "TODO: store at mem " << reg.data().value() << "\n";;
+        }
+        
         reg.data().set(data);
         return 0;
+    }
+
+    return -1;
+}
+
+// Write works in 2 cases.
+// 1) We write a new value to a varible and the register is used as a cache. With replace it will be swapped back to the stack.
+// 2) We write a new value to a place at mem and the register is used as a cache. With replace it will be swapped back to the mem.
+int RegisterManager::write(Register& reg)
+{
+    assert((!reg.isBad()));
+
+    if (canUse(reg)) {
+        if (reg.data().type() == DataVariable) {
+            reg.data().setEdited(true);
+            return 0;
+        }
+
+        if (reg.data().type() == DataMem) {
+            reg.data().setEdited(true);
+            return 0;
+        }
+
+       return -1;
     }
 
     return -1;
