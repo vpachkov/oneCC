@@ -41,7 +41,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ADC_reg8_rm8(Register op1, RM op2) {
@@ -49,13 +49,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ADC_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "adc ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -63,7 +63,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ADC_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "adc ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -71,7 +71,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ADC_rm32_reg32(RM op1, Register op2) {
         std::cout << "adc ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -79,7 +79,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ADC_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "adc ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -87,7 +87,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ADC_rm8_reg8(RM op1, Register op2) {
         std::cout << "adc ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -109,7 +109,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ADD_reg8_rm8(Register op1, RM op2) {
@@ -117,13 +117,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ADD_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "add ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -131,7 +131,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ADD_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "add ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -139,7 +139,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ADD_rm32_reg32(RM op1, Register op2) {
         std::cout << "add ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -147,7 +147,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ADD_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "add ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -155,7 +155,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ADD_rm8_reg8(RM op1, Register op2) {
         std::cout << "add ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -189,7 +189,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::AND_reg8_rm8(Register op1, RM op2) {
@@ -197,13 +197,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::AND_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "and ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -211,7 +211,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::AND_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "and ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -219,7 +219,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::AND_rm32_reg32(RM op1, Register op2) {
         std::cout << "and ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -227,7 +227,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::AND_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "and ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -235,7 +235,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::AND_rm8_reg8(RM op1, Register op2) {
         std::cout << "and ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -243,7 +243,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ARPL_rm16_reg16(RM op1, Register op2) {
         std::cout << "arpl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -266,7 +266,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::CALL_rm32(RM op1) {
         std::cout << "call ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::CBW() {
@@ -331,7 +331,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::CMP_reg8_rm8(Register op1, RM op2) {
@@ -339,13 +339,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::CMP_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "cmp ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -353,7 +353,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::CMP_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "cmp ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -361,7 +361,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::CMP_rm32_reg32(RM op1, Register op2) {
         std::cout << "cmp ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -369,7 +369,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::CMP_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "cmp ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -377,7 +377,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::CMP_rm8_reg8(RM op1, Register op2) {
         std::cout << "cmp ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -410,27 +410,27 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::DEC_rm32(RM op1) {
         std::cout << "dec ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::DEC_rm8(RM op1) {
         std::cout << "dec ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::DIV_rm32(RM op3) {
         std::cout << "div ";
         std::cout << ", ";
         if (op3.isReg()) { std::cout << registerToString(op3.reg()); }
-        else { std::cout << "DWORD PTR -" << op3.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op3.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::DIV_rm8(RM op4) {
         std::cout << "div ";
         std::cout << ", ";
         if (op4.isReg()) { std::cout << registerToString(op4.reg()); }
-        else { std::cout << "DWORD PTR -" << op4.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op4.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::DS() {
@@ -497,14 +497,14 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << "idiv ";
         std::cout << ", ";
         if (op3.isReg()) { std::cout << registerToString(op3.reg()); }
-        else { std::cout << "DWORD PTR -" << op3.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op3.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::IDIV_rm8(RM op4) {
         std::cout << "idiv ";
         std::cout << ", ";
         if (op4.isReg()) { std::cout << registerToString(op4.reg()); }
-        else { std::cout << "DWORD PTR -" << op4.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op4.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::IMUL_reg32_rm32_imm32(Register op1, RM op2, uint32_t op3) {
@@ -512,7 +512,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op3;
         std::cout << "\n";
@@ -522,7 +522,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op3;
         std::cout << "\n";
@@ -531,14 +531,14 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << "imul ";
         std::cout << ", ";
         if (op3.isReg()) { std::cout << registerToString(op3.reg()); }
-        else { std::cout << "DWORD PTR -" << op3.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op3.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::IMUL_rm8(RM op3) {
         std::cout << "imul ";
         std::cout << ", ";
         if (op3.isReg()) { std::cout << registerToString(op3.reg()); }
-        else { std::cout << "DWORD PTR -" << op3.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op3.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::INC_reg32(Register op1) {
@@ -549,13 +549,13 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::INC_rm32(RM op1) {
         std::cout << "inc ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::INC_rm8(RM op1) {
         std::cout << "inc ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::INS_m16_DX(uint16_ptr op1) {
@@ -666,7 +666,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::JMP_rm32(RM op1) {
         std::cout << "jmp ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::JNBE_rel8(uint8_t op1) {
@@ -831,7 +831,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << "mov ";
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::MOV_m16_Sreg(uint16_ptr op1) {
@@ -859,7 +859,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::MOV_reg8_imm8(Register op1, uint8_t op2) {
@@ -874,13 +874,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::MOV_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "mov ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -888,7 +888,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::MOV_rm32_reg32(RM op1, Register op2) {
         std::cout << "mov ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -896,7 +896,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::MOV_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "mov ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -904,7 +904,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::MOV_rm8_reg8(RM op1, Register op2) {
         std::cout << "mov ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -913,26 +913,26 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << "mul ";
         std::cout << ", ";
         if (op3.isReg()) { std::cout << registerToString(op3.reg()); }
-        else { std::cout << "DWORD PTR -" << op3.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op3.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::MUL_rm8(RM op3) {
         std::cout << "mul ";
         std::cout << ", ";
         if (op3.isReg()) { std::cout << registerToString(op3.reg()); }
-        else { std::cout << "DWORD PTR -" << op3.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op3.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::NEG_rm32(RM op1) {
         std::cout << "neg ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::NEG_rm8(RM op1) {
         std::cout << "neg ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::NOP() {
@@ -942,13 +942,13 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::NOT_rm32(RM op1) {
         std::cout << "not ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::NOT_rm8(RM op1) {
         std::cout << "not ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::OR_AL_imm8(uint8_t op2) {
@@ -968,7 +968,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::OR_reg8_rm8(Register op1, RM op2) {
@@ -976,13 +976,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::OR_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "or ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -990,7 +990,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::OR_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "or ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -998,7 +998,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::OR_rm32_reg32(RM op1, Register op2) {
         std::cout << "or ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1006,7 +1006,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::OR_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "or ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1014,7 +1014,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::OR_rm8_reg8(RM op1, Register op2) {
         std::cout << "or ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1095,7 +1095,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::POP_rm32(RM op1) {
         std::cout << "pop ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::PUSHA() {
@@ -1148,25 +1148,25 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::PUSH_rm32(RM op1) {
         std::cout << "push ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCL_rm32_1(RM op1) {
         std::cout << "rcl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCL_rm32_CL(RM op1) {
         std::cout << "rcl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCL_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "rcl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1174,19 +1174,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::RCL_rm8_1(RM op1) {
         std::cout << "rcl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCL_rm8_CL(RM op1) {
         std::cout << "rcl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCL_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "rcl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1194,19 +1194,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::RCR_rm32_1(RM op1) {
         std::cout << "rcr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCR_rm32_CL(RM op1) {
         std::cout << "rcr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCR_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "rcr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1214,19 +1214,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::RCR_rm8_1(RM op1) {
         std::cout << "rcr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCR_rm8_CL(RM op1) {
         std::cout << "rcr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::RCR_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "rcr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1264,19 +1264,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ROL_rm32_1(RM op1) {
         std::cout << "rol ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ROL_rm32_CL(RM op1) {
         std::cout << "rol ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ROL_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "rol ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1284,19 +1284,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ROL_rm8_1(RM op1) {
         std::cout << "rol ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ROL_rm8_CL(RM op1) {
         std::cout << "rol ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ROL_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "rol ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1304,19 +1304,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ROR_rm32_1(RM op1) {
         std::cout << "ror ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ROR_rm32_CL(RM op1) {
         std::cout << "ror ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ROR_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "ror ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1324,19 +1324,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::ROR_rm8_1(RM op1) {
         std::cout << "ror ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ROR_rm8_CL(RM op1) {
         std::cout << "ror ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::ROR_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "ror ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1352,19 +1352,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SAL_rm32_1(RM op1) {
         std::cout << "sal ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SAL_rm32_CL(RM op1) {
         std::cout << "sal ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SAL_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "sal ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1372,19 +1372,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SAL_rm8_1(RM op1) {
         std::cout << "sal ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SAL_rm8_CL(RM op1) {
         std::cout << "sal ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SAL_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "sal ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1392,19 +1392,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SAR_rm32_1(RM op1) {
         std::cout << "sar ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SAR_rm32_CL(RM op1) {
         std::cout << "sar ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SAR_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "sar ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1412,19 +1412,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SAR_rm8_1(RM op1) {
         std::cout << "sar ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SAR_rm8_CL(RM op1) {
         std::cout << "sar ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SAR_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "sar ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1446,7 +1446,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SBB_reg8_rm8(Register op1, RM op2) {
@@ -1454,13 +1454,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SBB_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "sbb ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1468,7 +1468,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SBB_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "sbb ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1476,7 +1476,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SBB_rm32_reg32(RM op1, Register op2) {
         std::cout << "sbb ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1484,7 +1484,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SBB_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "sbb ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1492,7 +1492,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SBB_rm8_reg8(RM op1, Register op2) {
         std::cout << "sbb ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1515,19 +1515,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SHL_rm32_1(RM op1) {
         std::cout << "shl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SHL_rm32_CL(RM op1) {
         std::cout << "shl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SHL_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "shl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1535,19 +1535,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SHL_rm8_1(RM op1) {
         std::cout << "shl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SHL_rm8_CL(RM op1) {
         std::cout << "shl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SHL_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "shl ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1555,19 +1555,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SHR_rm32_1(RM op1) {
         std::cout << "shr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SHR_rm32_CL(RM op1) {
         std::cout << "shr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SHR_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "shr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1575,19 +1575,19 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SHR_rm8_1(RM op1) {
         std::cout << "shr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SHR_rm8_CL(RM op1) {
         std::cout << "shr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SHR_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "shr ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1640,7 +1640,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SUB_reg8_rm8(Register op1, RM op2) {
@@ -1648,13 +1648,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::SUB_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "sub ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1662,7 +1662,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SUB_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "sub ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1670,7 +1670,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SUB_rm32_reg32(RM op1, Register op2) {
         std::cout << "sub ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1678,7 +1678,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SUB_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "sub ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1686,7 +1686,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::SUB_rm8_reg8(RM op1, Register op2) {
         std::cout << "sub ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1706,7 +1706,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::TEST_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "test ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1714,7 +1714,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::TEST_rm32_reg32(RM op1, Register op2) {
         std::cout << "test ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1722,7 +1722,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::TEST_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "test ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1730,7 +1730,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::TEST_rm8_reg8(RM op1, Register op2) {
         std::cout << "test ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1745,7 +1745,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::XCHG_reg8_rm8(Register op1, RM op2) {
@@ -1753,7 +1753,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::XLAT_m8(uint8_ptr op2) {
@@ -1779,7 +1779,7 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::XOR_reg8_rm8(Register op1, RM op2) {
@@ -1787,13 +1787,13 @@ namespace oneCC::CodeGenerator::X86_32 {
         std::cout << registerToString(op1);
         std::cout << ", ";
         if (op2.isReg()) { std::cout << registerToString(op2.reg()); }
-        else { std::cout << "DWORD PTR -" << op2.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op2.mem() << "[ebp]"; }
         std::cout << "\n";
     }
     void AsmTranslator::XOR_rm32_imm32(RM op1, uint32_t op2) {
         std::cout << "xor ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1801,7 +1801,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::XOR_rm32_imm8(RM op1, uint8_t op2) {
         std::cout << "xor ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1809,7 +1809,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::XOR_rm32_reg32(RM op1, Register op2) {
         std::cout << "xor ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";
@@ -1817,7 +1817,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::XOR_rm8_imm8(RM op1, uint8_t op2) {
         std::cout << "xor ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << op2;
         std::cout << "\n";
@@ -1825,7 +1825,7 @@ namespace oneCC::CodeGenerator::X86_32 {
     void AsmTranslator::XOR_rm8_reg8(RM op1, Register op2) {
         std::cout << "xor ";
         if (op1.isReg()) { std::cout << registerToString(op1.reg()); }
-        else { std::cout << "DWORD PTR -" << op1.mem() << "[ebp]"; }
+        else { std::cout << "DWORD PTR " << -op1.mem() << "[ebp]"; }
         std::cout << ", ";
         std::cout << registerToString(op2);
         std::cout << "\n";

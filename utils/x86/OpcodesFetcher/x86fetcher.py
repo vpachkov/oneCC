@@ -242,13 +242,12 @@ class CppFunc:
                     buf += f'\tstd::cout << registerToString(op{index + 1});\n'
                 elif op == 'RM':
                     buf += f'\tif (op{index + 1}.isReg()) ' + '{ std::cout << ' + f'registerToString(op{index + 1}.reg());' + ' }\n'
-                    buf += '\telse { std::cout << "DWORD PTR -" << ' + f'op{index + 1}.mem() << "[ebp]";' + ' }\n'
+                    buf += '\telse { std::cout << "DWORD PTR " << ' + f'-op{index + 1}.mem() << "[ebp]";' + ' }\n'
                 else:
                     buf += f'\tstd::cout << op{index + 1};\n'
 
         buf += '\tstd::cout << "\\n";\n'
 
-        print(buf)
         res += ") { \n" + buf + "}"
         return res
 
