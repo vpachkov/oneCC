@@ -36,7 +36,7 @@ void TransactionManager::end()
 
     m_transactions.back().restoreReplaces([&](std::pair<Register&, Register&>& replace) {
         m_codeGenerator.translator().MOV_reg(replace.first, replace.second);
-        m_codeGenerator.registerManager().put(replace.first, replace.first.data());
+        m_codeGenerator.registerManager().replace(replace.first, replace.first.data());
     });
 
     m_transactions.pop_back();

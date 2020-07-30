@@ -8,6 +8,7 @@ namespace oneCC::CodeGenerator::Aarch32 {
 
 enum RegisterDataType {
     DataVariable,
+    DataWriteToVarible,
     DataConst,
     DataMem,
     DataTmp,
@@ -26,6 +27,7 @@ public:
     {
         m_type = data.m_type;
         m_value = data.m_value;
+        m_edited = false;
     }
 
     // We use markAsTmp when we don't know what kind of data stored where.
@@ -46,12 +48,16 @@ public:
         return m_type == data.m_type && m_value == data.m_value;
     }
 
+    void setEdited(bool edited) { m_edited = edited; }
+    bool edited() { return m_edited; }
+
     RegisterDataType type() { return m_type; }
     uint32_t value() { return m_value; }
 
 private:
     RegisterDataType m_type;
     uint32_t m_value { 0 };
+    bool m_edited { false };
 };
 
 const int RegistersCount = 15;
