@@ -83,12 +83,16 @@ void CodeGeneratorX86_32::visitNode(AST::TernaryOperationNode* a) {
             // allocate space for variable
             m_asmTranslator.SUB_rm32_imm32(RM(RMType::Reg, Register::ESP), variableOffset);
 
-            visitNode(a->rightChild());
-
-            // save result to allocated space
-            auto resultRegister = static_cast<Register>(reinterpret_cast<AST::Expression*>(a->rightChild())->resultRegister());
-            m_asmTranslator.MOV_rm32_reg32(RM(RMType::Mem, variableOffset + m_basePointerOffset), resultRegister);
-            m_registerManager.freeRegister(resultRegister);
+            if (a->rightChild()->type() != AST::NodeType::Const) {
+                visitNode(a->rightChild());
+                // save result to allocated space
+                auto resultRegister = static_cast<Register>(reinterpret_cast<AST::Expression *>(a->rightChild())->resultRegister());
+                m_asmTranslator.MOV_rm32_reg32(RM(RMType::Mem, variableOffset + m_basePointerOffset), resultRegister);
+                m_registerManager.freeRegister(resultRegister);
+            } else { // we can save const variables immediately
+                auto value = reinterpret_cast<AST::IntConstNode*>(a->rightChild())->value();
+                m_asmTranslator.MOV_rm32_imm32(RM(RMType::Mem, variableOffset + m_basePointerOffset), value);
+            }
 
             // move base offset pointer for next variable
             m_basePointerOffset += variableOffset;
@@ -161,23 +165,34 @@ void CodeGeneratorX86_32::visitNode(AST::BinaryOperationNode* a)
     case Lexer::TokenType::Plus: {
 
         visitNode(a->leftChild());
-        visitNode(a->rightChild());
-
         int leftRegister = reinterpret_cast<AST::Expression*>(a->leftChild())->resultRegister();
-        int rightRegister = reinterpret_cast<AST::Expression*>(a->rightChild())->resultRegister();
-        m_asmTranslator.ADD_rm32_reg32(
-            RM(RMType::Reg, static_cast<uint32_t>(leftRegister)),
-            static_cast<Register>(rightRegister));
-        a->setResultRegister(leftRegister);
-        m_registerManager.freeRegister(rightRegister);
+
+        if (a->rightChild()->type() != AST::NodeType::Const) {
+            visitNode(a->rightChild());
+            int rightRegister = reinterpret_cast<AST::Expression *>(a->rightChild())->resultRegister();
+            m_asmTranslator.ADD_rm32_reg32(
+                    RM(RMType::Reg, static_cast<uint32_t>(leftRegister)),
+                    static_cast<Register>(rightRegister));
+            a->setResultRegister(leftRegister);
+            m_registerManager.freeRegister(rightRegister);
+        } else {
+            auto value = reinterpret_cast<AST::IntConstNode*>(a->rightChild())->value();
+            m_asmTranslator.ADD_rm32_imm32(RM(RMType::Reg, static_cast<uint32_t>(leftRegister)), value);
+        }
         break;
     }
     case Lexer::TokenType::Assign : {
-        visitNode(a->rightChild());
-        auto exprRegister = static_cast<Register>(reinterpret_cast<AST::Expression*>(a->rightChild())->resultRegister());
         auto var = reinterpret_cast<AST::IdentifierNode*>(a->leftChild());
-        m_asmTranslator.MOV_rm32_reg32(RM(RMType::Mem, m_scoper.getMemoryPosition(var)), exprRegister);
-        m_registerManager.freeRegister(exprRegister);
+
+        if (a->rightChild()->type() != AST::NodeType::Const) {
+            visitNode(a->rightChild());
+            auto exprRegister = static_cast<Register>(reinterpret_cast<AST::Expression *>(a->rightChild())->resultRegister());
+            m_asmTranslator.MOV_rm32_reg32(RM(RMType::Mem, m_scoper.getMemoryPosition(var)), exprRegister);
+            m_registerManager.freeRegister(exprRegister);
+        } else {
+            auto value = reinterpret_cast<AST::IntConstNode*>(a->rightChild())->value();
+            m_asmTranslator.MOV_rm32_imm32(RM(RMType::Mem, m_scoper.getMemoryPosition(var)), value);
+        }
         break;
     }
 
