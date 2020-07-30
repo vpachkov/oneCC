@@ -3,12 +3,17 @@
 #include "../Common/ModRM.h"
 #include "../Common/Regs.h"
 #include "../Common/TypesX86_32.h"
+#include "../../../AST/AbstractAST.h"
+#include <string>
 
 namespace oneCC::CodeGenerator::X86_32 {
 
 class AbstractX86_32Translator {
 public:
     AbstractX86_32Translator() = default;
+
+    virtual void CALL_label(const std::string& op1) {}
+    virtual void MOV_reg32_imm32(Register op1, int32_t op2) {}
 
     // Generated (No float opcodes)
     virtual void AAA() {}

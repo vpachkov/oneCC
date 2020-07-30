@@ -1,6 +1,8 @@
 #include "AsmTranslator.h"
 #include <cassert>
 #include <iostream>
+#include <string>
+#include "../../../AST/AbstractAST.h"
 
 #define NOT_IMPL(x) do { \
     std::cout << "\033[1;31mNOT IMPLEMENTED\033[0m in \033[1;31m" << __FILE__ << "\033[0m\n"; \
@@ -8,6 +10,16 @@
 } while (0)
 
 namespace oneCC::CodeGenerator::X86_32 {
+    void AsmTranslator::CALL_label(const std::string& op1) {
+        std::cout << "call " << op1 << "\n";
+    }
+    void AsmTranslator::MOV_reg32_imm32(Register op1, int32_t op2) {
+        std::cout << "mov ";
+        std::cout << registerToString(op1);
+        std::cout << ", ";
+        std::cout << op2;
+        std::cout << "\n";
+    }
     void AsmTranslator::AAA() {
         std::cout << "aaa ";
         std::cout << "\n";

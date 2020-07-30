@@ -1,12 +1,16 @@
 #pragma once
 
 #include "AbstractX86_32Translator.h"
+#include "../../../AST/AbstractAST.h"
 
 namespace oneCC::CodeGenerator::X86_32 {
 
 class AsmTranslator final : public AbstractX86_32Translator {
 public:
     AsmTranslator() = default;
+
+    void CALL_label(const std::string& op1) override ;
+    void MOV_reg32_imm32(Register op1, int32_t op2) override ;
 
     // Generated (test part)
     void AAA() override ;
