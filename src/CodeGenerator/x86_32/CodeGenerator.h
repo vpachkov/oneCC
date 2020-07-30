@@ -35,12 +35,13 @@ private:
     void visitNode(AST::IntConstNode* a) override;
 
     int generateLabel();
+    std::string generateFunctionLabel(AST::FunctionNode* function);
 
     RegisterManager m_registerManager {};
     AsmTranslator m_asmTranslator {};
     SemanticAnalyzer::Scoper m_scoper {};
 
-    std::map<AST::IdentifierNode*, std::string> m_functionLabels;
+    std::map<std::string, std::string>  m_functionLabels;
     uint64_t m_labelCount { 0 };
     uint64_t m_basePointerOffset { 0 };
 };
