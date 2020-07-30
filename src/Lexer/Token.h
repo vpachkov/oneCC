@@ -61,6 +61,64 @@ enum TokenType {
     Error,
 };
 
+static const char* tokenTypeToString(TokenType token) {
+    static const char* tokens[] = {
+            "Identifier",
+            "Punct",
+            "ConstString",
+            "ConstChar",
+            "Comma",
+
+            // Keywords
+            "if",
+            "else",
+            "while",
+
+            // Binary Operations
+            "+",
+            "-",
+            "*",
+            "/",
+            "==",
+
+            ">",
+
+            // Others
+            "EndOfFile",
+
+            // Types
+            "IntConst",
+            "FloatConst",
+            "StringConst",
+
+            "int",
+            "float",
+            "bool",
+
+            // Brackets
+            "(",
+            ")",
+            "[",
+            "]",
+            "{",
+            "}",
+
+            "=",
+
+            ";",
+
+            "return",
+
+            // Used only inside Lexer
+            "//",
+            "/*",
+            "*/",
+            "error",
+    };
+
+    return tokens[token];
+}
+
 class Token {
 public:
     Token();
