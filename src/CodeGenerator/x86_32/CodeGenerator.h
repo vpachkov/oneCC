@@ -41,7 +41,7 @@ private:
     AsmTranslator m_asmTranslator {};
     SemanticAnalyzer::Scoper m_scoper {};
 
-    std::map<std::string, std::string>  m_functionLabels;
+    std::map<std::string, std::string> m_functionLabels;
     uint64_t m_labelCount { 0 };
     uint64_t m_basePointerOffset { 0 };
 };

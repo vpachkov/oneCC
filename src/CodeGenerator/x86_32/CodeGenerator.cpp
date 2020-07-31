@@ -65,6 +65,8 @@ void CodeGeneratorX86_32::visitNode(AST::FunctionNode* a) {
     m_asmTranslator.MOV_reg32_rm32(Register::ESP, RM(RMType::Reg, Register::EBP));
     m_asmTranslator.POP_reg32(Register::EBP);
     m_asmTranslator.RETF();
+
+    m_registerManager.restoreInitialState();
 }
 
 void CodeGeneratorX86_32::visitNode(AST::BlockStatementNode* a) {
@@ -86,7 +88,7 @@ void CodeGeneratorX86_32::visitNode(AST::TernaryOperationNode* a) {
             if (a->rightChild()->type() != AST::NodeType::Const) {
                 visitNode(a->rightChild());
                 // save result to allocated space
-                auto resultRegister = static_cast<Register>(reinterpret_cast<AST::Expression *>(a->rightChild())->resultRegister());
+                auto resultRegister = static_cast<Register>(reinterpret_cast<AST::Expression*>(a->rightChild())->resultRegister());
                 m_asmTranslator.MOV_rm32_reg32(RM(RMType::Mem, variableOffset + m_basePointerOffset), resultRegister);
                 m_registerManager.freeRegister(resultRegister);
             } else { // we can save const variables immediately
@@ -124,23 +126,68 @@ void CodeGeneratorX86_32::visitNode(AST::FunctionCallNode* a) {
     Register fastcallRegisters[] = { Register::EAX, Register::EDX, Register::ECX };
     size_t fastcallRegistersIndex = 0;
 
+    std::vector<Register> pushedRegisters; // fastcall registers, which we will have to push on the stack
+    pushedRegisters.reserve(3);
+
     for (auto* arg : a->arguments()) {
-        visitNode(arg);
-        auto resultReg = static_cast<Register>(reinterpret_cast<AST::Expression*>(arg)->resultRegister());
-        if (a->arguments().size() > 3) { // according to FASTCALL convention
-            m_asmTranslator.PUSH_reg32(resultReg);
-            m_registerManager.freeRegister(resultReg);
+        bool isConstArgument = arg->type() == AST::NodeType::Const;
+        auto constArgumentValue = reinterpret_cast<AST::IntConstNode*>(arg)->value();
+
+        if (!isConstArgument) {
+            visitNode(arg);
         }
-        else if (resultReg != fastcallRegisters[fastcallRegistersIndex]) {
-            m_asmTranslator.MOV_reg32_rm32(fastcallRegisters[fastcallRegistersIndex], RM(RMType::Reg, resultReg));
-            m_registerManager.freeRegister(resultReg);
+
+        auto resultReg = static_cast<Register>(reinterpret_cast<AST::Expression*>(arg)->resultRegister());
+        auto fastcallReg = fastcallRegisters[fastcallRegistersIndex];
+
+        if (a->arguments().size() > 3) { // according to FASTCALL convention
+            if (!isConstArgument) {
+                m_asmTranslator.PUSH_reg32(resultReg);
+                m_registerManager.freeRegister(resultReg);
+            } else {
+                m_asmTranslator.PUSH_imm32(constArgumentValue);
+            }
+        } else if (isConstArgument || resultReg != fastcallReg) {
+            if (!m_registerManager.isFree(fastcallReg)) { // we can't loose data in occupied register
+                pushedRegisters.push_back(fastcallReg);   // so, we are saving it on the stack
+                m_asmTranslator.PUSH_reg32(fastcallReg);
+            }
+            if (isConstArgument) {
+                m_asmTranslator.MOV_reg32_imm32(fastcallReg, constArgumentValue);
+            } else {
+                m_asmTranslator.MOV_reg32_rm32(fastcallReg, RM(RMType::Reg, resultReg));
+                m_registerManager.freeRegister(resultReg);
+            }
         }
 
         fastcallRegistersIndex++;
     }
 
     m_asmTranslator.CALL_label(m_functionLabels[a->name()]);
-    a->setResultRegister(Register::EAX);
+
+    // free fastcall registers
+    switch (a->arguments().size()) {
+        case 3:
+            m_registerManager.freeRegister(Register::ECX);
+        case 2:
+            m_registerManager.freeRegister(Register::EDX);
+        default:
+            break;
+    }
+
+    // restoring pushed registers
+    Register resultRegister = Register::EAX;
+    for (auto reg = pushedRegisters.rbegin() ; reg < pushedRegisters.rend() ; reg++) {
+        if (*reg == Register::EAX) {
+            // result of function call expression can't stay in eax, because it was part of parent expression
+            auto freeRegister = static_cast<Register>(m_registerManager.allocateRegister());
+            m_asmTranslator.MOV_reg32_rm32(freeRegister, RM(RMType::Reg, Register::EAX));
+            resultRegister = freeRegister;
+        }
+        m_asmTranslator.POP_reg32(*reg);
+    }
+
+    a->setResultRegister(resultRegister);
 }
 
 void CodeGeneratorX86_32::visitNode(AST::IdentifierNode* a)
@@ -173,12 +220,12 @@ void CodeGeneratorX86_32::visitNode(AST::BinaryOperationNode* a)
             m_asmTranslator.ADD_rm32_reg32(
                     RM(RMType::Reg, static_cast<uint32_t>(leftRegister)),
                     static_cast<Register>(rightRegister));
-            a->setResultRegister(leftRegister);
             m_registerManager.freeRegister(rightRegister);
         } else {
             auto value = reinterpret_cast<AST::IntConstNode*>(a->rightChild())->value();
             m_asmTranslator.ADD_rm32_imm32(RM(RMType::Reg, static_cast<uint32_t>(leftRegister)), value);
         }
+        a->setResultRegister(leftRegister);
         break;
     }
     case Lexer::TokenType::Assign : {
@@ -207,6 +254,7 @@ int CodeGeneratorX86_32::generateLabel()
 {
     return m_labelCount++;
 }
+
 // examples: main(), square(int)
 std::string CodeGeneratorX86_32::generateFunctionLabel(AST::FunctionNode* function) {
 
