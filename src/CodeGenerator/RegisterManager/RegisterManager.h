@@ -14,8 +14,11 @@ public:
     // runtime
     int allocateRegister();
     void freeRegister(int reg);
+    bool isFree(int reg);
+    void restoreInitialState();
 private:
     std::vector<int> m_freeRegisters {};
+    std::vector<int> m_initialState {};
 };
 
 }
