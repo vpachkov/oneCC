@@ -33,4 +33,26 @@ void RegisterManager::restoreInitialState() {
     m_freeRegisters = m_initialState;
 }
 
+    int RegisterManager::takeSnapshot() {
+        m_snapshots.push_back(m_freeRegisters);
+        return m_snapshots.size() - 1;
+    }
+
+    bool RegisterManager::restoreSnapshot() {
+        if (m_snapshots.empty()) {
+            return false;
+        }
+        m_freeRegisters = *m_snapshots.rbegin();
+        m_freeRegisters.pop_back();
+        return true;
+    }
+
+    bool RegisterManager::restoreSnapshot(int snapshot) {
+        if (snapshot >= m_snapshots.size()) {
+            return false;
+        }
+        m_freeRegisters = m_snapshots[snapshot];
+        return true;
+    }
+
 }

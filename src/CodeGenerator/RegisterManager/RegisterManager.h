@@ -15,10 +15,16 @@ public:
     int allocateRegister();
     void freeRegister(int reg);
     bool isFree(int reg);
+
     void restoreInitialState();
+    int takeSnapshot();
+    bool restoreSnapshot(int snapshot);
+    bool restoreSnapshot();
 private:
     std::vector<int> m_freeRegisters {};
     std::vector<int> m_initialState {};
+
+    std::vector<std::vector<int>> m_snapshots {};
 };
 
 }
