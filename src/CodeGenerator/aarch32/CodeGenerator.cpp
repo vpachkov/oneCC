@@ -2,6 +2,11 @@
 #include <cassert>
 #include <iostream>
 
+#ifdef DEBUG_TRANSLATOR_TRACER
+#include <experimental/source_location>
+#define translator() std::cout << __func__ << ":" << std::experimental::source_location::current().line() << " > "; translator()
+#endif
+
 namespace oneCC::CodeGenerator::Aarch32 {
 
 CodeGeneratorAarch32::CodeGeneratorAarch32()
@@ -23,11 +28,11 @@ void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
 {
     if (node->operation() == Lexer::TokenType::Plus) {
         genBinaryMathOperation(node, [&](Register& res, Register& l, Register& r) {
-            m_translator.ADD_reg(res, l, r);
+            translator().ADD_reg(res, l, r);
         });
     } else if (node->operation() == Lexer::TokenType::Minus) {
         genBinaryMathOperation(node, [&](Register& res, Register& l, Register& r) {
-            m_translator.SUB_reg(res, l, r);
+            translator().SUB_reg(res, l, r);
         });
     } else if (node->operation() == Lexer::TokenType::Assign) {
         genBinaryAssign(node);
@@ -46,7 +51,7 @@ void CodeGeneratorAarch32::visitNode(AST::TernaryOperationNode* node)
             m_transactionManager.end();
 
             int varId = m_varManager.getId(identifierNode->value());
-            m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
+            translator().STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
         }
     } else {
         // We are no in func, seems a global
@@ -69,7 +74,7 @@ void CodeGeneratorAarch32::visitNode(AST::ReturnStatementNode* ret)
 
     if (Register::R0() != resultRegister) {
         if (m_registerManager.replace(Register::R0(), RegisterData::Tmp()) == 0) {
-            m_translator.MOV_reg(Register::R0(), resultRegister);
+            translator().MOV_reg(Register::R0(), resultRegister);
         }
     }
 }
@@ -80,7 +85,7 @@ void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* a) {}
 void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
 {
     m_storage[FUNC_PROCESSING] = 1;
-    m_translator.addLabel(func->identifier()->value().c_str());
+    translator().addLabel(func->identifier()->value().c_str());
     initStackFrame(func);
 
     // Saving args to stack
@@ -92,17 +97,17 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
             int varId = m_varManager.getId(func->arguments()[argId]->identifier()->value());
 
             assert((m_registerManager.replace(reg, RegisterData(DataVariable, varId)) == 0));
-            m_translator.STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
+            translator().STR_imm_offset(reg, Register::FP(), -m_varManager.getOffset(varId));
         }
     }
 
-    m_translator.addLabel("");
+    translator().addLabel("");
 
     visitNode(func->statement());
 
-    m_translator.addLabel("");
+    translator().addLabel("");
     restoreStackFrame(func);
-    m_translator.addLabel("");
+    translator().addLabel("");
     m_storage[FUNC_PROCESSING] = 0;
 }
 
@@ -129,7 +134,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
 
             if (reg != putTo) {
                 if (m_registerManager.replace(putTo, reg.data()) == 0) {
-                    m_translator.MOV_reg(putTo, reg);
+                    translator().MOV_reg(putTo, reg);
                 }
             }
 
@@ -144,7 +149,6 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
     for (int argId = 1; argId < node->arguments().size(); argId++) {
         Register& paramReg = Register::RegisterList()[argId];
         m_transactionManager.active().allowRegister(paramReg);
-        m_registerManager.replace(paramReg, RegisterData::Tmp());
     }
 
     // Marking caller-saved registers as "tmp"
@@ -158,7 +162,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
 
         // For us a function result is a tmp value, which we can't reuse later.
         if (m_registerManager.replace(reg, RegisterData::Tmp()) == 0) {
-            m_translator.MOV_reg(reg, Register::R0());
+            translator().MOV_reg(reg, Register::R0());
         }
 
         m_transactionManager.end();
@@ -183,7 +187,7 @@ void CodeGeneratorAarch32::visitNode(AST::IdentifierNode* node)
     auto& resRegister = m_registerManager.chooseRegister(data);
 
     if (m_registerManager.replace(resRegister, data) == 0) {
-        m_translator.LDR_imm_offset(resRegister, Register::FP(), -m_varManager.getOffset(varId));
+        translator().LDR_imm_offset(resRegister, Register::FP(), -m_varManager.getOffset(varId));
     }
     m_transactionManager.active().setResultRegister(resRegister);
 }
@@ -194,7 +198,7 @@ void CodeGeneratorAarch32::visitNode(AST::IntConstNode* node)
     auto& resRegister = m_registerManager.chooseRegister(data);
 
     if (m_registerManager.replace(resRegister, data) == 0) {
-        m_translator.MOVV_imm32(resRegister, node->value());
+        translator().MOVV_imm32(resRegister, node->value());
     }
     m_transactionManager.active().setResultRegister(resRegister);
 }
@@ -229,16 +233,14 @@ void CodeGeneratorAarch32::genBinaryAssign(AST::BinaryOperationNode* node)
 
     auto identifierNode = reinterpret_cast<AST::IdentifierNode*>(node->leftChild());
     auto leftData = RegisterData(DataVariable, m_varManager.getId(identifierNode->value()));
+    
     Register& leftReg = m_registerManager.chooseRegister(leftData);
-    leftReg.data().set(leftData);
-
+    
     if (m_registerManager.write(leftReg) == 0) {
         if (leftReg != rightReg) {
-            m_translator.MOV_reg(leftReg, rightReg);
+            translator().MOV_reg(leftReg, rightReg);
         }
     }
-
-    m_transactionManager.active().setResultRegister(leftReg);
 }
 
 void CodeGeneratorAarch32::initStackFrame(AST::FunctionNode* func)
@@ -246,17 +248,17 @@ void CodeGeneratorAarch32::initStackFrame(AST::FunctionNode* func)
     // TODO: Use func->statement()->statementsWithType(AST::NodeType::);
     m_varManager.enterScope();
     RegisterList used_reg_in_func = { Register::FP() };
-    m_translator.PUSH_multiple_registers(used_reg_in_func);
-    m_translator.ADD_imm12(Register::FP(), Register::SP(), 4 * (used_reg_in_func.size() - 1));
+    translator().PUSH_multiple_registers(used_reg_in_func);
+    translator().ADD_imm12(Register::FP(), Register::SP(), 4 * (used_reg_in_func.size() - 1));
     allocateArgVars(func);
     allocateLocalVars(func);
 }
 
 void CodeGeneratorAarch32::restoreStackFrame(AST::FunctionNode* func)
 {
-    m_translator.SUB_imm12(Register::SP(), Register::FP(), 4);
-    m_translator.POP_multiple_registers({ Register::FP() });
-    m_translator.BX(Register::LR());
+    translator().SUB_imm12(Register::SP(), Register::FP(), 4);
+    translator().POP_multiple_registers({ Register::FP() });
+    translator().BX(Register::LR());
     m_varManager.leaveScope();
 }
 
@@ -294,8 +296,10 @@ int CodeGeneratorAarch32::allocateLocalVars(AST::FunctionNode* func)
         }
     }
 
+    // m_varManager.dump();
+
     m_storage[FUNC_LOCAL_VARS] = localVarsCount;
-    m_translator.SUB_imm12(Register::SP(), Register::SP(), offset);
+    translator().SUB_imm12(Register::SP(), Register::SP(), offset);
     return 0;
 }
 

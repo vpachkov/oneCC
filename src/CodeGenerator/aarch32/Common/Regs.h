@@ -3,6 +3,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
@@ -35,6 +36,18 @@ public:
     {
         m_type = DataTmp;
         m_value = 0;
+    }
+
+    void dump() const
+    {
+        static const char* d[] {
+            "DataVariable",
+            "DataWriteToVarible",
+            "DataConst",
+            "DataMem",
+            "DataTmp",
+        };
+        std::cout << d[m_type] << " " << m_value << "\n";
     }
 
     static RegisterData& Tmp()

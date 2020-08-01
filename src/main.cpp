@@ -23,7 +23,7 @@ void versionHandler()
 int main(int argc, char* argv[])
 {
 #ifdef DEBUG_TOKINIZE_FILE
-    auto lexer = oneCC::Lexer::Lexer("demos/example.txt");
+    auto lexer = oneCC::Lexer::Lexer("demos/example.c");
 
     try {
         lexer.tokinizeFile();
@@ -42,7 +42,6 @@ int main(int argc, char* argv[])
     }
     std::cout << "\n\n";
 #endif // DEBUG_TOKINIZE_FILE
-
     auto* configInstnace = oneCC::Config::Config::get();
     auto* argsParser = new oneCC::ArgsParser::ArgsParser(argc, argv);
     argsParser->registerHandler(configInstnace->version, versionHandler, "--version");
@@ -77,14 +76,15 @@ int main(int argc, char* argv[])
 #endif // DEBUG_VIZ
 
     try {
-        oneCC::CodeGenerator::CodeGenerator codeGen;
+        oneCC::CodeGenerator::TargetPlatform target;
         if (configInstnace->platform == "x86_32") {
-            codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::CodeGenerator::TargetPlatform::x86_32);
+            target = oneCC::CodeGenerator::TargetPlatform::x86_32;
         } else if (configInstnace->platform == "aarch32") {
-            codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::CodeGenerator::TargetPlatform::aarch32);
+            target = oneCC::CodeGenerator::TargetPlatform::aarch32;
         } else {
             std::cout << "Undefined platform (" << configInstnace->platform << ")\n";
         }
+        oneCC::CodeGenerator::CodeGenerator codeGen(target);
         codeGen.start(root);
     } catch (std::exception& e) {
         std::cout << "Unexpected error in CodeGenerator" << e.what() << "\n";
