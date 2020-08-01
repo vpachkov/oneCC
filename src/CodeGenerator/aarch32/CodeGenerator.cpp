@@ -139,11 +139,10 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
             }
 
             m_transactionManager.active().forbidRegister(putTo);
-            // m_registerManager.put(reg, RegisterData(DataVariable, varId));
         }
     }
 
-    std::cout << "bl " << node->name() << "\n";
+    translator().BL(0, node->name());
 
     // Unlocking registers for reuse
     for (int argId = 1; argId < node->arguments().size(); argId++) {

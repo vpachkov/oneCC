@@ -12,6 +12,8 @@ public:
     void ADD_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount) override;
     void ADD_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount) override;
     void ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12) override;
+    void BL(uint32_t imm24, const std::string& label) override;
+    void BLX(uint32_t imm24, const std::string& label) override;
     void BX(Register& Rm) override;
     void LDR_imm_offset(Register& Rt, Register& Rn, int16_t imm12) override;
     void LDR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12) override;
