@@ -88,7 +88,7 @@ int RegisterManager::replace(Register& reg, const RegisterData& data)
         if (reg.data().isSame(data)) {
             return 1;
         }
-        
+
         if (reg.data().type() == DataVariable && reg.data().edited()) {
             int offset = m_codeGenerator.varManager().getOffset(reg.data().value());
             m_codeGenerator.translator().STR_imm_offset(reg, Register::FP(), -offset);
@@ -96,9 +96,15 @@ int RegisterManager::replace(Register& reg, const RegisterData& data)
 
         if (reg.data().type() == DataMem && reg.data().edited()) {
             int offset = m_codeGenerator.varManager().getOffset(reg.data().value());
-            std::cout << "TODO: store at mem " << reg.data().value() << "\n";;
+            std::cout << "TODO: store at mem " << reg.data().value() << "\n";
+            ;
         }
-        
+
+#ifdef DEBUG_REGMANAGER_PRINT_INFO
+        std::cout << "Replace " << reg.textAlias() << " ";
+        data.dump();
+#endif // DEBUG_REGMANAGER_PRINT_INFO
+
         reg.data().set(data);
         return 0;
     }
@@ -114,6 +120,12 @@ int RegisterManager::write(Register& reg)
     assert((!reg.isBad()));
 
     if (canUse(reg)) {
+        
+#ifdef DEBUG_REGMANAGER_PRINT_INFO
+        std::cout << "Write " << reg.textAlias() << " ";
+        reg.data().dump();
+#endif // DEBUG_REGMANAGER_PRINT_INFO
+
         if (reg.data().type() == DataVariable) {
             reg.data().setEdited(true);
             return 0;
@@ -124,7 +136,7 @@ int RegisterManager::write(Register& reg)
             return 0;
         }
 
-       return -1;
+        return -1;
     }
 
     return -1;

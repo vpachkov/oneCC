@@ -17,7 +17,7 @@
 int main(int argc, char* argv[])
 {
 #ifdef DEBUG_TOKINIZE_FILE
-    auto lexer = oneCC::Lexer::Lexer("demos/example.txt");
+    auto lexer = oneCC::Lexer::Lexer("demos/example.c");
 
     try {
         lexer.tokinizeFile();
@@ -36,9 +36,8 @@ int main(int argc, char* argv[])
     }
     std::cout << "\n\n";
 #endif // DEBUG_TOKINIZE_FILE
-
-#ifdef DEBUG_CODEGEN
-    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("demos/example.txt");
+    
+    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("demos/example.c");
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
     auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
     oneCC::AST::Node* root;

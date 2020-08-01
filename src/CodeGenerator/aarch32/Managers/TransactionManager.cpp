@@ -26,10 +26,15 @@ void TransactionManager::create(bool ignoreForbiddenRegisters)
 // Returns the last transaction, it's also an active transaction.
 Transaction& TransactionManager::active()
 {
+    // If we don't have an active transaction, we will return a fake one.
+    // Writing to it won't would save us from an ub.
+    if (!m_inTransaction) [[unlikely]] {
+        return Transaction::Fake();
+    }
     return m_transactions.back();
 }
 
-// Ends the last transaction.
+// Finishes the last transaction.
 void TransactionManager::end()
 {
     assert(!m_transactions.empty());
