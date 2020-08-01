@@ -32,6 +32,16 @@ void AsmTranslator::ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12)
     std::cout << "add " << Rd.textAlias() << ", " << Rn.textAlias() << ", #" << imm12 << "\n";
 }
 
+void AsmTranslator::BL(uint32_t imm24, const std::string& label)
+{
+    std::cout << "bl " << label << "\n";
+}
+
+void AsmTranslator::BLX(uint32_t imm24, const std::string& label)
+{
+    std::cout << "blx " << label << "\n";
+}
+
 void AsmTranslator::BX(Register& Rm)
 {
     std::cout << "bx " << Rm.textAlias() << "\n";
