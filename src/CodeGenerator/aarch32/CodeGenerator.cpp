@@ -233,9 +233,11 @@ void CodeGeneratorAarch32::genBinaryAssign(AST::BinaryOperationNode* node)
 
     auto identifierNode = reinterpret_cast<AST::IdentifierNode*>(node->leftChild());
     auto leftData = RegisterData(DataVariable, m_varManager.getId(identifierNode->value()));
-    
     Register& leftReg = m_registerManager.chooseRegister(leftData);
-    
+    if (m_registerManager.replace(leftReg, leftData) == 0) {
+        leftReg.data().set(leftData);
+    }
+
     if (m_registerManager.write(leftReg) == 0) {
         if (leftReg != rightReg) {
             translator().MOV_reg(leftReg, rightReg);
