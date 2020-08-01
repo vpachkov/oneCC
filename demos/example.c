@@ -10,5 +10,5 @@ int main ()
     a = func(1, a, 3);
     b = a;
     a = 1 + 2;
-    return a;
+    // return a;
 }

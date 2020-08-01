@@ -84,6 +84,12 @@ public:
     int id() { return m_id; }
     uint32_t mask() { return m_mask; }
 
+    static Transaction& Fake()
+    {
+        static Transaction tr(-1);
+        return tr;
+    }
+
 private:
     int m_id;
     uint32_t m_mask;
