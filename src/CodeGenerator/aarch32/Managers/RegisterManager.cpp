@@ -101,8 +101,8 @@ int RegisterManager::replace(Register& reg, const RegisterData& data)
         }
 
 #ifdef DEBUG_REGMANAGER_PRINT_INFO
-        std::cout << "Replace " << reg.textAlias() << " ";
-        data.dump();
+        m_codeGenerator.output().add(TranslatedOpcode("Replace " + reg.textAlias()));
+        data.dump(m_codeGenerator.output());
 #endif // DEBUG_REGMANAGER_PRINT_INFO
 
         reg.data().set(data);
@@ -122,8 +122,8 @@ int RegisterManager::write(Register& reg)
     if (canUse(reg)) {
         
 #ifdef DEBUG_REGMANAGER_PRINT_INFO
-        std::cout << "Write " << reg.textAlias() << " ";
-        reg.data().dump();
+        m_codeGenerator.output().add(TranslatedOpcode("Write " + reg.textAlias()));
+        reg.data().dump(m_codeGenerator.output());
 #endif // DEBUG_REGMANAGER_PRINT_INFO
 
         if (reg.data().type() == DataVariable) {
