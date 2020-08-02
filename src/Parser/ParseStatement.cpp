@@ -27,9 +27,13 @@ AST::Node* Parser::createIntStatement()
     eatToken(Lexer::TokenType::TypeInt);
     auto identifier = lookupToken();
     eatToken(Lexer::TokenType::Identifier);
-    eatToken(Lexer::TokenType::Assign);
-    auto* parsedExpr = expression();
-    softAssertNode(parsedExpr);
+    
+    AST::Node* parsedExpr = NULL;
+    if (lookupToken().type() == Lexer::TokenType::Assign) {
+        eatToken(Lexer::TokenType::Assign);
+        parsedExpr = expression();
+        softAssertNode(parsedExpr);
+    }
     eatToken(Lexer::TokenType::EndOfStatement);
     return new AST::TernaryOperationNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), parsedExpr, Lexer::TokenType::Assign);
 }
