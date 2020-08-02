@@ -107,11 +107,9 @@ AST::Node* Parser::program()
 AST::Node* Parser::parse()
 {
     auto* root = program();
-    if (!root)
-        [[unlikely]]
-        {
-            throw oneCC::Exceptions::ParserError(m_err.c_str());
-        }
+    if (!root) [[unlikely]] {
+        throw oneCC::Exceptions::ParserError(m_err.c_str());
+    }
     return root;
 }
 
