@@ -26,11 +26,11 @@
             return NULL;                    \
         }
 
-#define checkNode(x)     \
-    if (!x)              \
-        [[unlikely]]     \
-        {                \
-            return NULL; \
+#define softAssertNode(x) \
+    if (!x)               \
+        [[unlikely]]      \
+        {                 \
+            return NULL;  \
         }
 
 namespace oneCC::Parser {
@@ -110,7 +110,7 @@ AST::Node* Parser::program()
         } else if (lookupToken().type() == Lexer::TokenType::Identifier) {
             node = reassignIntStatement();
         }
-        checkNode(node);
+        softAssertNode(node);
         nodes.push_back(node);
     }
 
@@ -121,9 +121,11 @@ AST::Node* Parser::program()
 AST::Node* Parser::parse()
 {
     auto* root = program();
-    if (!root) [[unlikely]] {
-        throw oneCC::Exceptions::ParserError(m_err.c_str());
-    }
+    if (!root)
+        [[unlikely]]
+        {
+            throw oneCC::Exceptions::ParserError(m_err.c_str());
+        }
     return root;
 }
 

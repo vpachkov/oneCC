@@ -26,16 +26,17 @@
             return NULL;                    \
         }
 
-#define checkNode(x)     \
-    if (!x)              \
-        [[unlikely]]     \
-        {                \
-            return NULL; \
+#define softAssertNode(x) \
+    if (!x)               \
+        [[unlikely]]      \
+        {                 \
+            return NULL;  \
         }
 
 namespace oneCC::Parser {
 
-AST::Node* Parser::declareFunctionArguments() {
+AST::Node* Parser::declareFunctionArguments()
+{
     auto type = lookupToken();
     eatToken(Lexer::TokenType::TypeInt);
     auto varName = lookupToken();
@@ -64,12 +65,12 @@ AST::Node* Parser::defineFunction()
     if (isType(lookupToken())) {
         // TODO: Make it cleaner.
         auto* argDecl = declareFunctionArguments();
-        checkNode(argDecl);
+        softAssertNode(argDecl);
         arguments.push_back(argDecl);
         while (lookupToken().type() == Lexer::TokenType::Comma) {
             eatToken(Lexer::TokenType::Comma);
             auto* argDecl = declareFunctionArguments();
-            checkNode(argDecl);
+            softAssertNode(argDecl);
             arguments.push_back(argDecl);
         }
     }
@@ -82,7 +83,7 @@ AST::Node* Parser::defineFunction()
     } else {
         auto functionNode = new AST::FunctionNode(new AST::IdentifierNode(funcName.lexeme(), type.type()), arguments, NULL);
         auto blockStat = blockStatement(functionNode);
-        checkNode(blockStat);
+        softAssertNode(blockStat);
         functionNode->setStatement((AST::BlockStatementNode*)(blockStat));
         return functionNode;
     }
