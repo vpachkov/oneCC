@@ -3,6 +3,7 @@
 #include "../../AST/AbstractAST.h"
 #include "../../Lexer/Token.h"
 #include "Common/Regs.h"
+#include "Managers/OutputManager.h"
 #include "Managers/RegisterManager.h"
 #include "Managers/TransactionManager.h"
 #include "Managers/VarManager.h"
@@ -32,6 +33,8 @@ public:
     RegisterManager& registerManager() { return m_registerManager; }
     TransactionManager& transactionManager() { return m_transactionManager; }
     VarManager& varManager() { return m_varManager; }
+    OutputManager& outputManager() { return m_outputManager; }
+    OutputManager& output() { return m_outputManager; }
 
 private:
     // From AST::AbstractAST
@@ -57,6 +60,7 @@ private:
     int allocateLocalVars(AST::FunctionNode* func);
 
     AsmTranslator m_translator;
+    OutputManager m_outputManager;
     RegisterManager m_registerManager;
     TransactionManager m_transactionManager;
     VarManager m_varManager;

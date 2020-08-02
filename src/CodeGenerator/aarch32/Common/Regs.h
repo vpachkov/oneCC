@@ -1,9 +1,10 @@
 #pragma once
 
+#include "../Managers/OutputManager.h"
 #include <functional>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
@@ -38,7 +39,7 @@ public:
         m_value = 0;
     }
 
-    void dump() const
+    void dump(OutputManager& manager) const
     {
         static const char* d[] {
             "DataVariable",
@@ -47,7 +48,7 @@ public:
             "DataMem",
             "DataTmp",
         };
-        std::cout << d[m_type] << " " << m_value << "\n";
+        manager.add(TranslatedOpcode(std::string(d[m_type]) + " " + std::to_string(m_value)));
     }
 
     static RegisterData& Tmp()
