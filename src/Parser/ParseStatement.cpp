@@ -13,25 +13,11 @@
 #include "../AST/Nodes/WhileStatement.h"
 #include "../Exceptions.h"
 #include "../Utils/ASTReader/ASTReader.h"
+#include "Defines.h"
 #include "Parser.h"
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
-
-#define eatToken(...)                       \
-    if (!tryToEatToken(__VA_ARGS__))        \
-        [[unlikely]]                        \
-        {                                   \
-            generateErrorText(__VA_ARGS__); \
-            return NULL;                    \
-        }
-
-#define softAssertNode(x) \
-    if (!x)               \
-        [[unlikely]]      \
-        {                 \
-            return NULL;  \
-        }
 
 namespace oneCC::Parser {
 

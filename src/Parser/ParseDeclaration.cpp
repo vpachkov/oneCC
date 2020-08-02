@@ -13,25 +13,11 @@
 #include "../AST/Nodes/WhileStatement.h"
 #include "../Exceptions.h"
 #include "../Utils/ASTReader/ASTReader.h"
+#include "Defines.h"
 #include "Parser.h"
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
-
-#define eatToken(...)                       \
-    if (!tryToEatToken(__VA_ARGS__))        \
-        [[unlikely]]                        \
-        {                                   \
-            generateErrorText(__VA_ARGS__); \
-            return NULL;                    \
-        }
-
-#define softAssertNode(x) \
-    if (!x)               \
-        [[unlikely]]      \
-        {                 \
-            return NULL;  \
-        }
 
 namespace oneCC::Parser {
 
@@ -41,7 +27,7 @@ AST::Node* Parser::eatFunctionArgument()
     eatToken(Lexer::TokenType::TypeInt);
     auto varName = lookupToken();
     eatToken(Lexer::TokenType::Identifier);
-    //TODO: where's createIntStatement()? Consider moving it back here
+    // TODO: where's createIntStatement()? Consider moving it back here
 
     AST::Node* expr = NULL;
     if (lookupToken().type() == Lexer::TokenType::Assign) {
@@ -66,7 +52,7 @@ AST::Node* Parser::declareFunction()
         auto* argDecl = eatFunctionArgument();
         softAssertNode(argDecl);
         arguments.push_back(argDecl);
-        
+
         while (lookupToken().type() == Lexer::TokenType::Comma) {
             eatToken(Lexer::TokenType::Comma);
             auto* argDecl = eatFunctionArgument();
