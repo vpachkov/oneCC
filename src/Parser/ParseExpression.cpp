@@ -26,16 +26,15 @@
             return NULL;                    \
         }
 
-#define checkNode(x)     \
-    if (!x)              \
-        [[unlikely]]     \
-        {                \
-            return NULL; \
+#define softAssertNode(x) \
+    if (!x)               \
+        [[unlikely]]      \
+        {                 \
+            return NULL;  \
         }
 
 namespace oneCC::Parser {
 
-// Expressions
 AST::Node* Parser::factor()
 {
     // TODO: need to support variables here
@@ -71,7 +70,7 @@ AST::Node* Parser::factor()
 AST::Node* Parser::multiplyDivide()
 {
     auto* root = factor();
-    checkNode(root);
+    softAssertNode(root);
 
     while (lookupToken().type() == Lexer::TokenType::Multiply || lookupToken().type() == Lexer::TokenType::Divide) {
         auto* newNode = new AST::BinaryOperationNode();
@@ -80,7 +79,7 @@ AST::Node* Parser::multiplyDivide()
         eatToken({ Lexer::TokenType::Multiply, Lexer::TokenType::Divide });
 
         auto* rightSide = factor();
-        checkNode(rightSide);
+        softAssertNode(rightSide);
 
         newNode->setChildren(root, rightSide);
         root = newNode;
@@ -92,7 +91,7 @@ AST::Node* Parser::multiplyDivide()
 AST::Node* Parser::sumMinus()
 {
     auto* root = multiplyDivide();
-    checkNode(root);
+    softAssertNode(root);
 
     while (lookupToken().type() == Lexer::TokenType::Plus || lookupToken().type() == Lexer::TokenType::Minus) {
         auto* newNode = new AST::BinaryOperationNode();
@@ -101,7 +100,7 @@ AST::Node* Parser::sumMinus()
         m_lexer->skipToken();
 
         auto* rightSide = multiplyDivide();
-        checkNode(rightSide);
+        softAssertNode(rightSide);
 
         newNode->setChildren(root, rightSide);
         root = newNode;
@@ -110,7 +109,7 @@ AST::Node* Parser::sumMinus()
     return root;
 }
 
-inline bool Parser::isBooleanOperation(const Lexer::Token &token)
+inline bool Parser::isBooleanOperation(const Lexer::Token& token)
 {
     return Lexer::TokenType::_BooleanStart < token.type() && token.type() < Lexer::TokenType::_BooleanEnd;
 }
@@ -118,7 +117,7 @@ inline bool Parser::isBooleanOperation(const Lexer::Token &token)
 AST::Node* Parser::booleanOperation()
 {
     auto* root = sumMinus();
-    checkNode(root);
+    softAssertNode(root);
 
     while (isBooleanOperation(lookupToken())) {
         auto* newNode = new AST::BinaryOperationNode();
@@ -127,7 +126,7 @@ AST::Node* Parser::booleanOperation()
         m_lexer->skipToken();
 
         auto* rightSide = sumMinus();
-        checkNode(rightSide);
+        softAssertNode(rightSide);
 
         newNode->setChildren(root, rightSide);
         root = newNode;

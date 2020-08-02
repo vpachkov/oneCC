@@ -26,11 +26,11 @@
             return NULL;                    \
         }
 
-#define checkNode(x)     \
-    if (!x)              \
-        [[unlikely]]     \
-        {                \
-            return NULL; \
+#define softAssertNode(x) \
+    if (!x)               \
+        [[unlikely]]      \
+        {                 \
+            return NULL;  \
         }
 
 namespace oneCC::Parser {
@@ -43,7 +43,7 @@ AST::Node* Parser::createIntStatement()
     eatToken(Lexer::TokenType::Identifier);
     eatToken(Lexer::TokenType::Assign);
     auto* parsedExpr = expression();
-    checkNode(parsedExpr);
+    softAssertNode(parsedExpr);
     eatToken(Lexer::TokenType::EndOfStatement);
     return new AST::TernaryOperationNode(new AST::TypeNode(type.type()), new AST::IdentifierNode(identifier.lexeme()), parsedExpr, Lexer::TokenType::Assign);
 }
@@ -54,10 +54,9 @@ AST::Node* Parser::reassignIntStatement()
     eatToken(Lexer::TokenType::Identifier);
     eatToken(Lexer::TokenType::Assign);
     auto* parsedExpr = expression();
-    checkNode(parsedExpr);
+    softAssertNode(parsedExpr);
     eatToken(Lexer::TokenType::EndOfStatement);
     return new AST::BinaryOperationNode(new AST::IdentifierNode(identifier.lexeme()), parsedExpr, Lexer::TokenType::Assign);
-
 }
 
 AST::Node* Parser::ifStatement(AST::Node* function)
@@ -71,7 +70,7 @@ AST::Node* Parser::ifStatement(AST::Node* function)
         auto expr = expression();
 
         //TODO: Checking only returns NULL (better to throw an exception here)
-        checkNode(expr);
+        softAssertNode(expr);
         eatToken(Lexer::TokenType::CloseRoundBracket);
 
         auto trueStatement = statement(function);
@@ -118,7 +117,7 @@ AST::Node* Parser::blockStatement(AST::Node* function)
 
     while (lookupToken().type() != Lexer::TokenType::CloseCurlyBracket) {
         auto* child = statement(function);
-        checkNode(child);
+        softAssertNode(child);
         statements.push_back(child);
     }
 
@@ -145,12 +144,12 @@ AST::Node* Parser::functionCallImpl()
     std::vector<AST::Node*> arguments;
     if (lookupToken().type() != Lexer::TokenType::CloseRoundBracket) {
         auto* res = expression();
-        checkNode(res);
+        softAssertNode(res);
         arguments.push_back(res);
         while (lookupToken().type() == Lexer::TokenType::Comma) {
             eatToken(Lexer::TokenType::Comma);
             auto* res = expression();
-            checkNode(res);
+            softAssertNode(res);
             arguments.push_back(res);
         }
     }
