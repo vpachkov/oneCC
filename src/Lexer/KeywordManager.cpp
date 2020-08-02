@@ -32,38 +32,42 @@ Token KeywordManager::process(Token token)
 
 std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
 {
+    TokenType keywordTokenTypes[] = {
+        TokenType::Plus,
+        TokenType::Multiply,
+        TokenType::Divide,
+        TokenType::Assign,
+
+        TokenType::Equal,
+        TokenType::Bigger,
+        TokenType::Less,
+        TokenType::And,
+        TokenType::Or,
+
+        TokenType::TypeInt,
+
+        TokenType::EndOfStatement,
+        TokenType::Comma,
+        TokenType::OpenRoundBracket,
+        TokenType::CloseRoundBracket,
+        TokenType::OpenCurlyBracket,
+        TokenType::CloseCurlyBracket,
+
+        TokenType::Return,
+        TokenType::If,
+        TokenType::While,
+        TokenType::Else,
+
+        TokenType::OneLineComment,
+        TokenType::OpenSeveralLinesComment,
+        TokenType::CloseSeveralLinesComment,
+    };
+
     auto man = std::make_shared<KeywordManager>();
-    man->addKeyword(Token("+", TokenType::Plus));
-    man->addKeyword(Token("*", TokenType::Multiply));
-    man->addKeyword(Token("/", TokenType::Divide));
-    man->addKeyword(Token("=", TokenType::Assign));
 
-    // Boolean
-    man->addKeyword(Token("==", TokenType::Equal));
-    man->addKeyword(Token(">", TokenType::Bigger));
-    man->addKeyword(Token("<", TokenType::Less));
-
-    // Types
-    man->addKeyword(Token("int", TokenType::TypeInt));
-
-    // Punctuation
-    man->addKeyword(Token(";", TokenType::EndOfStatement));
-    man->addKeyword(Token(",", TokenType::Comma));
-    man->addKeyword(Token("(", TokenType::OpenRoundBracket));
-    man->addKeyword(Token(")", TokenType::CloseRoundBracket));
-    man->addKeyword(Token("{", TokenType::OpenCurlyBracket));
-    man->addKeyword(Token("}", TokenType::CloseCurlyBracket));
-
-    // Keywords
-    man->addKeyword(Token("return", TokenType::Return));
-    man->addKeyword(Token("if", TokenType::If));
-    man->addKeyword(Token("while", TokenType::While));
-    man->addKeyword(Token("else", TokenType::Else));
-
-    // Comments, used only inside Lexer
-    man->addKeyword(Token("//", TokenType::OneLineComment));
-    man->addKeyword(Token("/*", TokenType::OpenSeveralLinesComment));
-    man->addKeyword(Token("*/", TokenType::CloseSeveralLinesComment));
+    for (auto tokenType : keywordTokenTypes) {
+        man->addKeyword(Token(tokenTypeToString(tokenType), tokenType));
+    }
 
     return man;
 }

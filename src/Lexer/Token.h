@@ -28,6 +28,9 @@ enum TokenType {
     Equal,
     _BooleanEnd,
 
+    And,
+    Or,
+
     // Others
     EndOfFile,
 
@@ -63,57 +66,62 @@ enum TokenType {
 
 static const char* tokenTypeToString(TokenType token) {
     static const char* tokens[] = {
-            "Identifier",
-            "Punct",
-            "ConstString",
-            "ConstChar",
-            "Comma",
+        "Identifier",
+        "Punct",
+        "ConstString",
+        "ConstChar",
+        "Comma",
 
-            // Keywords
-            "if",
-            "else",
-            "while",
+        // Keywords
+        "if",
+        "else",
+        "while",
 
-            // Binary Operations
-            "+",
-            "-",
-            "*",
-            "/",
-            "==",
+        // Binary Operations
+        "+",
+        "-",
+        "*",
+        "/",
+        "_BooleanStart",
+        "<",
+        ">",
+        "==",
+        "_BooleanEnd",
 
-            ">",
+        "&&",
+        "||",
 
-            // Others
-            "EndOfFile",
+        // Others
+        "EndOfFile",
 
-            // Types
-            "IntConst",
-            "FloatConst",
-            "StringConst",
+        // Types
+        "IntConst",
+        "FloatConst",
+        "StringConst",
 
-            "int",
-            "float",
-            "bool",
+        "int",
+        "float",
+        "bool",
 
-            // Brackets
-            "(",
-            ")",
-            "[",
-            "]",
-            "{",
-            "}",
+        // Brackets
+        "(",
+        ")",
+        "[",
+        "]",
+        "{",
+        "}",
 
-            "=",
+        "=",
 
-            ";",
+        ";",
 
-            "return",
+        "return",
 
-            // Used only inside Lexer
-            "//",
-            "/*",
-            "*/",
-            "error",
+        // Used only inside Lexer
+        "//",
+        "/*",
+        "*/",
+        "error",
     };
 
     return tokens[token];

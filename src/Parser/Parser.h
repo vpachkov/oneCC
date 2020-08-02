@@ -28,6 +28,8 @@ private:
     AST::Node* multiplyDivide();
     AST::Node* sumMinus();
     AST::Node* booleanOperation();
+    AST::Node* booleanAnd();
+    AST::Node* booleanOr();
     AST::Node* expression();
 
     AST::Node* functionCallImpl();
@@ -43,7 +45,6 @@ private:
 
     AST::Node* eatFunctionArgument();
     AST::Node* declareFunction();
-    
 
     AST::Node* program();
 

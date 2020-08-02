@@ -59,7 +59,6 @@ AST::Node* Parser::ifStatement(AST::Node* function)
 
         auto expr = expression();
 
-        //TODO: Checking only returns NULL (better to throw an exception here)
         softAssertNode(expr);
         eatToken(Lexer::TokenType::CloseRoundBracket);
 

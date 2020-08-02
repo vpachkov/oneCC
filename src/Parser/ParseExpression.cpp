@@ -121,10 +121,50 @@ AST::Node* Parser::booleanOperation()
     return root;
 }
 
+AST::Node* Parser::booleanAnd() {
+    auto* root = booleanOperation();
+    softAssertNode(root);
+
+    while (lookupToken().type() == Lexer::TokenType::And) {
+        auto* newNode = new AST::BinaryOperationNode();
+        newNode->setOperation(lookupToken().type());
+
+        m_lexer->skipToken();
+
+        auto* rightSide = booleanOperation();
+        softAssertNode(rightSide);
+
+        newNode->setChildren(root, rightSide);
+        root = newNode;
+    }
+
+    return root;
+}
+
+AST::Node* Parser::booleanOr() {
+    auto* root = booleanAnd();
+    softAssertNode(root);
+
+    while (lookupToken().type() == Lexer::TokenType::Or) {
+        auto* newNode = new AST::BinaryOperationNode();
+        newNode->setOperation(lookupToken().type());
+
+        m_lexer->skipToken();
+
+        auto* rightSide = booleanAnd();
+        softAssertNode(rightSide);
+
+        newNode->setChildren(root, rightSide);
+        root = newNode;
+    }
+
+    return root;
+}
+
 // Entry point
 AST::Node* Parser::expression()
 {
-    return booleanOperation();
+    return booleanOr();
 }
 
 }

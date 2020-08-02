@@ -33,7 +33,7 @@ int main()
         if (token.type() == oneCC::Lexer::TokenType::EndOfFile) {
             break;
         } else {
-            std::cout << token.lexeme() << "(" << oneCC::Lexer::Token::typeToString(token) << ") ";
+            std::cout << token.lexeme() << "(" << oneCC::Lexer::tokenTypeToString(token.type()) << ") ";
         }
     }
     std::cout << "\n\n";
@@ -60,8 +60,8 @@ int main()
     viz.genTreePng(root);
 #endif // DEBUG_VIZ
 
-    auto codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::CodeGenerator::TargetPlatform::aarch32);
-    codeGen.start(root);
+    // auto codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::CodeGenerator::TargetPlatform::aarch32);
+    // codeGen.start(root);
 
     return 0;
 }
