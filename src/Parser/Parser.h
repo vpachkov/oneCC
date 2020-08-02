@@ -1,9 +1,9 @@
 #pragma once
+#include "../AST/ASTNode.h"
 #include "../Lexer/Lexer.h"
 #include "../Lexer/Token.h"
-#include "../AST/ASTNode.h"
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace oneCC::Parser {
 
@@ -28,17 +28,18 @@ private:
     AST::Node* multiplyDivide();
     AST::Node* sum();
     AST::Node* booleanOperation();
-    AST::Node* createInt();
-    AST::Node* reassignInt();
     AST::Node* expression();
-    AST::Node* functionCall();
 
-    AST::Node* ifStatement(AST::Node* function=NULL);
-    AST::Node* whileStatement(AST::Node* function=NULL);
-    AST::Node* blockStatement(AST::Node* function=NULL);
-    AST::Node* returnStatement(AST::Node* function=NULL);
-    AST::Node* callFunctionStatement();
-    AST::Node* statement(AST::Node* function=NULL);
+    AST::Node* functionCallImpl();
+
+    AST::Node* createIntStatement();
+    AST::Node* reassignIntStatement();
+    AST::Node* ifStatement(AST::Node* function = NULL);
+    AST::Node* whileStatement(AST::Node* function = NULL);
+    AST::Node* blockStatement(AST::Node* function = NULL);
+    AST::Node* returnStatement(AST::Node* function = NULL);
+    AST::Node* functionCallStatement();
+    AST::Node* statement(AST::Node* function = NULL);
 
     AST::Node* defineFunction();
     AST::Node* declareFunctionArguments();
