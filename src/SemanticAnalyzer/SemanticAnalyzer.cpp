@@ -69,8 +69,10 @@ void SemanticAnalyzer::visitNode(AST::BlockStatementNode* blockStatement) {
 
 void SemanticAnalyzer::visitNode(AST::TernaryOperationNode* ternaryOperation) {
     if (ternaryOperation->operation() == Lexer::TokenType::Assign) {
-        visitNode(ternaryOperation->rightChild());
-        assertCorrect();
+        if (ternaryOperation->rightChild()) {
+            visitNode(ternaryOperation->rightChild());
+            assertCorrect();
+        }
 
         auto identifierNode = reinterpret_cast<AST::IdentifierNode*>(ternaryOperation->middleChild());
         identifierNode->setExpressionType(reinterpret_cast<AST::TypeNode*>(ternaryOperation->leftChild())->type());

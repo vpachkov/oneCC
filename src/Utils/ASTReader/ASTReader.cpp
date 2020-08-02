@@ -139,7 +139,9 @@ void Visualizer::visitNode(AST::TernaryOperationNode* node)
 
     visitNode(node->leftChild());
     visitNode(node->middleChild());
-    visitNode(node->rightChild());
+    if (node->rightChild()) {
+        visitNode(node->rightChild());
+    }
 
     m_labels[myTin] = toText(node);
     m_children[myTin] = popChildrenTins();
