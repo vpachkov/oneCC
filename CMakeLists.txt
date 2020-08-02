@@ -25,6 +25,11 @@ set(COMMON_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/Lexer/TextSequencer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Lexer/Token.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Parser/Parser.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Parser/Defines.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/Parser/ParseDeclaration.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Parser/ParseExpression.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Parser/Parser.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/Parser/ParseStatement.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Utils/ASTReader/ASTReader.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/Function.h 
         ${CMAKE_CURRENT_SOURCE_DIR}/AST/Nodes/IfStatement.h 
