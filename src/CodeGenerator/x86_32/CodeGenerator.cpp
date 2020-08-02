@@ -158,6 +158,8 @@ void CodeGeneratorX86_32::visitNode(AST::FunctionCallNode* a) {
                 m_asmTranslator.MOV_reg32_rm32(fastcallReg, RM(RMType::Reg, resultReg));
                 m_registerManager.freeRegister(resultReg);
             }
+
+            m_registerManager.takeRegister(fastcallReg);
         }
 
         fastcallRegistersIndex++;
