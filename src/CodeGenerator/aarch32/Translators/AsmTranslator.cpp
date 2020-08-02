@@ -2,183 +2,185 @@
 #include <cassert>
 #include <iostream>
 
-#define NOT_IMPL(x)                                                                               \
-    do {                                                                                          \
-        std::cout << "\033[1;31mNOT IMPLEMENTED\033[0m in \033[1;31m" << __FILE__ << "\033[0m\n"; \
-        assert(0);                                                                                \
+#define NOT_IMPL(x)                                                                            \
+    do {                                                                                       \
+        std::cout + "\033[1;31mNOT IMPLEMENTED\033[0m in \033[1;31m" + __FILE__ + "\033[0m\n"; \
+        assert(0);                                                                             \
     } while (0)
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
-void AsmTranslator::ADD_reg(Register& Rd, Register& Rn, Register& Rm)
+TranslatedOpcode AsmTranslator::ADD_reg(Register& Rd, Register& Rn, Register& Rm)
 {
-    std::cout << "add " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << "\n";
+    return TranslatedOpcode("add " + Rd.textAlias() + ", " + Rn.textAlias() + ", " + Rm.textAlias());
 }
 
-void AsmTranslator::ADD_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount)
+TranslatedOpcode AsmTranslator::ADD_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount)
 {
-    std::cout << "add " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << ", (rrx)" << amount << "\n";
+    return TranslatedOpcode("add " + Rd.textAlias() + ", " + Rn.textAlias() + ", " + Rm.textAlias() + ", (rrx)" + std::to_string(amount));
 }
 
-void AsmTranslator::ADD_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount)
+TranslatedOpcode AsmTranslator::ADD_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount)
 {
     amount &= 31;
-    std::cout << "add " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << ", " << stype << ", #" << amount << "\n";
+    return TranslatedOpcode("add " + Rd.textAlias() + ", " + Rn.textAlias() + ", " + Rm.textAlias() + ", " + std::to_string((int)stype) + ", #" + std::to_string(amount));
 }
 
-void AsmTranslator::ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12)
+TranslatedOpcode AsmTranslator::ADD_imm12(Register& Rd, Register& Rn, uint16_t imm12)
 {
     imm12 = imm12 & 0xfff; // making it 12bit long
-    std::cout << "add " << Rd.textAlias() << ", " << Rn.textAlias() << ", #" << imm12 << "\n";
+    return TranslatedOpcode("add " + Rd.textAlias() + ", " + Rn.textAlias() + ", #" + std::to_string(imm12));
 }
 
-void AsmTranslator::BL(uint32_t imm24, const std::string& label)
+TranslatedOpcode AsmTranslator::BL(uint32_t imm24, const std::string& label)
 {
-    std::cout << "bl " << label << "\n";
+    return TranslatedOpcode("bl " + label);
 }
 
-void AsmTranslator::BLX(uint32_t imm24, const std::string& label)
+TranslatedOpcode AsmTranslator::BLX(uint32_t imm24, const std::string& label)
 {
-    std::cout << "blx " << label << "\n";
+    return TranslatedOpcode("blx " + label);
 }
 
-void AsmTranslator::BX(Register& Rm)
+TranslatedOpcode AsmTranslator::BX(Register& Rm)
 {
-    std::cout << "bx " << Rm.textAlias() << "\n";
+    return TranslatedOpcode("bx " + Rm.textAlias());
 }
 
-void AsmTranslator::LDR_imm_offset(Register& Rt, Register& Rn, int16_t imm12)
+TranslatedOpcode AsmTranslator::LDR_imm_offset(Register& Rt, Register& Rn, int16_t imm12)
 {
-    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << ", #" << int(imm12) << "]\n";
+    return TranslatedOpcode("ldr " + Rt.textAlias() + ", [" + Rn.textAlias() + ", #" + std::to_string(int(imm12)) + "]");
 }
 
-void AsmTranslator::LDR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12)
+TranslatedOpcode AsmTranslator::LDR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12)
 {
-    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << ", #" << int(imm12) << "]!\n";
+    return TranslatedOpcode("ldr " + Rt.textAlias() + ", [" + Rn.textAlias() + ", #" + std::to_string(int(imm12)) + "]!");
 }
 
-void AsmTranslator::LDR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12)
+TranslatedOpcode AsmTranslator::LDR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12)
 {
-    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << "], #" << int(imm12) << "\n";
+    return TranslatedOpcode("ldr " + Rt.textAlias() + ", [" + Rn.textAlias() + "], #" + std::to_string(int(imm12)));
 }
 
-void AsmTranslator::LDR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+TranslatedOpcode AsmTranslator::LDR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
 {
-    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << ", " << Rm.textAlias() << ", " << shift << "]\n";
+    return TranslatedOpcode("ldr " + Rt.textAlias() + ", [" + Rn.textAlias() + ", " + Rm.textAlias() + ", " + std::to_string(shift) + "]");
 }
 
-void AsmTranslator::LDR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+TranslatedOpcode AsmTranslator::LDR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
 {
-    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << ", " << Rm.textAlias() << ", " << shift << "]!\n";
+    return TranslatedOpcode("ldr " + Rt.textAlias() + ", [" + Rn.textAlias() + ", " + Rm.textAlias() + ", " + std::to_string(shift) + "]!");
 }
 
-void AsmTranslator::LDR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+TranslatedOpcode AsmTranslator::LDR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
 {
-    std::cout << "ldr " << Rt.textAlias() << ", [" << Rn.textAlias() << "], " << Rm.textAlias() << ", " << shift << "\n";
+    return TranslatedOpcode("ldr " + Rt.textAlias() + ", [" + Rn.textAlias() + "], " + Rm.textAlias() + ", " + std::to_string(shift));
 }
 
-void AsmTranslator::MOV_reg(Register& Rd, Register& Rm)
+TranslatedOpcode AsmTranslator::MOV_reg(Register& Rd, Register& Rm)
 {
-    std::cout << "mov " << Rd.textAlias() << ", " << Rm.textAlias() << "\n";
+    return TranslatedOpcode("mov " + Rd.textAlias() + ", " + Rm.textAlias());
 }
-void AsmTranslator::MOV_reg_rrx(Register& Rd, Register& Rm, uint32_t amount)
+TranslatedOpcode AsmTranslator::MOV_reg_rrx(Register& Rd, Register& Rm, uint32_t amount)
 {
-    std::cout << "mov " << Rd.textAlias() << ", " << Rm.textAlias() << ", (rrx)" << amount << "\n";
+    return TranslatedOpcode("mov " + Rd.textAlias() + ", " + Rm.textAlias() + ", (rrx)" + std::to_string(amount));
 }
-void AsmTranslator::MOV_reg_shift_or_rotate(Register& Rd, Register& Rm, ShiftType stype, uint32_t amount)
+TranslatedOpcode AsmTranslator::MOV_reg_shift_or_rotate(Register& Rd, Register& Rm, ShiftType stype, uint32_t amount)
 {
     amount &= 31;
-    std::cout << "mov " << Rd.textAlias() << ", " << Rm.textAlias() << ", " << stype << ", #" << amount << "\n";
+    return TranslatedOpcode("mov " + Rd.textAlias() + ", " + Rm.textAlias() + ", " + std::to_string((int)stype) + ", #" + std::to_string(amount));
 }
 
-void AsmTranslator::MOV_imm16(Register& Rd, uint16_t imm16)
+TranslatedOpcode AsmTranslator::MOV_imm16(Register& Rd, uint16_t imm16)
 {
-    std::cout << "mov " << Rd.textAlias() << ", #" << (int)imm16 << "\n";
+    return TranslatedOpcode("mov " + Rd.textAlias() + ", #" + std::to_string((int)imm16));
 }
 
-void AsmTranslator::MOVT_imm16(Register& Rd, uint16_t imm16)
+TranslatedOpcode AsmTranslator::MOVT_imm16(Register& Rd, uint16_t imm16)
 {
-    std::cout << "movt " << Rd.textAlias() << ", #" << (int)imm16 << "\n";
+    return TranslatedOpcode("movt " + Rd.textAlias() + ", #" + std::to_string((int)imm16));
 }
 
-void AsmTranslator::MOVV_imm32(Register& Rd, uint32_t imm32)
+TranslatedOpcode AsmTranslator::MOVV_imm32(Register& Rd, uint32_t imm32)
 {
-    std::cout << "mov " << Rd.textAlias() << ", #" << (int)imm32 << " @virt\n";
+    return TranslatedOpcode("mov " + Rd.textAlias() + ", #" + std::to_string((int)imm32) + " @virt");
 }
 
-void AsmTranslator::POP_multiple_registers(RegisterList list)
+TranslatedOpcode AsmTranslator::POP_multiple_registers(RegisterList list)
 {
-    std::cout << "pop { ";
+    std::string s("pop { ");
     for (Register& reg : list) {
-        std::cout << reg.textAlias() << " ";
+        s += reg.textAlias() + " ";
     }
-    std::cout << "}\n";
+    s += "}";
+    return TranslatedOpcode(std::move(s));
 }
 
-void AsmTranslator::PUSH_multiple_registers(RegisterList list)
+TranslatedOpcode AsmTranslator::PUSH_multiple_registers(RegisterList list)
 {
-    std::cout << "push { ";
+    std::string s("push { ");
     for (Register& reg : list) {
-        std::cout << reg.textAlias() << " ";
+        s += reg.textAlias() + " ";
     }
-    std::cout << "}\n";
+    s += "}";
+    return TranslatedOpcode(std::move(s));
 }
 
-void AsmTranslator::STR_imm_offset(Register& Rt, Register& Rn, int16_t imm12)
+TranslatedOpcode AsmTranslator::STR_imm_offset(Register& Rt, Register& Rn, int16_t imm12)
 {
-    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << ", #" << int(imm12) << "]\n";
+    return TranslatedOpcode("str " + Rt.textAlias() + ", [" + Rn.textAlias() + ", #" + std::to_string(int(imm12)) + "]");
 }
 
-void AsmTranslator::STR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12)
+TranslatedOpcode AsmTranslator::STR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12)
 {
-    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << ", #" << int(imm12) << "]!\n";
+    return TranslatedOpcode("str " + Rt.textAlias() + ", [" + Rn.textAlias() + ", #" + std::to_string(int(imm12)) + "]!");
 }
 
-void AsmTranslator::STR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12)
+TranslatedOpcode AsmTranslator::STR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12)
 {
-    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << "], #" << int(imm12) << "\n";
+    return TranslatedOpcode("str " + Rt.textAlias() + ", [" + Rn.textAlias() + "], #" + std::to_string(int(imm12)));
 }
 
-void AsmTranslator::STR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+TranslatedOpcode AsmTranslator::STR_reg_offset(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
 {
-    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << ", " << Rm.textAlias() << ", " << shift << "]\n";
+    return TranslatedOpcode("str " + Rt.textAlias() + ", [" + Rn.textAlias() + ", " + Rm.textAlias() + ", " + std::to_string(shift) + "]");
 }
 
-void AsmTranslator::STR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+TranslatedOpcode AsmTranslator::STR_reg_pre_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
 {
-    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << ", " << Rm.textAlias() << ", " << shift << "]!\n";
+    return TranslatedOpcode("str " + Rt.textAlias() + ", [" + Rn.textAlias() + ", " + Rm.textAlias() + ", " + std::to_string(shift) + "]!");
 }
 
-void AsmTranslator::STR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
+TranslatedOpcode AsmTranslator::STR_reg_post_indexed(Register& Rt, Register& Rn, Register& Rm, int16_t imm12, int16_t shift)
 {
-    std::cout << "str " << Rt.textAlias() << ", [" << Rn.textAlias() << "], " << Rm.textAlias() << ", " << shift << "\n";
+    return TranslatedOpcode("str " + Rt.textAlias() + ", [" + Rn.textAlias() + "], " + Rm.textAlias() + ", " + std::to_string(shift));
 }
 
-void AsmTranslator::SUB_reg(Register& Rd, Register& Rn, Register& Rm)
+TranslatedOpcode AsmTranslator::SUB_reg(Register& Rd, Register& Rn, Register& Rm)
 {
-    std::cout << "sub " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << "\n";
+    return TranslatedOpcode("sub " + Rd.textAlias() + ", " + Rn.textAlias() + ", " + Rm.textAlias());
 }
 
-void AsmTranslator::SUB_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount)
+TranslatedOpcode AsmTranslator::SUB_reg_rrx(Register& Rd, Register& Rn, Register& Rm, uint32_t amount)
 {
-    std::cout << "sub " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << ", (rrx)" << amount << "\n";
+    return TranslatedOpcode("sub " + Rd.textAlias() + ", " + Rn.textAlias() + ", " + Rm.textAlias() + ", (rrx)" + std::to_string(amount));
 }
 
-void AsmTranslator::SUB_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount)
+TranslatedOpcode AsmTranslator::SUB_reg_shift_or_rotate(Register& Rd, Register& Rn, Register& Rm, ShiftType stype, uint32_t amount)
 {
     amount &= 31;
-    std::cout << "sub " << Rd.textAlias() << ", " << Rn.textAlias() << ", " << Rm.textAlias() << ", " << stype << ", #" << amount << "\n";
+    return TranslatedOpcode("sub " + Rd.textAlias() + ", " + Rn.textAlias() + ", " + Rm.textAlias() + ", " + std::to_string((int)stype) + ", #" + std::to_string(amount));
 }
 
-void AsmTranslator::SUB_imm12(Register& Rd, Register& Rn, uint16_t imm12)
+TranslatedOpcode AsmTranslator::SUB_imm12(Register& Rd, Register& Rn, uint16_t imm12)
 {
     imm12 = imm12 & 0xfff; // making it 12bit long
-    std::cout << "sub " << Rd.textAlias() << ", " << Rn.textAlias() << ", #" << imm12 << "\n";
+    return TranslatedOpcode("sub " + Rd.textAlias() + ", " + Rn.textAlias() + ", #" + std::to_string(imm12));
 }
 
-void AsmTranslator::addLabel(const char* text)
+TranslatedOpcode AsmTranslator::addLabel(const char* text)
 {
-    std::cout << text << "\n";
+    return TranslatedOpcode(text);
 }
 
 }
