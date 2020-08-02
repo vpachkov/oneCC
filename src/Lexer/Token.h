@@ -19,9 +19,14 @@ enum TokenType {
     Minus,
     Multiply,
     Divide,
-    Equal,
-
+    
+    // Boolean
+    // Add boolean types ONLY HERE!
+    _BooleanStart,
+    Less,
     Bigger,
+    Equal,
+    _BooleanEnd,
 
     // Others
     EndOfFile,

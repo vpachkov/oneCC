@@ -70,12 +70,6 @@ bool Parser::isType(const Lexer::Token& token)
     return token.type() == Lexer::TokenType::TypeInt || token.type() == Lexer::TokenType::TypeFloat;
 }
 
-bool Parser::isBooleanOperation(const Lexer::Token &token)
-{
-    // TODO: add more operations
-    return token.type() == Lexer::TokenType::Equal;
-}
-
 Lexer::Token Parser::lookupToken(int offset)
 {
     return m_lexer->lookupToken(offset);

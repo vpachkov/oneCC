@@ -36,8 +36,12 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
     man->addKeyword(Token("+", TokenType::Plus));
     man->addKeyword(Token("*", TokenType::Multiply));
     man->addKeyword(Token("/", TokenType::Divide));
-    man->addKeyword(Token("==", TokenType::Equal));
     man->addKeyword(Token("=", TokenType::Assign));
+
+    // Boolean
+    man->addKeyword(Token("==", TokenType::Equal));
+    man->addKeyword(Token(">", TokenType::Bigger));
+    man->addKeyword(Token("<", TokenType::Less));
 
     // Types
     man->addKeyword(Token("int", TokenType::TypeInt));

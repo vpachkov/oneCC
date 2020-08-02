@@ -89,7 +89,7 @@ AST::Node* Parser::multiplyDivide()
     return root;
 }
 
-AST::Node* Parser::sum()
+AST::Node* Parser::sumMinus()
 {
     auto* root = multiplyDivide();
     checkNode(root);
@@ -110,18 +110,23 @@ AST::Node* Parser::sum()
     return root;
 }
 
+inline bool Parser::isBooleanOperation(const Lexer::Token &token)
+{
+    return Lexer::TokenType::_BooleanStart < token.type() && token.type() < Lexer::TokenType::_BooleanEnd;
+}
+
 AST::Node* Parser::booleanOperation()
 {
-    auto* root = sum();
+    auto* root = sumMinus();
     checkNode(root);
 
-    while (isBooleanOperation(lookupToken().type())) {
+    while (isBooleanOperation(lookupToken())) {
         auto* newNode = new AST::BinaryOperationNode();
         newNode->setOperation(lookupToken().type());
 
         m_lexer->skipToken();
 
-        auto* rightSide = sum();
+        auto* rightSide = sumMinus();
         checkNode(rightSide);
 
         newNode->setChildren(root, rightSide);
@@ -131,10 +136,7 @@ AST::Node* Parser::booleanOperation()
     return root;
 }
 
-// entry point for expression (
-//     will be easier to add new expressions
-//     just change to new root here
-// )
+// Entry point
 AST::Node* Parser::expression()
 {
     return booleanOperation();
