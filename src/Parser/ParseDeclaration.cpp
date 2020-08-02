@@ -35,7 +35,7 @@
 
 namespace oneCC::Parser {
 
-AST::Node* Parser::declareFunctionArguments()
+AST::Node* Parser::eatFunctionArgument()
 {
     auto type = lookupToken();
     eatToken(Lexer::TokenType::TypeInt);
@@ -51,7 +51,7 @@ AST::Node* Parser::declareFunctionArguments()
     return new AST::FunctionArgumentNode(new AST::IdentifierNode(varName.lexeme(), type.type()), expr);
 }
 
-AST::Node* Parser::defineFunction()
+AST::Node* Parser::declareFunction()
 {
     // FIXME: Now we eat only int
     auto type = lookupToken();
@@ -63,13 +63,13 @@ AST::Node* Parser::defineFunction()
     // Eating args
     std::vector<AST::Node*> arguments;
     if (isType(lookupToken())) {
-        // TODO: Make it cleaner.
-        auto* argDecl = declareFunctionArguments();
+        auto* argDecl = eatFunctionArgument();
         softAssertNode(argDecl);
         arguments.push_back(argDecl);
+        
         while (lookupToken().type() == Lexer::TokenType::Comma) {
             eatToken(Lexer::TokenType::Comma);
-            auto* argDecl = declareFunctionArguments();
+            auto* argDecl = eatFunctionArgument();
             softAssertNode(argDecl);
             arguments.push_back(argDecl);
         }
