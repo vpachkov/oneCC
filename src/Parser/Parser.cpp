@@ -103,7 +103,7 @@ AST::Node* Parser::program()
         AST::Node* node = NULL;
         if (isType(lookupToken().type())) {
             if (lookupToken(3).type() == Lexer::TokenType::OpenRoundBracket) {
-                node = defineFunction();
+                node = declareFunction();
             } else {
                 node = createIntStatement();
             }

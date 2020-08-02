@@ -41,8 +41,9 @@ private:
     AST::Node* functionCallStatement();
     AST::Node* statement(AST::Node* function = NULL);
 
-    AST::Node* defineFunction();
-    AST::Node* declareFunctionArguments();
+    AST::Node* eatFunctionArgument();
+    AST::Node* declareFunction();
+    
 
     AST::Node* program();
 
