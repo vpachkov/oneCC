@@ -55,4 +55,12 @@ void RegisterManager::restoreInitialState() {
         return true;
     }
 
+    void RegisterManager::takeRegister(int reg) {
+        for (auto freeRegister = m_freeRegisters.begin() ; freeRegister < m_freeRegisters.end() ; freeRegister++) {
+            if (*freeRegister == reg){
+                m_freeRegisters.erase(freeRegister);
+            }
+        }
+    }
+
 }
