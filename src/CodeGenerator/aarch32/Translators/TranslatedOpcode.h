@@ -9,19 +9,42 @@ namespace oneCC::CodeGenerator::Aarch32 {
 
 class TranslatedOpcode {
 public:
-    TranslatedOpcode() = default;
-    
+    TranslatedOpcode() {}
+
     TranslatedOpcode(const std::string& s)
         : m_asm(s)
     {
     }
-    
+
     TranslatedOpcode(std::string&& s)
         : m_asm(std::move(s))
     {
     }
 
-    void print() {
+    TranslatedOpcode(const TranslatedOpcode& t)
+        : m_asm(t.m_asm)
+    {
+    }
+
+    TranslatedOpcode& operator=(const TranslatedOpcode& other)
+    {
+        m_asm = other.m_asm;
+        return *this;
+    }
+
+    TranslatedOpcode(TranslatedOpcode&& t)
+        : m_asm(std::move(t.m_asm))
+    {
+    }
+
+    TranslatedOpcode& operator=(TranslatedOpcode&& other)
+    {
+        m_asm = std::move(other.m_asm);
+        return *this;
+    }
+
+    void print()
+    {
         std::cout << m_asm << "\n";
     }
 

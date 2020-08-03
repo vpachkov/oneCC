@@ -3,7 +3,7 @@
 #include "../../AST/AbstractAST.h"
 #include "../../Lexer/Token.h"
 #include "Common/Regs.h"
-#include "Managers/OutputManager.h"
+#include "Output/OutputManager.h"
 #include "Managers/RegisterManager.h"
 #include "Managers/TransactionManager.h"
 #include "Managers/VarManager.h"
