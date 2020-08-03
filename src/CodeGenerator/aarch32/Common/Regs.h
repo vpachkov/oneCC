@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Managers/OutputManager.h"
+#include "../Output/OutputManager.h"
 #include <functional>
 #include <iostream>
 #include <string>
