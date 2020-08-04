@@ -10,6 +10,11 @@ OutputManager::OutputManager(CodeGeneratorAarch32& codeGen)
     m_activeOutputNode = 0;
 }
 
+int OutputManager::addLabel(const std::string& s)
+{
+    return add(TranslatedOpcode(std::move(std::string(s + ":"))));
+}
+
 int OutputManager::add(const TranslatedOpcode& t)
 {
     m_nodes.push_back(OutputNode(t));
@@ -71,6 +76,12 @@ int OutputManager::add(int patrentNodeId, const std::experimental::source_locati
     return m_nodes.size() - 1;
 }
 #endif
+
+// FIXME: May not work with labels
+int OutputManager::next(int prevNodeId)
+{
+    return prevNodeId + 1;
+}
 
 void OutputManager::print()
 {

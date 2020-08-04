@@ -92,7 +92,7 @@ void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* a) {}
 void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
 {
     m_storage[FUNC_PROCESSING] = 1;
-    output().add(translator().addLabel(func->identifier()->value().c_str()));
+    m_storage[FUNC_MAIN_LABEL] = output().addLabel(func->identifier()->value());
     initStackFrame(func);
 
     // Saving args to stack
@@ -149,6 +149,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
         }
     }
 
+    m_registerManager.useRegister(Register::LR());
     output().add(translator().BL(0, node->name()));
 
     // Unlocking registers for reuse
@@ -255,8 +256,9 @@ void CodeGeneratorAarch32::initStackFrame(AST::FunctionNode* func)
 {
     // TODO: Use func->statement()->statementsWithType(AST::NodeType::);
     m_varManager.enterScope();
+    m_registerManager.useRegister(Register::FP());
     RegisterList used_reg_in_func = { Register::FP() };
-    output().add(translator().PUSH_multiple_registers(used_reg_in_func));
+    m_storage[STACK_SAVED_CALLEE_REGS_OP_ID] = output().add(translator().PUSH_multiple_registers(used_reg_in_func));
     output().add(translator().ADD_imm12(Register::FP(), Register::SP(), 4 * (used_reg_in_func.size() - 1)));
     allocateArgVars(func);
     allocateLocalVars(func);
@@ -264,8 +266,11 @@ void CodeGeneratorAarch32::initStackFrame(AST::FunctionNode* func)
 
 void CodeGeneratorAarch32::restoreStackFrame(AST::FunctionNode* func)
 {
+    int pushOperationId = m_storage[STACK_SAVED_CALLEE_REGS_OP_ID];
+    output().node(pushOperationId).setOpcode(translator().PUSH_multiple_registers(m_registerManager.usedRegisters()));
+
     output().add(translator().SUB_imm12(Register::SP(), Register::FP(), 4));
-    output().add(translator().POP_multiple_registers({ Register::FP() }));
+    output().add(translator().POP_multiple_registers(m_registerManager.usedRegisters()));
     output().add(translator().BX(Register::LR()));
     m_varManager.leaveScope();
 }
