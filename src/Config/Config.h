@@ -12,6 +12,7 @@ public:
     }
     // args
     std::string filename;
+    std::string platform;
 
     //test arg, please keep your paws away
     std::string testConfigArgument = "";

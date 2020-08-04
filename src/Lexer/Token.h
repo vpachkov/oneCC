@@ -79,9 +79,12 @@ static const char* tokenTypeToString(TokenType token) {
             "-",
             "*",
             "/",
-            "==",
-
+            
+            "_BooleanStart",
+            "<",
             ">",
+            "==",
+            "_BooleanEnd",
 
             // Others
             "EndOfFile",
