@@ -28,9 +28,10 @@ int RegisterManager::resolveForbiddenRegister(Register& reg)
         return 0;
     }
     Register& with = chooseRegisterFromBack();
+    if (replace(with, reg.data()) == 0) {
+        m_codeGenerator.output().add(m_codeGenerator.translator().MOV_reg(with, reg));
+    }
     m_codeGenerator.transactionManager().active().replaceForbidRegister(reg, with);
-    m_codeGenerator.translator().MOV_reg(with, reg);
-    replace(with, reg.data());
     return 0;
 }
 
@@ -81,6 +82,8 @@ int RegisterManager::replace(Register& reg, const RegisterData& data)
     assert((!reg.isBad()));
 
     if (canUse(reg)) {
+        useRegister(reg);
+
         if (reg.data().type() == DataTmp) {
             return 0;
         }
@@ -152,6 +155,27 @@ Register& RegisterManager::has(const RegisterData& data)
         }
     }
     return Register::Bad();
+}
+
+RegisterList RegisterManager::usedRegisters()
+{
+    // r4-r15 are callee-saved
+    RegisterList res;
+
+    // A cheet to split into 2 cycles to have the right order pushing registers to the stack.
+    for (int rega = 11; rega < RegistersCount; rega++) {
+        if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {
+            res.push_back(Register::RegisterList()[rega]);
+        }
+    }
+
+    for (int rega = 4; rega < 11; rega++) {
+        if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {
+            res.push_back(Register::RegisterList()[rega]);
+        }
+    }
+
+    return res;
 }
 
 }

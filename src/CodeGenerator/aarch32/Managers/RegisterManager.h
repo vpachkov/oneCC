@@ -21,7 +21,12 @@ public:
     int replace(Register& reg, const RegisterData& data);
     Register& has(const RegisterData& data);
 
+    void useRegister(Register& reg) { m_calleeSavedUsedRegisters |= (1 << (uint32_t)reg.alias()); }
+    void resetUsedRegisters() { m_calleeSavedUsedRegisters = 0; }
+    RegisterList usedRegisters();
+
 private:
+    uint32_t m_calleeSavedUsedRegisters; // Mask
     CodeGeneratorAarch32& m_codeGenerator;
 };
 

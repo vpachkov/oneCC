@@ -40,8 +40,11 @@ void TransactionManager::end()
     assert(!m_transactions.empty());
 
     m_transactions.back().restoreReplaces([&](std::pair<Register&, Register&>& replace) {
-        m_codeGenerator.translator().MOV_reg(replace.first, replace.second);
-        m_codeGenerator.registerManager().replace(replace.first, replace.first.data());
+        // We use this hack to allow the replacement back. We don't think about correctness, since the transaction ends here.
+        m_transactions.back().allowRegister(replace.first);
+        if (m_codeGenerator.registerManager().replace(replace.first, replace.second.data()) == 0) {
+            m_codeGenerator.output().add(m_codeGenerator.translator().MOV_reg(replace.first, replace.second));
+        }
     });
 
     m_transactions.pop_back();
