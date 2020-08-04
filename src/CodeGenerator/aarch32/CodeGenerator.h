@@ -17,6 +17,8 @@
 namespace oneCC::CodeGenerator::Aarch32 {
 
 enum StorageKeys {
+    FUNC_MAIN_LABEL,
+    STACK_SAVED_CALLEE_REGS_OP_ID,
     FUNC_PROCESSING,
     FUNC_ARG_VARS,
     FUNC_LOCAL_VARS,
