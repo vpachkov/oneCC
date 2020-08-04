@@ -21,7 +21,6 @@ BASE_PATH = src
 
 SUBDIRS += \
 		${BASE_PATH}/Lexer \
-		${BASE_PATH}/Config \
 		${BASE_PATH}/ArgsParser \
 		${BASE_PATH}/Parser \
 		${BASE_PATH}/AST \

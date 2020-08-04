@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../AST/AbstractAST.h"
-#include "x86_32/CodeGenerator.h"
 #include "aarch32/CodeGenerator.h"
+#include "x86_32/CodeGenerator.h"
 
 namespace oneCC::CodeGenerator {
 
@@ -23,6 +23,13 @@ public:
     CodeGenerator(TargetPlatform pltf)
     {
         m_platform = pltf;
+        m_genX86_32 = X86_32::CodeGeneratorX86_32();
+        m_genAarch32 = Aarch32::CodeGeneratorAarch32();
+    }
+
+    CodeGenerator(const std::string& pltf)
+    {
+        m_platform = stringToPlatform(pltf);
         m_genX86_32 = X86_32::CodeGeneratorX86_32();
         m_genAarch32 = Aarch32::CodeGeneratorAarch32();
     }
@@ -49,6 +56,16 @@ public:
     }
 
 private:
+    TargetPlatform stringToPlatform(const std::string& pltf)
+    {
+        if (pltf == "X86_32") {
+            return x86_32;
+        } else if (pltf == "aarch32") {
+            return aarch32;
+        }
+        return UNKNOWN;
+    }
+
     TargetPlatform m_platform { UNKNOWN };
     X86_32::CodeGeneratorX86_32 m_genX86_32;
     Aarch32::CodeGeneratorAarch32 m_genAarch32;

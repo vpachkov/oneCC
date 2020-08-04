@@ -1,78 +1,76 @@
 #include "ArgsParser.h"
 #include "../Exceptions.h"
 #include "../Utils/Utils.h"
+#include <cassert>
+#include <iostream>
 
 namespace oneCC::ArgsParser {
 
 ArgsParser::ArgsParser()
 {
 }
+
 ArgsParser::ArgsParser(int argc, char* argv[])
 {
     loadArgs(argc, argv);
 }
+
 void ArgsParser::loadArgs(int argc, char* argv[])
 {
     for (size_t i = 1; i < argc; i++) {
         m_arguments.push_back(argv[i]);
     }
 }
-void ArgsParser::registerArgument(std::string& configField, std::string argumentLong,
-    std::string argumentShort, bool required)
-{
-    m_validateArgumentKeys(argumentLong, argumentShort);
 
-    for (size_t i = 0; i < m_arguments.size() - 1; i++) {
-        const std::string& argumentKey = m_arguments[i];
-        if (argumentKey == argumentLong || (argumentShort != NULL_ARGUMENT && argumentKey == argumentShort)) {
-            configField = m_arguments[i + 1];
-            return;
+void ArgsParser::process()
+{
+    for (ArgData& adata : m_eaters) {
+        for (int i = 0; i < (int)m_arguments.size() - 1; i++) {
+            const std::string& argumentKey = m_arguments[i];
+            if (argumentKey == adata.argLong() || argumentKey == adata.argShort()) {
+                if (adata.argType() == ArgFieldType::Int) {
+                    *((int*)adata.holder()) = std::stoi(m_arguments[i + 1]);
+                } else if (adata.argType() == ArgFieldType::String) {
+                    *((std::string*)adata.holder()) = m_arguments[i + 1];
+                } else if (adata.argType() == ArgFieldType::Bool) {
+                    *((bool*)adata.holder()) = true;
+                }
+            }
         }
     }
-    if (required) {
-        throw oneCC::Exceptions::MissingArgument();
-    }
 }
-void ArgsParser::registerArgument(int& configField, std::string argumentLong,
-    std::string argumentShort, bool required)
+
+void ArgsParser::registerArgument(std::string* configField, const std::string& argumentLong, const std::string& argumentShort, bool required)
 {
-    m_validateArgumentKeys(argumentLong, argumentShort);
-
-    for (size_t i = 0; i < m_arguments.size() - 1; i++) {
-        const std::string& argumentKey = m_arguments[i];
-        if (argumentKey == argumentLong || (argumentShort != NULL_ARGUMENT && argumentKey == argumentShort)) {
-            configField = std::stoi(m_arguments[i + 1]);
-            return;
-        }
-    }
-    if (required) {
-        throw oneCC::Exceptions::MissingArgument();
-    }
+    assert(validateArgumentKeys(argumentLong, argumentShort));
+    m_eaters.emplace_back(configField, ArgFieldType::String, argumentShort, argumentLong, required);
 }
-void ArgsParser::registerArgument(bool& configField, std::string argumentLong,
-    std::string argumentShort)
+
+void ArgsParser::registerArgument(int* configField, const std::string& argumentLong, const std::string& argumentShort, bool required)
 {
-    m_validateArgumentKeys(argumentLong, argumentShort);
-
-    for (size_t i = 0; i < m_arguments.size(); i++) {
-        const std::string& argumentKey = m_arguments[i];
-        if (argumentKey == argumentLong || (argumentShort != NULL_ARGUMENT && argumentKey == argumentShort)) {
-            configField = true;
-            return;
-        }
-    }
-
-    configField = false;
+    assert(validateArgumentKeys(argumentLong, argumentShort));
+    m_eaters.emplace_back(configField, ArgFieldType::Int, argumentShort, argumentLong, required);
 }
-void ArgsParser::m_validateArgumentKeys(std::string& argumentLong, std::string& argumentShort)
+
+void ArgsParser::registerArgument(bool* configField, const std::string& argumentLong, const std::string& argumentShort)
+{
+    assert(validateArgumentKeys(argumentLong, argumentShort));
+    m_eaters.emplace_back(configField, ArgFieldType::Bool, argumentShort, argumentLong);
+    *configField = false;
+}
+
+bool ArgsParser::validateArgumentKeys(const std::string& argumentLong, const std::string& argumentShort) const
 {
     if (argumentLong.size() <= 2 || argumentLong[0] != '-' || argumentLong[1] != '-') {
-        throw oneCC::Exceptions::BadArgumentKey();
+        return false;
     }
+
     if (argumentShort != NULL_ARGUMENT) {
         if (argumentShort.size() <= 1 || argumentShort[0] != '-') {
-            throw oneCC::Exceptions::BadArgumentKey();
+            return false;
         }
     }
+
+    return true;
 }
 };

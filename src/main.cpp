@@ -1,3 +1,4 @@
+#include "ArgsParser/ArgsParser.h"
 #include "Lexer/Lexer.h"
 #include "Parser/Parser.h"
 #include "Utils/ASTReader/ASTReader.h"
@@ -16,10 +17,13 @@ inline bool exists_test0(const std::string& name)
     return f.good();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    oneCC::ArgsParser::ArgsParser::the().loadArgs(argc, argv);
+    oneCC::ArgsParser::ArgsParser::the().process();
+
 #ifdef DEBUG_TOKINIZE_FILE
-    auto lexer = oneCC::Lexer::Lexer("demos/example.txt");
+    auto lexer = oneCC::Lexer::Lexer(oneCC::ArgsParser::Config::the().filename.c_str());
 
     try {
         lexer.tokinizeFile();
@@ -39,7 +43,7 @@ int main()
     std::cout << "\n\n";
 #endif // DEBUG_TOKINIZE_FILE
     
-    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("demos/example.txt");
+    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>(oneCC::ArgsParser::Config::the().filename.c_str());
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
     auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
     oneCC::AST::Node* root;
@@ -60,7 +64,7 @@ int main()
     viz.genTreePng(root);
 #endif // DEBUG_VIZ
 
-    auto codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::CodeGenerator::TargetPlatform::aarch32);
+    auto codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::ArgsParser::Config::the().platform);
     codeGen.start(root);
 
     return 0;
