@@ -10,6 +10,7 @@ debug/
 oneCC
 oneCC-test
 oneCC-debug
+oneCC-*
 cmake-build-debug
 .DS_Store
 

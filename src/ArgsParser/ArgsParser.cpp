@@ -7,18 +7,20 @@ namespace oneCC::ArgsParser {
 ArgsParser::ArgsParser()
 {
 }
+
 ArgsParser::ArgsParser(int argc, char* argv[])
 {
     loadArgs(argc, argv);
 }
+
 void ArgsParser::loadArgs(int argc, char* argv[])
 {
     for (size_t i = 1; i < argc; i++) {
         m_arguments.push_back(argv[i]);
     }
 }
-void ArgsParser::registerArgument(std::string& configField, std::string argumentLong,
-    std::string argumentShort, bool required)
+
+int ArgsParser::registerArgument(std::string& configField, std::string argumentLong, std::string argumentShort, bool required)
 {
     m_validateArgumentKeys(argumentLong, argumentShort);
 
@@ -26,15 +28,16 @@ void ArgsParser::registerArgument(std::string& configField, std::string argument
         const std::string& argumentKey = m_arguments[i];
         if (argumentKey == argumentLong || (argumentShort != NULL_ARGUMENT && argumentKey == argumentShort)) {
             configField = m_arguments[i + 1];
-            return;
+            return 0;
         }
     }
     if (required) {
         throw oneCC::Exceptions::MissingArgument();
     }
+    return -1;
 }
-void ArgsParser::registerArgument(int& configField, std::string argumentLong,
-    std::string argumentShort, bool required)
+
+int ArgsParser::registerArgument(int& configField, std::string argumentLong, std::string argumentShort, bool required)
 {
     m_validateArgumentKeys(argumentLong, argumentShort);
 
@@ -42,15 +45,16 @@ void ArgsParser::registerArgument(int& configField, std::string argumentLong,
         const std::string& argumentKey = m_arguments[i];
         if (argumentKey == argumentLong || (argumentShort != NULL_ARGUMENT && argumentKey == argumentShort)) {
             configField = std::stoi(m_arguments[i + 1]);
-            return;
+            return 0;
         }
     }
     if (required) {
         throw oneCC::Exceptions::MissingArgument();
     }
+    return -1;
 }
-void ArgsParser::registerArgument(bool& configField, std::string argumentLong,
-    std::string argumentShort)
+
+int ArgsParser::registerArgument(bool& configField, std::string argumentLong, std::string argumentShort)
 {
     m_validateArgumentKeys(argumentLong, argumentShort);
 
@@ -58,12 +62,14 @@ void ArgsParser::registerArgument(bool& configField, std::string argumentLong,
         const std::string& argumentKey = m_arguments[i];
         if (argumentKey == argumentLong || (argumentShort != NULL_ARGUMENT && argumentKey == argumentShort)) {
             configField = true;
-            return;
+            return 0;
         }
     }
 
     configField = false;
+    return -1;
 }
+
 void ArgsParser::m_validateArgumentKeys(std::string& argumentLong, std::string& argumentShort)
 {
     if (argumentLong.size() <= 2 || argumentLong[0] != '-' || argumentLong[1] != '-') {

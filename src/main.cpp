@@ -1,11 +1,12 @@
+#include "ArgsParser/ArgsParser.h"
+#include "CodeGenerator/CodeGenerator.h"
+#include "Config/Config.h"
+#include "Helpers/Defines.h"
 #include "Lexer/Lexer.h"
 #include "Parser/Parser.h"
-#include "Utils/ASTReader/ASTReader.h"
 #include "SemanticAnalyzer/SemanticAnalyzer.h"
-#include "CodeGenerator/CodeGenerator.h"
+#include "Utils/ASTReader/ASTReader.h"
 #include "Utils/Utils.h"
-#include "ArgsParser/ArgsParser.h"
-#include "Config/Config.h"
 
 #include <iostream>
 #include <vector>
@@ -13,6 +14,12 @@
 // #define DEBUG_TOKINIZE_FILE
 // #define DEBUG_VIZ
 // #define DEBUG_CODEGEN
+
+void versionHandler()
+{
+    std::cout << VERSION << "\n" << GIT_HASH << " @" << GIT_BRANCH;
+    exit(0);
+}
 
 int main(int argc, char* argv[])
 {
@@ -42,15 +49,16 @@ int main(int argc, char* argv[])
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
     auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
     oneCC::AST::Node* root;
-    
+
     try {
         root = parser.parse();
     } catch (std::exception& e) {
-        std::cout << "\n" << e.what() << "\n";
+        std::cout << "\n"
+                  << e.what() << "\n";
         return 1;
     }
     std::cout << "Parsed\n";
-    
+
     auto a = oneCC::SemanticAnalyzer::SemanticAnalyzer().processTree(root);
     std::cout << "Checks passed\n";
 
@@ -64,8 +72,9 @@ int main(int argc, char* argv[])
 #endif // DEBUG_VIZ
     auto* configInstnace = oneCC::Config::Config::get();
     auto* argsParser = new oneCC::ArgsParser::ArgsParser(argc, argv);
-    argsParser->registerArgument(configInstnace->filename, "--file", "-f", true);
-    argsParser->registerArgument(configInstnace->platform, "--platform", "-p", true);
+    argsParser->registerHandler(configInstnace->version, versionHandler, "--version");
+    argsParser->registerArgument(configInstnace->filename, "--file", "-f", false);
+    argsParser->registerArgument(configInstnace->platform, "--platform", "-p", false);
 
     auto ifstreamPtr4Parser = std::make_unique<std::ifstream>(configInstnace->filename);
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
@@ -75,7 +84,8 @@ int main(int argc, char* argv[])
     try {
         root = parser.parse();
     } catch (std::exception& e) {
-        std::cout << "Parser error\n" << e.what() << "\n";
+        std::cout << "Parser error\n"
+                  << e.what() << "\n";
         return 1;
     }
 
