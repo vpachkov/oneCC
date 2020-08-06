@@ -161,7 +161,7 @@ RegisterList RegisterManager::usedRegisters()
 {
     // r4-r15 are callee-saved
     RegisterList res;
-
+    std::cout << m_calleeSavedUsedRegisters << "---\n";
     // A cheet to split into 2 cycles to have the right order pushing registers to the stack.
     for (int rega = 11; rega < RegistersCount; rega++) {
         if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {

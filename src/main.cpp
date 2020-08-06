@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     }
     std::cout << "\n\n";
 #endif // DEBUG_TOKINIZE_FILE
-    
+#ifdef DEBUG_CODEGEN
     auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("demos/example.c");
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
     auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
@@ -88,14 +88,15 @@ int main(int argc, char* argv[])
     }
 
     try {
-        oneCC::CodeGenerator::CodeGenerator codeGen;
+        oneCC::CodeGenerator::TargetPlatform target;
         if (configInstnace->platform == "x86_32") {
-            codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::CodeGenerator::TargetPlatform::x86_32);
+            target = oneCC::CodeGenerator::TargetPlatform::x86_32;
         } else if (configInstnace->platform == "aarch32") {
-            codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::CodeGenerator::TargetPlatform::aarch32);
+            target = oneCC::CodeGenerator::TargetPlatform::aarch32;
         } else {
             std::cout << "Undefined platform (" << configInstnace->platform << ")\n";
         }
+        oneCC::CodeGenerator::CodeGenerator codeGen(target);
         codeGen.start(root);
     } catch (std::exception& e) {
         std::cout << "Unexpected error in CodeGenerator" << e.what() << "\n";

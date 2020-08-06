@@ -20,6 +20,9 @@ void ArgsParser::loadArgs(int argc, char* argv[])
 void ArgsParser::registerArgument(std::string& configField, std::string argumentLong,
     std::string argumentShort, bool required)
 {
+    if (m_arguments.empty())
+        return;
+        
     m_validateArgumentKeys(argumentLong, argumentShort);
 
     for (size_t i = 0; i < m_arguments.size() - 1; i++) {
@@ -36,6 +39,9 @@ void ArgsParser::registerArgument(std::string& configField, std::string argument
 void ArgsParser::registerArgument(int& configField, std::string argumentLong,
     std::string argumentShort, bool required)
 {
+    if (m_arguments.empty())
+        return;
+
     m_validateArgumentKeys(argumentLong, argumentShort);
 
     for (size_t i = 0; i < m_arguments.size() - 1; i++) {
