@@ -91,6 +91,7 @@ void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* a) {}
 
 void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
 {
+    m_registerManager.resetUsedRegisters();
     m_storage[FUNC_PROCESSING] = 1;
     m_storage[FUNC_MAIN_LABEL] = output().addLabel(func->identifier()->value());
     initStackFrame(func);
