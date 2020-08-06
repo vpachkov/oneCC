@@ -2,12 +2,14 @@
 # Build params
 ###########
 
+include appdefines.mk
+
 PROJECT_BASE_DIR = $(shell pwd)
 QUIET = @
 CXX = g++-10
 CXX_STANDARD_FLAGS = -std=c++2a
 CXX_WARNING_FLAGS += -Werror
-CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS}
+CXXFLAGS = ${CXX_STANDARD_FLAGS} ${CXX_WARNING_FLAGS} ${APP_DEFINES}
 
 # Flags which we pass to sub makefiles
 PASS_VARS = CXX="$(CXX)" CXX_STANDARD_FLAGS="$(CXX_STANDARD_FLAGS)" CXX_WARNING_FLAGS="$(CXX_WARNING_FLAGS)" QUIET="$(QUIET)" PROJECT_BASE_DIR="$(PROJECT_BASE_DIR)"
@@ -69,6 +71,11 @@ test: build_test
 
 debug: build_debug
 	gdb $(PROGRAM_DEBUG)
+
+release:
+	@make clean
+	@make build
+	@mv $(PROGRAM) $(PROGRAM)-$(OS)-$(ARC)
 
 build: $(PROGRAM)
 build_test: $(PROGRAM_TEST)
