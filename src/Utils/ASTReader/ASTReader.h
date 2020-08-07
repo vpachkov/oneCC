@@ -39,8 +39,10 @@ private:
     void visitNode(AST::TernaryOperationNode* a) override;
     void visitNode(AST::TypeNode* a) override;
     void visitNode(AST::IdentifierNode* a) override;
+    void visitNode(AST::IfStatementNode* a) override;
     void visitNode(AST::BlockStatementNode* a) override;
     void visitNode(AST::ReturnStatementNode* a) override;
+    void visitNode(AST::BooleanSnakeNode* a) override;
     void visitNode(AST::FunctionNode* a) override;
     void visitNode(AST::FunctionArgumentNode* a) override;
     void visitNode(AST::FunctionCallNode* a) override;
@@ -51,8 +53,10 @@ private:
     std::string toText(AST::TernaryOperationNode*);
     std::string toText(AST::TypeNode*);
     std::string toText(AST::IdentifierNode*);
+    std::string toText(AST::IfStatementNode*);
     std::string toText(AST::BlockStatementNode*);
     std::string toText(AST::ReturnStatementNode*);
+    std::string toText(AST::BooleanSnakeNode*);
     std::string toText(AST::FunctionNode*);
     std::string toText(AST::FunctionArgumentNode*);
     std::string toText(AST::FunctionCallNode*);

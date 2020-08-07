@@ -21,6 +21,8 @@ enum NodeType {
     ReturnStatement,
     BlockStatement,
 
+    BooleanSnake,
+
     Function,
     FunctionArgument,
 

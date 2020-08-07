@@ -25,7 +25,7 @@ else
 		OS += LINUX
     endif
     ifeq ($(UNAME_S),Darwin)
-        HARDWARE += -D OSX
+        HARDWARE += -D MACOS
 		OS += MACOS
     endif
     UNAME_P := $(shell uname -p)

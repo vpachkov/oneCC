@@ -27,6 +27,10 @@ char Visualizer::tokenTypeToString(int tokenType)
         return 'i';
     case Lexer::TokenType::TypeFloat:
         return 'f';
+    case Lexer::TokenType::And:
+        return '&';
+    case Lexer::TokenType::Or:
+        return '|';
     default:
         return '?';
     }
@@ -194,6 +198,30 @@ std::string Visualizer::toText(AST::IdentifierNode* node)
     return res;
 }
 
+void Visualizer::visitNode(AST::IfStatementNode* node)
+{
+    increaseLevel();
+    int myTin = tin();
+
+    visitNode(node->expression());
+    visitNode(node->trueStatement());
+    if (node->falseStatement()) {
+        visitNode(node->falseStatement());
+    }
+
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
+
+    pushTin(myTin);
+    decreaseLevel();
+}
+
+std::string Visualizer::toText(AST::IfStatementNode* node)
+{
+    std::string res("if");
+    return res;
+}
+
 void Visualizer::visitNode(AST::BlockStatementNode* node)
 {
     increaseLevel();
@@ -234,6 +262,29 @@ std::string Visualizer::toText(AST::ReturnStatementNode* node)
 {
     std::string res("ret");
     return res;
+}
+
+void Visualizer::visitNode(AST::BooleanSnakeNode* node)
+{
+    increaseLevel();
+    int myTin = tin();
+
+    for (auto* arg : node->nodes()) {
+        visitNode(arg);
+    }
+
+    m_labels[myTin] = toText(node);
+    m_children[myTin] = popChildrenTins();
+
+    pushTin(myTin);
+    decreaseLevel();
+}
+
+std::string Visualizer::toText(AST::BooleanSnakeNode* node)
+{
+    std::string s;
+    s += tokenTypeToString(node->operation());
+    return s;
 }
 
 void Visualizer::visitNode(AST::FunctionNode* node)

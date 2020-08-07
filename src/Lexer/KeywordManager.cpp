@@ -33,15 +33,20 @@ Token KeywordManager::process(Token token)
 std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
 {
     auto man = std::make_shared<KeywordManager>();
+    // Binary
     man->addKeyword(Token("+", TokenType::Plus));
     man->addKeyword(Token("*", TokenType::Multiply));
     man->addKeyword(Token("/", TokenType::Divide));
     man->addKeyword(Token("=", TokenType::Assign));
+    man->addKeyword(Token("&", TokenType::BinAnd));
+    man->addKeyword(Token("|", TokenType::BinOr));
 
     // Boolean
     man->addKeyword(Token("==", TokenType::Equal));
     man->addKeyword(Token(">", TokenType::Bigger));
     man->addKeyword(Token("<", TokenType::Less));
+    man->addKeyword(Token("&&", TokenType::And));
+    man->addKeyword(Token("||", TokenType::Or));
 
     // Types
     man->addKeyword(Token("int", TokenType::TypeInt));
