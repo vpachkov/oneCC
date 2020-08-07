@@ -28,6 +28,8 @@ private:
     AST::Node* multiplyDivide();
     AST::Node* sumMinus();
     AST::Node* booleanOperation();
+    AST::Node* booleanSnakeAnd();
+    AST::Node* booleanSnakeOr();
     AST::Node* expression();
 
     AST::Node* functionCallImpl();

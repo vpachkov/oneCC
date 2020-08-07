@@ -19,6 +19,8 @@ enum TokenType {
     Minus,
     Multiply,
     Divide,
+    BinAnd,
+    BinOr,
     
     // Boolean
     // Add boolean types ONLY HERE!
@@ -27,6 +29,11 @@ enum TokenType {
     Bigger,
     Equal,
     _BooleanEnd,
+    // And and Or should stay out of boolean types, since we use that
+    // in BooleanSnake, not in BooleanExpr, see parser for better
+    // understanding.
+    And,
+    Or,
 
     // Others
     EndOfFile,

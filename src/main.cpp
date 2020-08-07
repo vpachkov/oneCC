@@ -13,7 +13,6 @@
 
 // #define DEBUG_TOKINIZE_FILE
 // #define DEBUG_VIZ
-// #define DEBUG_CODEGEN
 
 void versionHandler()
 {
@@ -44,32 +43,6 @@ int main(int argc, char* argv[])
     std::cout << "\n\n";
 #endif // DEBUG_TOKINIZE_FILE
 
-#ifdef DEBUG_CODEGEN
-    auto ifstreamPtr4Parser = std::make_unique<std::ifstream>("demos/example.txt");
-    auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
-    auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
-    oneCC::AST::Node* root;
-
-    try {
-        root = parser.parse();
-    } catch (std::exception& e) {
-        std::cout << "\n"
-                  << e.what() << "\n";
-        return 1;
-    }
-    std::cout << "Parsed\n";
-
-    auto a = oneCC::SemanticAnalyzer::SemanticAnalyzer().processTree(root);
-    std::cout << "Checks passed\n";
-
-    auto codeGen = oneCC::CodeGenerator::CodeGenerator(oneCC::CodeGenerator::TargetPlatform::aarch32);
-    codeGen.start(root);
-#endif // DEBUG_CODEGEN
-
-#ifdef DEBUG_VIZ
-    auto viz = oneCC::ASTUtils::Visualizer();
-    viz.genTreePng(root);
-#endif // DEBUG_VIZ
     auto* configInstnace = oneCC::Config::Config::get();
     auto* argsParser = new oneCC::ArgsParser::ArgsParser(argc, argv);
     argsParser->registerHandler(configInstnace->version, versionHandler, "--version");
@@ -97,6 +70,11 @@ int main(int argc, char* argv[])
         std::cout << "Unexpected error in SemanticAnalyzer" << e.what() << "\n";
         return -1;
     }
+
+#ifdef DEBUG_VIZ
+    auto viz = oneCC::ASTUtils::Visualizer();
+    viz.genTreePng(root);
+#endif // DEBUG_VIZ
 
     try {
         oneCC::CodeGenerator::CodeGenerator codeGen;

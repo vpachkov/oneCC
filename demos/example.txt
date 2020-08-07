@@ -5,18 +5,14 @@ int func(int a, int b, int c) {
     return a + b;
 }
 
-int lol = func(1,2,3);
-
 // It a main func
 int main (int kek, int lol)
 {
     int a = 1;
     int b = 5;
 
-    if (a == b){
-        return 1;
-    } else {
-        return 1;
+    if (a == b && b == d) { 
+        b = 6;        
     }
 
     while (a == b) {

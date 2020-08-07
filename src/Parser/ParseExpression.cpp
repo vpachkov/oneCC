@@ -11,6 +11,7 @@
 #include "../AST/Nodes/TernaryOperation.h"
 #include "../AST/Nodes/Type.h"
 #include "../AST/Nodes/WhileStatement.h"
+#include "../AST/Nodes/BooleanSnake.h"
 #include "../Exceptions.h"
 #include "../Utils/ASTReader/ASTReader.h"
 #include "Defines.h"
@@ -121,10 +122,61 @@ AST::Node* Parser::booleanOperation()
     return root;
 }
 
+// Boolean Snake is a sequence of booleanOperation
+// Rule: booleanOperation repeate(&& or || booleanOperation)
+// Example: a && v && c || a || b
+AST::Node* Parser::booleanSnakeAnd()
+{
+    auto* root = booleanOperation();
+    softAssertNode(root);
+
+    if (lookupToken().type() != Lexer::TokenType::Or) {
+        return root;
+    }
+
+    auto* snake = new AST::BooleanSnakeNode(Lexer::TokenType::Or);
+    snake->add(root);
+
+    while (lookupToken().type() == Lexer::TokenType::Or) {
+        m_lexer->skipToken();
+
+        auto* right = booleanOperation();
+        softAssertNode(right);
+
+        snake->add(right);
+    }
+
+    return snake;
+}
+
+AST::Node* Parser::booleanSnakeOr()
+{
+    auto* root = booleanSnakeAnd();
+    softAssertNode(root);
+
+    if (lookupToken().type() != Lexer::TokenType::And) {
+        return root;
+    }
+
+    auto* snake = new AST::BooleanSnakeNode(Lexer::TokenType::And);
+    snake->add(root);
+
+    while (lookupToken().type() == Lexer::TokenType::And) {
+        m_lexer->skipToken();
+
+        auto* right = booleanOperation();
+        softAssertNode(right);
+
+        snake->add(right);
+    }
+
+    return snake;
+}
+
 // Entry point
 AST::Node* Parser::expression()
 {
-    return booleanOperation();
+    return booleanSnakeOr();
 }
 
 }

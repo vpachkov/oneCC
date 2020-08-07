@@ -3,17 +3,18 @@
 #include "ASTNode.h"
 #include "Nodes/BinaryOperation.h"
 #include "Nodes/BlockStatement.h"
-#include "Nodes/IfStatement.h"
-#include "Nodes/WhileStatement.h"
+#include "Nodes/BooleanSnake.h"
 #include "Nodes/Function.h"
 #include "Nodes/FunctionArgument.h"
 #include "Nodes/FunctionCall.h"
 #include "Nodes/Identifier.h"
+#include "Nodes/IfStatement.h"
 #include "Nodes/IntConst.h"
 #include "Nodes/Program.h"
 #include "Nodes/ReturnStatement.h"
 #include "Nodes/TernaryOperation.h"
 #include "Nodes/Type.h"
+#include "Nodes/WhileStatement.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -55,6 +56,8 @@ public:
         convertASTNode(AST::ReturnStatementNode);
         convertASTNode(AST::IfStatementNode);
 
+        convertASTNode(AST::BooleanSnakeNode);
+
         convertASTNode(AST::FunctionNode);
         convertASTNode(AST::FunctionArgumentNode);
         convertASTNode(AST::FunctionCallNode);
@@ -71,6 +74,8 @@ public:
     virtual void visitNode(ReturnStatementNode*) {}
     virtual void visitNode(IfStatementNode*) {}
     virtual void visitNode(WhileStatementNode*) {}
+
+    virtual void visitNode(BooleanSnakeNode*) {}
 
     virtual void visitNode(FunctionNode*) {}
     virtual void visitNode(FunctionArgumentNode*) {}
