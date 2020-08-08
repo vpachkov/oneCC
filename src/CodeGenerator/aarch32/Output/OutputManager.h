@@ -20,6 +20,7 @@ public:
     int add(int parentNodeId, const TranslatedOpcode& t);
     int add(int parentNodeId, TranslatedOpcode&& t);
     int next(int prevNodeId);
+    void setOutputNode(int id) { m_activeOutputNode = id; }
     OutputNode& node(int id) { return m_nodes[id]; }
     OutputNode& activeNode() { return m_nodes[m_activeOutputNode]; }
     OutputNode& rootNode() { return m_nodes[m_rootOutputNode]; }

@@ -1,6 +1,7 @@
 #include "CodeGenerator.h"
 #include <cassert>
 #include <iostream>
+#include <random>
 
 #ifdef DEBUG_TRANSLATOR_TRACER
 #include <experimental/source_location>
@@ -38,6 +39,21 @@ void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
         });
     } else if (node->operation() == Lexer::TokenType::Assign) {
         genBinaryAssign(node);
+    } else if (node->operation() == Lexer::TokenType::Equal) {
+        int rnd = rand() % 90 + 10;
+        std::string trueLabel("Lbl" + std::to_string(rnd));
+
+        if (m_storage[OP_INVERSED]) {
+            output().add(TranslatedOpcode("ncmp"));
+            output().add(translator().BLX(0, trueLabel)); // Fake true jump
+            m_transactionManager.active().setFalseBranchInstrId(output().addLabel(trueLabel));
+        } else {
+            output().add(TranslatedOpcode("cmp"));
+            output().add(translator().BLX(0, trueLabel)); // Fake true jump
+            m_transactionManager.active().setTrueBranchInstrId(output().addLabel(trueLabel));
+        }
+
+        
     }
 }
 
@@ -81,10 +97,66 @@ void CodeGeneratorAarch32::visitNode(AST::ReturnStatementNode* ret)
     }
 }
 
+void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
+{
+    int rnd = rand() % 90 + 10;
+    std::string exprLabel("Expr" + std::to_string(rnd));
+    std::string trueLabel("True" + std::to_string(rnd));
+    std::string falseLabel("Fals" + std::to_string(rnd));
+    int outNode = output().activeNode().id();
+    int expr = output().addLabel(exprLabel);
+    int trueLabelId = 0;
+    int falseLabelId = 0;
+    if (node->operation() == Lexer::TokenType::And) {
+        for (auto i : node->nodes()) {
+            m_transactionManager.create();
+            
+            m_storage[OP_INVERSED] = 1;
+            visitNode(i);
+            
+            int trueInstruction = m_transactionManager.active().trueBranchInstrId();
+            if (trueInstruction != 0) {
+                output().setOutputNode(trueInstruction);
+            }
+
+            // Because we are in And, all true instructions are just jump through the bad instruction.
+            int falseInstruction = m_transactionManager.active().falseBranchInstrId();
+            output().add(falseInstruction, translator().BL(0, falseLabel));
+
+            m_transactionManager.end();
+        }
+        trueLabelId = output().addLabel(trueLabel);
+        output().setOutputNode(outNode);
+        falseLabelId = output().addLabel(falseLabel);
+    }
+
+    m_transactionManager.active().setFalseBranchInstrId(falseLabelId);
+    m_transactionManager.active().setTrueBranchInstrId(trueLabelId);
+}
+
 void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node) 
 {
+    m_transactionManager.create();
     std::cout << "in if\n";
+    visitNode(node->expression());
+
+    // After expression we think we got trueLabel and falseLabel (aka if and else);
+    int outNode = output().activeNode().id();
+
+    int trueInstruction = m_transactionManager.active().trueBranchInstrId();
+    if (trueInstruction != 0 && node->trueStatement()) {
+        output().setOutputNode(trueInstruction);
+        visitNode(node->trueStatement());
+    }
     
+    int falseInstruction = m_transactionManager.active().falseBranchInstrId();
+    if (falseInstruction != 0 && node->falseStatement()) {
+        output().setOutputNode(falseInstruction);
+        visitNode(node->falseStatement());
+    }
+
+    output().setOutputNode(outNode);
+    m_transactionManager.end();
 }
 
 void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* a) {}

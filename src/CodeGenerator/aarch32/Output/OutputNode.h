@@ -13,7 +13,7 @@ class CodeGeneratorAarch32;
 
 class OutputNode {
 public:
-    OutputNode(bool is_label);
+    OutputNode(bool isLabel);
     OutputNode(const TranslatedOpcode& t);
     OutputNode(TranslatedOpcode&& t);
 
@@ -29,6 +29,7 @@ public:
     void addChild(int id) { m_children.push_back(id); }
     void setOpcode(const TranslatedOpcode& opcode);
     void setOpcode(TranslatedOpcode&& opcode);
+    TranslatedOpcode& opcode() { return m_translatedOpcode; }
 
     bool isLabel() { return m_isLabel; }
     void print();

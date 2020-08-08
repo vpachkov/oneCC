@@ -34,12 +34,12 @@ TranslatedOpcode AsmTranslator::ADD_imm12(Register& Rd, Register& Rn, uint16_t i
 
 TranslatedOpcode AsmTranslator::BL(uint32_t imm24, const std::string& label)
 {
-    return TranslatedOpcode("bl " + label);
+    return TranslatedOpcode("bl", label);
 }
 
 TranslatedOpcode AsmTranslator::BLX(uint32_t imm24, const std::string& label)
 {
-    return TranslatedOpcode("blx " + label);
+    return TranslatedOpcode("blx", label);
 }
 
 TranslatedOpcode AsmTranslator::BX(Register& Rm)
