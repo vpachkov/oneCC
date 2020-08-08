@@ -47,6 +47,21 @@ TranslatedOpcode AsmTranslator::BX(Register& Rm)
     return TranslatedOpcode("bx " + Rm.textAlias());
 }
 
+TranslatedOpcode AsmTranslator::BEQ(uint32_t imm24, const std::string& label)
+{
+    return TranslatedOpcode("beq", label);
+}
+
+TranslatedOpcode AsmTranslator::BNE(uint32_t imm24, const std::string& label)
+{
+    return TranslatedOpcode("bne", label);
+}
+
+TranslatedOpcode AsmTranslator::CMP(Register& Rn, Register& Rm)
+{
+    return TranslatedOpcode("cmp " + Rn.textAlias() + ", " + Rm.textAlias());
+}
+
 TranslatedOpcode AsmTranslator::LDR_imm_offset(Register& Rt, Register& Rn, int16_t imm12)
 {
     return TranslatedOpcode("ldr " + Rt.textAlias() + ", [" + Rn.textAlias() + ", #" + std::to_string(int(imm12)) + "]");
