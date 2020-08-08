@@ -41,22 +41,22 @@ void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
         genBinaryAssign(node);
     } else if (node->operation() == Lexer::TokenType::Equal) {
         int rnd = rand() % 90 + 10;
-        std::string trueLabel("Lbl" + std::to_string(rnd));
+        std::string trueLabel("LBEQ" + std::to_string(rnd));
 
         if (m_storage[OP_INVERSED]) {
             genBinaryCmpOperation(node, [&](Register& l, Register& r) {
                 output().add(translator().CMP(l, r));
-                output().add(translator().BNE(0, trueLabel));
+                output().add(translator().BNE(0, trueLabel)); // ALERT: FROM BRANCH NEXT SHOULD BE THIS SPOT
                 m_storage[OP_SAVED_PLACE_FALSE_BRANCH] = output().saveSpot();
             });
-            m_transactionManager.active().setFalseBranchInstrId(output().addLabel(trueLabel));
+            m_transactionManager.active().setFalseBranchLabel(output().addLabel(trueLabel));
         } else {
             genBinaryCmpOperation(node, [&](Register& l, Register& r) {
                 output().add(translator().CMP(l, r));
-                output().add(translator().BEQ(0, trueLabel));
+                output().add(translator().BEQ(0, trueLabel)); // ALERT: FROM BRANCH NEXT SHOULD BE THIS SPOT
                 m_storage[OP_SAVED_PLACE_FALSE_BRANCH] = output().saveSpot();
             });
-            m_transactionManager.active().setTrueBranchInstrId(output().addLabel(trueLabel));
+            m_transactionManager.active().setTrueBranchLabel(output().addLabel(trueLabel));
         }
     }
 }
@@ -104,39 +104,48 @@ void CodeGeneratorAarch32::visitNode(AST::ReturnStatementNode* ret)
 void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
 {
     int rnd = rand() % 90 + 10;
-    std::string exprLabel("Expr" + std::to_string(rnd));
-    std::string trueLabel("True" + std::to_string(rnd));
-    std::string falseLabel("Fals" + std::to_string(rnd));
-    int outNode = output().activeNode().id();
-    int expr = output().addLabel(exprLabel);
-    int trueLabelId = 0;
-    int falseLabelId = 0;
+    std::string exprLabelStr("EX" + std::to_string(rnd));
+    std::string trueLabelStr("TR" + std::to_string(rnd));
+    std::string falseLabelStr("FL" + std::to_string(rnd));
+    
+    int oldActiveNode = output().activeNode().id();
+    int expr = output().addLabel(exprLabelStr);
+    int trueLabelId = -1;
+    int falseLabelId = -1;
 
     if (node->operation() == Lexer::TokenType::And) {
         for (auto i : node->nodes()) {
             m_transactionManager.create();
 
             // Mark operations to be generated as inversed. For example > will be considered to be a <= operation.
+            // We do that becuase we will straight go to false label if one of nodes is false in a && sequence.
             m_storage[OP_INVERSED] = 1;
-
             visitNode(i);
 
-            // Since we have a sequnce of calls, we need to countinue in true branch, if it was set.
-            int trueInstruction = m_transactionManager.active().trueBranchInstrId();
-            if (trueInstruction != -1) {
-                output().setOutputNode(trueInstruction);
+            // Since we have a sequence of calls, we need to countinue in true branch, if it was set.
+            // Example:                                                  (a && b) && c
+            // this operand will be continued in true branch of operand in () ->  --
+            int trueLabel = m_transactionManager.active().trueBranchLabel();
+            if (trueLabel != -1) {
+                output().setActiveNode(trueLabel);
             }
 
             // Because we are in And, all false instructions are just jump to the false label.
-            int falseInstruction = m_transactionManager.active().falseBranchInstrId();
-            output().add(falseInstruction, translator().BL(0, falseLabel));
+            if (i->type() == AST::NodeType::BinaryOperation) {
+                int changeBr = m_storage[OP_SAVED_PLACE_FALSE_BRANCH];
+                output().node(changeBr-1).opcode().setLabel(falseLabelStr);
+            } else {
+                int falseLabel = m_transactionManager.active().falseBranchLabel();
+                output().add(falseLabel, translator().BL(0, falseLabelStr));
+            }
+            
 
             m_transactionManager.end();
         }
 
-        trueLabelId = output().addLabel(trueLabel);
-        output().setOutputNode(outNode);
-        falseLabelId = output().addLabel(falseLabel);
+        trueLabelId = output().addLabel(trueLabelStr);
+        output().setActiveNode(oldActiveNode);
+        falseLabelId = output().addLabel(falseLabelStr);
     }
 
     if (node->operation() == Lexer::TokenType::Or) {
@@ -146,55 +155,69 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
             m_storage[OP_INVERSED] = 0;
             visitNode(i);
 
-            int flaseInstruction = m_transactionManager.active().falseBranchInstrId();
-            if (flaseInstruction != -1) {
-                output().setOutputNode(flaseInstruction);
+            // Since we have a sequence of calls, we need to countinue in false branch, if it was set.
+            // Example:                                                   (a || b) || c
+            // this operand will be continued in false branch of operand in () ->  --
+            int falseLabel = m_transactionManager.active().falseBranchLabel();
+            if (falseLabel != -1) {
+                output().setActiveNode(falseLabel);
             }
 
             // Because we are in Or, all true instructions are just jump to the true label.
-            int trueInstruction = m_transactionManager.active().trueBranchInstrId();
-            output().add(trueInstruction, translator().BL(0, trueLabel));
+            if (i->type() == AST::NodeType::BinaryOperation) {
+                int changeBr = m_storage[OP_SAVED_PLACE_FALSE_BRANCH];
+                output().node(changeBr-1).opcode().setLabel(trueLabelStr);
+            } else {
+                int trueLabel = m_transactionManager.active().trueBranchLabel();
+                output().add(trueLabel, translator().BL(0, trueLabelStr));
+            }
 
             m_transactionManager.end();
         }
-        output().add(translator().BL(0, falseLabel));
-        trueLabelId = output().addLabel(trueLabel);
-        output().setOutputNode(outNode);
-        falseLabelId = output().addLabel(falseLabel);
+        output().add(translator().BL(0, falseLabelStr));
+
+        trueLabelId = output().addLabel(trueLabelStr);
+        output().setActiveNode(oldActiveNode);
+        falseLabelId = output().addLabel(falseLabelStr);
     }
 
-    m_transactionManager.active().setFalseBranchInstrId(falseLabelId);
-    m_transactionManager.active().setTrueBranchInstrId(trueLabelId);
+    m_transactionManager.active().setFalseBranchLabel(falseLabelId);
+    m_transactionManager.active().setTrueBranchLabel(trueLabelId);
 }
 
 void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node)
 {
     int rnd = rand() % 90 + 10;
-    std::string exitLabel("EXTF" + std::to_string(rnd)); // Exit from 'if', if we have else
+    std::string exitLabel("EXTF" + std::to_string(rnd)); // Exit from 'if', if we have 'else' branch.
+    
     m_transactionManager.create();
     visitNode(node->expression());
+    addFalseBranch();
 
-    addFalseBranch(node->expression());
+    int oldActiveNode = output().activeNode().id();
 
-    // After expression we think we got trueLabel and falseLabel (aka if and else);
-    int outNode = output().activeNode().id();
+    // Generating true branch
+    int trueLabel = m_transactionManager.active().trueBranchLabel();
+    assert(trueLabel != -1);
 
-    int trueInstruction = m_transactionManager.active().trueBranchInstrId();
-    if (trueInstruction != -1 && node->trueStatement()) {
-        output().setOutputNode(trueInstruction);
+    if (node->trueStatement()) {
+        output().setActiveNode(trueLabel);
         visitNode(node->trueStatement());
         if (node->falseStatement()) {
             output().add(translator().BL(0, exitLabel));
         }
     }
 
-    int falseInstruction = m_transactionManager.active().falseBranchInstrId();
-    if (falseInstruction != -1 && node->falseStatement()) {
-        output().setOutputNode(falseInstruction);
+    // Generating false branch
+    int falseLabel = m_transactionManager.active().falseBranchLabel();
+    assert(falseLabel != -1);
+
+    if (node->falseStatement()) {
+        output().setActiveNode(falseLabel);
         visitNode(node->falseStatement());
     }
 
-    output().setOutputNode(outNode);
+    output().setActiveNode(oldActiveNode);
     if (node->falseStatement()) {
         output().addLabel(exitLabel);
     }
@@ -448,15 +471,15 @@ int CodeGeneratorAarch32::allocateLocalVars(AST::FunctionNode* func)
 // Currently BooleanSnakeNode and BooleanOperation return different output.
 // BooleanOperation doesn't have false branch and we need to handle that.
 // We basicaly add a new false branch to the active transaction.
-void CodeGeneratorAarch32::addFalseBranch(AST::Node* node)
+void CodeGeneratorAarch32::addFalseBranch()
 {
-    assert(m_transactionManager.active().trueBranchInstrId() != -1);
-    if (m_transactionManager.active().falseBranchInstrId() == -1) {
+    assert(m_transactionManager.active().trueBranchLabel() != -1);
+    if (m_transactionManager.active().falseBranchLabel() == -1) {
         int rnd = rand() % 90 + 10;
         std::string falseLabel("AFB" + std::to_string(rnd));
         output().node(m_storage[OP_SAVED_PLACE_FALSE_BRANCH]).setOpcode(translator().BL(0, falseLabel));
         output().node(m_storage[OP_SAVED_PLACE_FALSE_BRANCH]).setVisible(true);
-        m_transactionManager.active().setFalseBranchInstrId(output().addLabel(falseLabel));
+        m_transactionManager.active().setFalseBranchLabel(output().addLabel(falseLabel));
     }
 }
 

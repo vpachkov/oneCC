@@ -66,7 +66,7 @@ private:
     void restoreStackFrame(AST::FunctionNode* func);
     int allocateArgVars(AST::FunctionNode* func);
     int allocateLocalVars(AST::FunctionNode* func);
-    void addFalseBranch(AST::Node* node);
+    void addFalseBranch();
 
     AsmTranslator m_translator;
     OutputManager m_outputManager;
