@@ -12,7 +12,10 @@ OutputManager::OutputManager(CodeGeneratorAarch32& codeGen)
 
 int OutputManager::addLabel(const std::string& s)
 {
-    return add(TranslatedOpcode(std::move(std::string(s + ":"))));
+    m_nodes.push_back(OutputNode(true));
+    m_nodes.back().setOpcode(TranslatedOpcode(std::string(s + ":")));
+    activeNode().addChild(m_nodes.size() - 1);
+    return m_nodes.size() - 1;
 }
 
 int OutputManager::add(const TranslatedOpcode& t)
@@ -90,6 +93,7 @@ void OutputManager::print()
 
 void OutputManager::visit(int nodeId)
 {
+    m_nodes[nodeId].print();
     m_nodes[nodeId].foreachChild([&](int childNodeId) {
         if (m_nodes[childNodeId].isLabel()) {
             visit(childNodeId);

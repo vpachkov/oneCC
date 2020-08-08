@@ -2,8 +2,8 @@
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
-OutputNode::OutputNode(bool is_label)
-    : m_isLabel(is_label)
+OutputNode::OutputNode(bool isLabel)
+    : m_isLabel(isLabel)
 {
 }
 
