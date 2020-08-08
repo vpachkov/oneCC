@@ -15,6 +15,7 @@ class OutputManager {
 public:
     OutputManager(CodeGeneratorAarch32& codeGen);
     int addLabel(const std::string& s);
+    int saveSpot();
     int add(const TranslatedOpcode& t);
     int add(TranslatedOpcode&& t);
     int add(int parentNodeId, const TranslatedOpcode& t);

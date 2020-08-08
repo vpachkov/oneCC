@@ -24,6 +24,7 @@ enum StorageKeys {
     FUNC_LOCAL_VARS,
     LAUNCH_TRANSACTION,
     OP_INVERSED,
+    OP_SAVED_PLACE_FALSE_BRANCH,
 };
 
 class CodeGeneratorAarch32 final : public AST::AbstractAST {
@@ -65,6 +66,7 @@ private:
     void restoreStackFrame(AST::FunctionNode* func);
     int allocateArgVars(AST::FunctionNode* func);
     int allocateLocalVars(AST::FunctionNode* func);
+    void addFalseBranch(AST::Node* node);
 
     AsmTranslator m_translator;
     OutputManager m_outputManager;

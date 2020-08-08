@@ -2,20 +2,23 @@
 
 namespace oneCC::CodeGenerator::Aarch32 {
 
-OutputNode::OutputNode(bool isLabel)
+OutputNode::OutputNode(int id, bool isLabel)
     : m_isLabel(isLabel)
+    , m_id(id)
 {
 }
 
-OutputNode::OutputNode(const TranslatedOpcode& t)
+OutputNode::OutputNode(int id, const TranslatedOpcode& t)
     : m_translatedOpcode(t)
     , m_isLabel(false)
+    , m_id(id)
 {
 }
 
-OutputNode::OutputNode(TranslatedOpcode&& t)
+OutputNode::OutputNode(int id, TranslatedOpcode&& t)
     : m_translatedOpcode(std::move(t))
     , m_isLabel(false)
+    , m_id(id)
 {
 }
 
@@ -45,10 +48,12 @@ void OutputNode::setOpcode(const std::experimental::source_location& location, T
 
 void OutputNode::print()
 {
+    if (m_visible) {
 #ifdef DEBUG_TRANSLATOR_TRACER
         std::cout << m_location.function_name() << ": " << m_location.line() << " >> ";
 #endif
-    m_translatedOpcode.print();
+        m_translatedOpcode.print();
+    }
 }
 
 }
