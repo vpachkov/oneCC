@@ -48,12 +48,12 @@ void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
             output().add(translator().BLX(0, trueLabel)); // Fake true jump
             m_transactionManager.active().setFalseBranchInstrId(output().addLabel(trueLabel));
         } else {
+            std::cout << output().activeNode().isLabel();
             output().add(TranslatedOpcode("cmp"));
+            std::cout << "addc\n";
             output().add(translator().BLX(0, trueLabel)); // Fake true jump
             m_transactionManager.active().setTrueBranchInstrId(output().addLabel(trueLabel));
         }
-
-        
     }
 }
 
@@ -107,24 +107,29 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
     int expr = output().addLabel(exprLabel);
     int trueLabelId = 0;
     int falseLabelId = 0;
+    
     if (node->operation() == Lexer::TokenType::And) {
         for (auto i : node->nodes()) {
             m_transactionManager.create();
-            
+
+            // Mark operations to be generated as inversed. For example > will be considered to be a <= operation.
             m_storage[OP_INVERSED] = 1;
+            
             visitNode(i);
             
+            // Since we have a sequnce of calls, we need to countinue in true branch, if it was set.
             int trueInstruction = m_transactionManager.active().trueBranchInstrId();
-            if (trueInstruction != 0) {
+            if (trueInstruction != -1) {
                 output().setOutputNode(trueInstruction);
             }
 
-            // Because we are in And, all true instructions are just jump through the bad instruction.
+            // Because we are in And, all false instructions are just jump to the false label.
             int falseInstruction = m_transactionManager.active().falseBranchInstrId();
             output().add(falseInstruction, translator().BL(0, falseLabel));
 
             m_transactionManager.end();
         }
+
         trueLabelId = output().addLabel(trueLabel);
         output().setOutputNode(outNode);
         falseLabelId = output().addLabel(falseLabel);
@@ -138,11 +143,11 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
             visitNode(i);
             
             int flaseInstruction = m_transactionManager.active().falseBranchInstrId();
-            if (flaseInstruction != 0) {
+            if (flaseInstruction != -1) {
                 output().setOutputNode(flaseInstruction);
             }
 
-            // Because we are in And, all true instructions are just jump through the bad instruction.
+            // Because we are in Or, all true instructions are just jump to the true label.
             int trueInstruction = m_transactionManager.active().trueBranchInstrId();
             output().add(trueInstruction, translator().BL(0, trueLabel));
 
@@ -161,20 +166,19 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
 void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node) 
 {
     m_transactionManager.create();
-    std::cout << "in if\n";
     visitNode(node->expression());
 
     // After expression we think we got trueLabel and falseLabel (aka if and else);
     int outNode = output().activeNode().id();
 
     int trueInstruction = m_transactionManager.active().trueBranchInstrId();
-    if (trueInstruction != 0 && node->trueStatement()) {
+    if (trueInstruction != -1 && node->trueStatement()) {
         output().setOutputNode(trueInstruction);
         visitNode(node->trueStatement());
     }
     
     int falseInstruction = m_transactionManager.active().falseBranchInstrId();
-    if (falseInstruction != 0 && node->falseStatement()) {
+    if (falseInstruction != -1 && node->falseStatement()) {
         output().setOutputNode(falseInstruction);
         visitNode(node->falseStatement());
     }

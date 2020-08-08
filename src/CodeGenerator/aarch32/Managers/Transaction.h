@@ -53,7 +53,7 @@ public:
         forbidRegister(with);
     }
 
-    template<typename Callback>
+    template <typename Callback>
     void restoreReplaces(Callback callback)
     {
         while (!m_replacedRegisters.empty()) {
@@ -81,7 +81,7 @@ public:
         return Register::RegisterList()[(uint32_t)m_resultRegister];
     }
 
-    void setTrueBranchInstrId(int id) {  m_trueBranchInstrId = id; }
+    void setTrueBranchInstrId(int id) { m_trueBranchInstrId = id; }
     void setFalseBranchInstrId(int id) { m_falseBranchInstrId = id; }
 
     int trueBranchInstrId() { return m_trueBranchInstrId; }
@@ -98,8 +98,8 @@ public:
 
 private:
     int m_id;
-    int m_trueBranchInstrId;
-    int m_falseBranchInstrId;
+    int m_trueBranchInstrId { -1 };
+    int m_falseBranchInstrId { -1 };
     uint32_t m_mask;
     RegisterAlias m_resultRegister;
     RegisterAlias m_wantResultResgister;
