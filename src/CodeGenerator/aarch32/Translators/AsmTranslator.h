@@ -15,6 +15,9 @@ public:
     TranslatedOpcode BL(uint32_t imm24, const std::string& label) override;
     TranslatedOpcode BLX(uint32_t imm24, const std::string& label) override;
     TranslatedOpcode BX(Register& Rm) override;
+    TranslatedOpcode BEQ(uint32_t imm24, const std::string& label) override;
+    TranslatedOpcode BNE(uint32_t imm24, const std::string& label) override;
+    TranslatedOpcode CMP(Register& Rn, Register& Rm) override;
     TranslatedOpcode LDR_imm_offset(Register& Rt, Register& Rn, int16_t imm12) override;
     TranslatedOpcode LDR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12) override;
     TranslatedOpcode LDR_imm_post_indexed(Register& Rt, Register& Rn, int16_t imm12) override;

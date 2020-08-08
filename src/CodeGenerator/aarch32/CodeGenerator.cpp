@@ -42,16 +42,18 @@ void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
     } else if (node->operation() == Lexer::TokenType::Equal) {
         int rnd = rand() % 90 + 10;
         std::string trueLabel("Lbl" + std::to_string(rnd));
-
+        
         if (m_storage[OP_INVERSED]) {
-            output().add(TranslatedOpcode("ncmp"));
-            output().add(translator().BLX(0, trueLabel)); // Fake true jump
+            genBinaryCmpOperation(node, [&](Register& l, Register& r) {
+                output().add(translator().CMP(l, r));
+                output().add(translator().BNE(0, trueLabel));
+            });
             m_transactionManager.active().setFalseBranchInstrId(output().addLabel(trueLabel));
         } else {
-            std::cout << output().activeNode().isLabel();
-            output().add(TranslatedOpcode("cmp"));
-            std::cout << "addc\n";
-            output().add(translator().BLX(0, trueLabel)); // Fake true jump
+            genBinaryCmpOperation(node, [&](Register& l, Register& r) {
+                output().add(translator().CMP(l, r));
+                output().add(translator().BEQ(0, trueLabel)); // Fake true jump
+            });
             m_transactionManager.active().setTrueBranchInstrId(output().addLabel(trueLabel));
         }
     }
@@ -330,6 +332,20 @@ void CodeGeneratorAarch32::genBinaryMathOperation(AST::BinaryOperationNode* node
         genAsm(resultReg, leftReg, rightReg);
     }
     m_transactionManager.active().setResultRegister(resultReg);
+}
+
+template <typename Callback>
+void CodeGeneratorAarch32::genBinaryCmpOperation(AST::BinaryOperationNode* node, Callback genAsm)
+{
+    m_transactionManager.create();
+    visitNode(node->leftChild());
+    Register& leftReg = m_transactionManager.active().resultRegister();
+    m_transactionManager.active().forbidRegister(leftReg);
+    visitNode(node->rightChild());
+    Register& rightReg = m_transactionManager.active().resultRegister();
+    m_transactionManager.end();
+
+    genAsm(leftReg, rightReg);
 }
 
 void CodeGeneratorAarch32::genBinaryAssign(AST::BinaryOperationNode* node)
