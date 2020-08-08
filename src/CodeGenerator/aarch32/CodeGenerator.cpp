@@ -169,6 +169,8 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
 
 void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node)
 {
+    int rnd = rand() % 90 + 10;
+    std::string exitLabel("EXTF" + std::to_string(rnd)); // Exit from 'if', if we have else
     m_transactionManager.create();
     visitNode(node->expression());
 
@@ -181,6 +183,9 @@ void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node)
     if (trueInstruction != -1 && node->trueStatement()) {
         output().setOutputNode(trueInstruction);
         visitNode(node->trueStatement());
+        if (node->falseStatement()) {
+            output().add(translator().BL(0, exitLabel));
+        }
     }
 
     int falseInstruction = m_transactionManager.active().falseBranchInstrId();
@@ -190,6 +195,9 @@ void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node)
     }
 
     output().setOutputNode(outNode);
+    if (node->falseStatement()) {
+        output().addLabel(exitLabel);
+    }
     m_transactionManager.end();
 }
 

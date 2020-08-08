@@ -6,13 +6,13 @@ namespace oneCC::CodeGenerator::Aarch32 {
 OutputManager::OutputManager(CodeGeneratorAarch32& codeGen)
     : m_codeGenerator(codeGen)
 {
-    m_nodes.push_back(OutputNode(true));
+    m_nodes.push_back(OutputNode(0, true));
     m_activeOutputNode = 0;
 }
 
 int OutputManager::addLabel(const std::string& s)
 {
-    m_nodes.push_back(OutputNode(true));
+    m_nodes.push_back(OutputNode(m_nodes.size(), true));
     m_nodes.back().setOpcode(TranslatedOpcode(std::string(s + ":")));
     activeNode().addChild(m_nodes.size() - 1);
     return m_nodes.size() - 1;
@@ -20,7 +20,7 @@ int OutputManager::addLabel(const std::string& s)
 
 int OutputManager::saveSpot()
 {
-    m_nodes.push_back(OutputNode(false));
+    m_nodes.push_back(OutputNode(m_nodes.size(), false));
     m_nodes.back().setVisible(false);
     activeNode().addChild(m_nodes.size() - 1);
     return m_nodes.size() - 1;
@@ -28,28 +28,28 @@ int OutputManager::saveSpot()
 
 int OutputManager::add(const TranslatedOpcode& t)
 {
-    m_nodes.push_back(OutputNode(t));
+    m_nodes.push_back(OutputNode(m_nodes.size(), t));
     activeNode().addChild(m_nodes.size() - 1);
     return m_nodes.size() - 1;
 }
 
 int OutputManager::add(TranslatedOpcode&& t)
 {
-    m_nodes.push_back(OutputNode(std::move(t)));
+    m_nodes.push_back(OutputNode(m_nodes.size(), std::move(t)));
     activeNode().addChild(m_nodes.size() - 1);
     return m_nodes.size() - 1;
 }
 
 int OutputManager::add(int patrentNodeId, const TranslatedOpcode& t)
 {
-    m_nodes.push_back(OutputNode(t));
+    m_nodes.push_back(OutputNode(m_nodes.size(), t));
     m_nodes[patrentNodeId].addChild(m_nodes.size() - 1);
     return m_nodes.size() - 1;
 }
 
 int OutputManager::add(int patrentNodeId, TranslatedOpcode&& t)
 {
-    m_nodes.push_back(OutputNode(std::move(t)));
+    m_nodes.push_back(OutputNode(m_nodes.size(), std::move(t)));
     m_nodes[patrentNodeId].addChild(m_nodes.size() - 1);
     return m_nodes.size() - 1;
 }
@@ -57,7 +57,7 @@ int OutputManager::add(int patrentNodeId, TranslatedOpcode&& t)
 #ifdef DEBUG_TRANSLATOR_TRACER
 int OutputManager::add(const std::experimental::source_location& location, const TranslatedOpcode& t)
 {
-    m_nodes.push_back(OutputNode(t));
+    m_nodes.push_back(OutputNode(m_nodes.size(), t));
     activeNode().addChild(m_nodes.size() - 1);
     m_nodes.back().setLocation(location);
     return m_nodes.size() - 1;
@@ -65,7 +65,7 @@ int OutputManager::add(const std::experimental::source_location& location, const
 
 int OutputManager::add(const std::experimental::source_location& location, TranslatedOpcode&& t)
 {
-    m_nodes.push_back(OutputNode(std::move(t)));
+    m_nodes.push_back(OutputNode(m_nodes.size(), std::move(t)));
     activeNode().addChild(m_nodes.size() - 1);
     m_nodes.back().setLocation(location);
     return m_nodes.size() - 1;
@@ -73,7 +73,7 @@ int OutputManager::add(const std::experimental::source_location& location, Trans
 
 int OutputManager::add(int patrentNodeId, const std::experimental::source_location& location, const TranslatedOpcode& t)
 {
-    m_nodes.push_back(OutputNode(t));
+    m_nodes.push_back(OutputNode(m_nodes.size(), t));
     m_nodes[patrentNodeId].addChild(m_nodes.size() - 1);
     m_nodes.back().setLocation(location);
     return m_nodes.size() - 1;
@@ -81,7 +81,7 @@ int OutputManager::add(int patrentNodeId, const std::experimental::source_locati
 
 int OutputManager::add(int patrentNodeId, const std::experimental::source_location& location, TranslatedOpcode&& t)
 {
-    m_nodes.push_back(OutputNode(std::move(t)));
+    m_nodes.push_back(OutputNode(m_nodes.size(), std::move(t)));
     m_nodes[patrentNodeId].addChild(m_nodes.size() - 1);
     m_nodes.back().setLocation(location);
     return m_nodes.size() - 1;

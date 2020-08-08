@@ -13,9 +13,9 @@ class CodeGeneratorAarch32;
 
 class OutputNode {
 public:
-    OutputNode(bool isLabel);
-    OutputNode(const TranslatedOpcode& t);
-    OutputNode(TranslatedOpcode&& t);
+    OutputNode(int id, bool isLabel);
+    OutputNode(int id, const TranslatedOpcode& t);
+    OutputNode(int id, TranslatedOpcode&& t);
 
     int id() { return m_id; }
     

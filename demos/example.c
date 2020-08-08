@@ -9,7 +9,11 @@ int main ()
 
 
     if (b == 5) {
-        b = a;
+        if (a == 0) {
+            a = b + 1;
+        }
+    } else {
+        b = 2;
     }
     a = func(1, a, 3);
     b = a;
