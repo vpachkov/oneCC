@@ -130,6 +130,30 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
         falseLabelId = output().addLabel(falseLabel);
     }
 
+    if (node->operation() == Lexer::TokenType::Or) {
+        for (auto i : node->nodes()) {
+            m_transactionManager.create();
+            
+            m_storage[OP_INVERSED] = 0;
+            visitNode(i);
+            
+            int flaseInstruction = m_transactionManager.active().falseBranchInstrId();
+            if (flaseInstruction != 0) {
+                output().setOutputNode(flaseInstruction);
+            }
+
+            // Because we are in And, all true instructions are just jump through the bad instruction.
+            int trueInstruction = m_transactionManager.active().trueBranchInstrId();
+            output().add(trueInstruction, translator().BL(0, trueLabel));
+
+            m_transactionManager.end();
+        }
+        output().add(translator().BL(0, falseLabel));
+        trueLabelId = output().addLabel(trueLabel);
+        output().setOutputNode(outNode);
+        falseLabelId = output().addLabel(falseLabel);
+    }
+
     m_transactionManager.active().setFalseBranchInstrId(falseLabelId);
     m_transactionManager.active().setTrueBranchInstrId(trueLabelId);
 }
