@@ -81,11 +81,11 @@ public:
         return Register::RegisterList()[(uint32_t)m_resultRegister];
     }
 
-    void setTrueBranchInstrId(int id) { m_trueBranchInstrId = id; }
-    void setFalseBranchInstrId(int id) { m_falseBranchInstrId = id; }
+    void setTrueBranchLabel(int id) { m_trueBranchLabel = id; }
+    void setFalseBranchLabel(int id) { m_falseBranchLabel = id; }
 
-    int trueBranchInstrId() { return m_trueBranchInstrId; }
-    int falseBranchInstrId() { return m_falseBranchInstrId; }
+    int trueBranchLabel() { return m_trueBranchLabel; }
+    int falseBranchLabel() { return m_falseBranchLabel; }
 
     int id() { return m_id; }
     uint32_t mask() { return m_mask; }
@@ -98,8 +98,8 @@ public:
 
 private:
     int m_id;
-    int m_trueBranchInstrId { -1 };
-    int m_falseBranchInstrId { -1 };
+    int m_trueBranchLabel { -1 };
+    int m_falseBranchLabel { -1 };
     uint32_t m_mask;
     RegisterAlias m_resultRegister;
     RegisterAlias m_wantResultResgister;

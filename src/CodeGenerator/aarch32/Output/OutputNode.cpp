@@ -52,6 +52,9 @@ void OutputNode::print()
 #ifdef DEBUG_TRANSLATOR_TRACER
         std::cout << m_location.function_name() << ": " << m_location.line() << " >> ";
 #endif
+        if (!m_isLabel) {
+            std::cout << "    ";
+        }
         m_translatedOpcode.print();
     }
 }
