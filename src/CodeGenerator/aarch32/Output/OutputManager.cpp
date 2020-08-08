@@ -18,6 +18,14 @@ int OutputManager::addLabel(const std::string& s)
     return m_nodes.size() - 1;
 }
 
+int OutputManager::saveSpot()
+{
+    m_nodes.push_back(OutputNode(false));
+    m_nodes.back().setVisible(false);
+    activeNode().addChild(m_nodes.size() - 1);
+    return m_nodes.size() - 1;
+}
+
 int OutputManager::add(const TranslatedOpcode& t)
 {
     m_nodes.push_back(OutputNode(t));

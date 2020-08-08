@@ -8,10 +8,8 @@ int main ()
     int b = 5;
 
 
-    if (b == 5 || a == 1) {
+    if (b == 5) {
         b = a;
-    } else {
-        a = b;
     }
     a = func(1, a, 3);
     b = a;

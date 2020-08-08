@@ -45,10 +45,12 @@ void OutputNode::setOpcode(const std::experimental::source_location& location, T
 
 void OutputNode::print()
 {
+    if (m_visible) {
 #ifdef DEBUG_TRANSLATOR_TRACER
         std::cout << m_location.function_name() << ": " << m_location.line() << " >> ";
 #endif
-    m_translatedOpcode.print();
+        m_translatedOpcode.print();
+    }
 }
 
 }

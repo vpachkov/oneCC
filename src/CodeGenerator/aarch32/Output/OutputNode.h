@@ -29,6 +29,7 @@ public:
     void addChild(int id) { m_children.push_back(id); }
     void setOpcode(const TranslatedOpcode& opcode);
     void setOpcode(TranslatedOpcode&& opcode);
+    void setVisible(bool val) { m_visible = val; }
     TranslatedOpcode& opcode() { return m_translatedOpcode; }
 
     bool isLabel() { return m_isLabel; }
@@ -41,6 +42,7 @@ public:
 #endif
 private:
     int m_id { 0 };
+    bool m_visible { true };
     bool m_isLabel { false };
     TranslatedOpcode m_translatedOpcode;
     std::vector<int> m_children;
