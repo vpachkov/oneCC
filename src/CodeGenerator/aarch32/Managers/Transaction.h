@@ -12,10 +12,19 @@ enum TransactionMask {
     All = 0b111111111111111, // sr0-r15 are avail.
 };
 
+struct ReplaceEntry {
+    Register& orig;
+    Register& with;
+};
+
+#define START_FROM_CALLEE_SAVED_REGS 4
+
 // Transaction can be used before every visitNode in code generation
 // to control the resources sharing inside this visitNode.
 class Transaction {
 public:
+    friend class TransactionManager;
+
     Transaction(int id)
         : m_id(id)
         , m_mask((uint32_t)GeneralPurposeOnly)
@@ -59,8 +68,8 @@ public:
         while (!m_replacedRegisters.empty()) {
             auto pr = m_replacedRegisters.back();
             callback(pr);
-            forbidRegister(pr.first);
-            allowRegister(pr.second);
+            forbidRegister(pr.orig);
+            allowRegister(pr.with);
             m_replacedRegisters.pop_back();
         }
     }
@@ -81,6 +90,54 @@ public:
         return Register::RegisterList()[(uint32_t)m_resultRegister];
     }
 
+    bool isLogicalUsed(Register& reg) { return m_changedRegisters & (uint32_t)(1 << reg.alias()); }
+    bool isPhysicalUsed(Register& reg) { return m_changedRegisters & (uint32_t)(1 << reg.alias()); }
+
+    RegisterList physicallyUsedRegisters(int startReg = 0)
+    {
+        std::cout << m_id << " " << m_changedRegisters << "\n";
+        RegisterList res;
+
+        // A hack to split into 2 cycles to have the right order pushing registers to the stack.
+        for (int rega = 11; rega < RegistersCount; rega++) {
+            if ((m_changedRegisters & (uint32_t)(1 << rega))) {
+                res.push_back(Register::RegisterList()[rega]);
+            }
+        }
+
+        for (int rega = startReg; rega < 11; rega++) {
+            if ((m_changedRegisters & (uint32_t)(1 << rega))) {
+                res.push_back(Register::RegisterList()[rega]);
+            }
+        }
+
+        return res;
+    }
+
+    // Logically used registers are registers which have been change their value during the transaction.
+    // So, replaced registers are not in this list, since their values will be restored.
+    RegisterList logicallyUsedRegisters()
+    {
+        RegisterList phy = physicallyUsedRegisters();
+        RegisterList log;
+        
+        for (Register& reg : phy) {
+            std::cout << reg.textAlias() << " ";
+            bool notIn = true;
+            for (auto replEntry : m_replacedRegisters) {
+                if (reg == replEntry.orig) {
+                    notIn = false;
+                    break;
+                }
+            }
+            if (notIn) {
+                log.push_back(reg);
+            }
+        }
+
+        return log;
+    }
+
     void setTrueBranchLabel(int id) { m_trueBranchLabel = id; }
     void setFalseBranchLabel(int id) { m_falseBranchLabel = id; }
 
@@ -97,13 +154,16 @@ public:
     }
 
 private:
+    void useRegister(Register& reg) { m_changedRegisters |= (1 << (uint32_t)reg.alias()); }
+
     int m_id;
     int m_trueBranchLabel { -1 };
     int m_falseBranchLabel { -1 };
+    uint32_t m_changedRegisters { 0 };
     uint32_t m_mask;
     RegisterAlias m_resultRegister;
     RegisterAlias m_wantResultResgister;
-    std::vector<std::pair<Register&, Register&>> m_replacedRegisters;
+    std::vector<ReplaceEntry> m_replacedRegisters;
 };
 
 }

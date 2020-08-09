@@ -17,6 +17,7 @@ public:
     void end();
     bool in() { return m_inTransaction; }
 
+    void useRegister(Register& reg);
 private:
     int m_trasnactionId { 0 };
     bool m_inTransaction { false };

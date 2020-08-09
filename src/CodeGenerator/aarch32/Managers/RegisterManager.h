@@ -3,6 +3,8 @@
 #include "../Common/Regs.h"
 #include <vector>
 
+#define FORCE_NOT_USE_OF_REG true
+
 namespace oneCC::CodeGenerator::Aarch32 {
 
 class CodeGeneratorAarch32;
@@ -18,12 +20,12 @@ public:
     int resolveForbiddenRegister(Register& reg);
 
     int write(Register& reg);
-    int replace(Register& reg, const RegisterData& data);
+    int replace(Register& reg, const RegisterData& data, bool forceNotUseOfReg = false);
     Register& has(const RegisterData& data);
 
-    void useRegister(Register& reg) { m_calleeSavedUsedRegisters |= (1 << (uint32_t)reg.alias()); }
-    void resetUsedRegisters() { m_calleeSavedUsedRegisters = 0; }
-    RegisterList usedRegisters();
+    // void useRegister(Register& reg) { m_calleeSavedUsedRegisters |= (1 << (uint32_t)reg.alias()); }
+    // void resetUsedRegisters() { m_calleeSavedUsedRegisters = 0; }
+    // RegisterList usedRegisters();
 
 private:
     uint32_t m_calleeSavedUsedRegisters; // Mask

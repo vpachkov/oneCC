@@ -8,8 +8,13 @@ int main ()
     int b = 5;
 
 
-    if ((a == 1 || b == 3) && a == 2) {
-        a = 2;
+    if (b == 4) {
+        if (a == 2) {
+            a = b + 1;
+        }
+        b = 2 + a;
+    } else {
+        b = 4 - a;
     }
     a = func(1, a, 3);
     b = a;

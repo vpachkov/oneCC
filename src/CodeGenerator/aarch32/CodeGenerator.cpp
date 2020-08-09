@@ -107,7 +107,7 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
     std::string exprLabelStr("EX" + std::to_string(rnd));
     std::string trueLabelStr("TR" + std::to_string(rnd));
     std::string falseLabelStr("FL" + std::to_string(rnd));
-    
+
     int oldActiveNode = output().activeNode().id();
     int expr = output().addLabel(exprLabelStr);
     int trueLabelId = -1;
@@ -133,12 +133,11 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
             // Because we are in And, all false instructions are just jump to the false label.
             if (i->type() == AST::NodeType::BinaryOperation) {
                 int changeBr = m_storage[OP_SAVED_PLACE_FALSE_BRANCH];
-                output().node(changeBr-1).opcode().setLabel(falseLabelStr);
+                output().node(changeBr - 1).opcode().setLabel(falseLabelStr);
             } else {
                 int falseLabel = m_transactionManager.active().falseBranchLabel();
                 output().add(falseLabel, translator().BL(0, falseLabelStr));
             }
-            
 
             m_transactionManager.end();
         }
@@ -166,7 +165,7 @@ void CodeGeneratorAarch32::visitNode(AST::BooleanSnakeNode* node)
             // Because we are in Or, all true instructions are just jump to the true label.
             if (i->type() == AST::NodeType::BinaryOperation) {
                 int changeBr = m_storage[OP_SAVED_PLACE_FALSE_BRANCH];
-                output().node(changeBr-1).opcode().setLabel(trueLabelStr);
+                output().node(changeBr - 1).opcode().setLabel(trueLabelStr);
             } else {
                 int trueLabel = m_transactionManager.active().trueBranchLabel();
                 output().add(trueLabel, translator().BL(0, trueLabelStr));
@@ -189,32 +188,40 @@ void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node)
 {
     int rnd = rand() % 90 + 10;
     std::string exitLabel("EXTF" + std::to_string(rnd)); // Exit from 'if', if we have 'else' branch.
-    
+
     m_transactionManager.create();
     visitNode(node->expression());
     addFalseBranch();
 
     int oldActiveNode = output().activeNode().id();
+    int trueLabel = m_transactionManager.active().trueBranchLabel();
+    int falseLabel = m_transactionManager.active().falseBranchLabel();
+    assert(trueLabel != -1);
+    assert(falseLabel != -1);
 
     // Generating true branch
-    int trueLabel = m_transactionManager.active().trueBranchLabel();
-    assert(trueLabel != -1);
-
     if (node->trueStatement()) {
+        m_transactionManager.create();
         output().setActiveNode(trueLabel);
         visitNode(node->trueStatement());
+        for (Register& reg : m_transactionManager.active().logicallyUsedRegisters()) {
+            assert(m_registerManager.replace(reg, RegisterData::Tmp()) == 0);
+        }
         if (node->falseStatement()) {
             output().add(translator().BL(0, exitLabel));
         }
+        m_transactionManager.end();
     }
 
     // Generating false branch
-    int falseLabel = m_transactionManager.active().falseBranchLabel();
-    assert(falseLabel != -1);
-
     if (node->falseStatement()) {
+        m_transactionManager.create();
         output().setActiveNode(falseLabel);
         visitNode(node->falseStatement());
+        for (Register& reg : m_transactionManager.active().logicallyUsedRegisters()) {
+            assert(m_registerManager.replace(reg, RegisterData::Tmp()) == 0);
+        }
+        m_transactionManager.end();
     }
 
     output().setActiveNode(oldActiveNode);
@@ -228,7 +235,7 @@ void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* a) {}
 
 void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
 {
-    m_registerManager.resetUsedRegisters();
+    m_transactionManager.create();
     m_storage[FUNC_PROCESSING] = 1;
     m_storage[FUNC_MAIN_LABEL] = output().addLabel(func->identifier()->value());
     initStackFrame(func);
@@ -254,6 +261,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
     restoreStackFrame(func);
     output().add(translator().addLabel(""));
     m_storage[FUNC_PROCESSING] = 0;
+    m_transactionManager.end();
 }
 
 void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
@@ -287,7 +295,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
         }
     }
 
-    m_registerManager.useRegister(Register::LR());
+    m_transactionManager.useRegister(Register::LR());
     output().add(translator().BL(0, node->name()));
 
     // Unlocking registers for reuse
@@ -408,7 +416,7 @@ void CodeGeneratorAarch32::initStackFrame(AST::FunctionNode* func)
 {
     // TODO: Use func->statement()->statementsWithType(AST::NodeType::);
     m_varManager.enterScope();
-    m_registerManager.useRegister(Register::FP());
+    m_transactionManager.useRegister(Register::FP());
     RegisterList used_reg_in_func = { Register::FP() };
     m_storage[STACK_SAVED_CALLEE_REGS_OP_ID] = output().add(translator().PUSH_multiple_registers(used_reg_in_func));
     output().add(translator().ADD_imm12(Register::FP(), Register::SP(), 4 * (used_reg_in_func.size() - 1)));
@@ -419,10 +427,11 @@ void CodeGeneratorAarch32::initStackFrame(AST::FunctionNode* func)
 void CodeGeneratorAarch32::restoreStackFrame(AST::FunctionNode* func)
 {
     int pushOperationId = m_storage[STACK_SAVED_CALLEE_REGS_OP_ID];
-    output().node(pushOperationId).setOpcode(translator().PUSH_multiple_registers(m_registerManager.usedRegisters()));
+    auto usedRegs = m_transactionManager.active().physicallyUsedRegisters(START_FROM_CALLEE_SAVED_REGS);
+    output().node(pushOperationId).setOpcode(translator().PUSH_multiple_registers(usedRegs));
 
     output().add(translator().SUB_imm12(Register::SP(), Register::FP(), 4));
-    output().add(translator().POP_multiple_registers(m_registerManager.usedRegisters()));
+    output().add(translator().POP_multiple_registers(usedRegs));
     output().add(translator().BX(Register::LR()));
     m_varManager.leaveScope();
 }
