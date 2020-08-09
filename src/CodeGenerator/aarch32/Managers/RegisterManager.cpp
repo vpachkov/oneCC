@@ -77,17 +77,15 @@ Register& RegisterManager::chooseRegister(const RegisterData& data)
 }
 
 // Replace the original register data with a new one
-int RegisterManager::replace(Register& reg, const RegisterData& data)
+int RegisterManager::replace(Register& reg, const RegisterData& data, bool forceNotUseOfReg)
 {
     assert((!reg.isBad()));
 
     if (canUse(reg)) {
-        useRegister(reg);
-
-        if (reg.data().type() == DataTmp) {
-            return 0;
+        if (!forceNotUseOfReg) {
+            m_codeGenerator.transactionManager().useRegister(reg);
         }
-
+        
         if (reg.data().isSame(data)) {
             return 1;
         }
@@ -100,7 +98,6 @@ int RegisterManager::replace(Register& reg, const RegisterData& data)
         if (reg.data().type() == DataMem && reg.data().edited()) {
             int offset = m_codeGenerator.varManager().getOffset(reg.data().value());
             std::cout << "TODO: store at mem " << reg.data().value() << "\n";
-            ;
         }
 
 #ifdef DEBUG_REGMANAGER_PRINT_INFO
@@ -157,25 +154,25 @@ Register& RegisterManager::has(const RegisterData& data)
     return Register::Bad();
 }
 
-RegisterList RegisterManager::usedRegisters()
-{
-    // r4-r15 are callee-saved
-    RegisterList res;
+// RegisterList RegisterManager::usedRegisters()
+// {
+//     // r4-r15 are callee-saved
+//     RegisterList res;
 
-    // A cheet to split into 2 cycles to have the right order pushing registers to the stack.
-    for (int rega = 11; rega < RegistersCount; rega++) {
-        if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {
-            res.push_back(Register::RegisterList()[rega]);
-        }
-    }
+//     // A cheet to split into 2 cycles to have the right order pushing registers to the stack.
+//     for (int rega = 11; rega < RegistersCount; rega++) {
+//         if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {
+//             res.push_back(Register::RegisterList()[rega]);
+//         }
+//     }
 
-    for (int rega = 4; rega < 11; rega++) {
-        if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {
-            res.push_back(Register::RegisterList()[rega]);
-        }
-    }
+//     for (int rega = 4; rega < 11; rega++) {
+//         if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {
+//             res.push_back(Register::RegisterList()[rega]);
+//         }
+//     }
 
-    return res;
-}
+//     return res;
+// }
 
 }

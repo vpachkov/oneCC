@@ -39,16 +39,24 @@ void TransactionManager::end()
 {
     assert(!m_transactions.empty());
 
-    m_transactions.back().restoreReplaces([&](std::pair<Register&, Register&>& replace) {
+    m_transactions.back().restoreReplaces([&](ReplaceEntry& replace) {
         // We use this hack to allow the replacement back. We don't think about correctness, since the transaction ends here.
-        m_transactions.back().allowRegister(replace.first);
-        if (m_codeGenerator.registerManager().replace(replace.first, replace.second.data()) == 0) {
-            m_codeGenerator.output().add(m_codeGenerator.translator().MOV_reg(replace.first, replace.second));
+        m_transactions.back().allowRegister(replace.orig);
+        if (m_codeGenerator.registerManager().replace(replace.orig, replace.with.data()) == 0) {
+            m_codeGenerator.output().add(m_codeGenerator.translator().MOV_reg(replace.orig, replace.with));
         }
     });
 
     m_transactions.pop_back();
     m_inTransaction = !m_transactions.empty();
+}
+
+void TransactionManager::useRegister(Register& reg)
+{
+    // Since we've changed a register we set it as changed in all stack of transactions.
+    for (auto& trans : m_transactions) {
+        trans.useRegister(reg);
+    }
 }
 
 }
