@@ -94,7 +94,7 @@ int RegisterManager::replace(Register& reg, const RegisterData& data)
 
         if (reg.data().type() == DataVariable && reg.data().edited()) {
             int offset = m_codeGenerator.varManager().getOffset(reg.data().value());
-            m_codeGenerator.translator().STR_imm_offset(reg, Register::FP(), -offset);
+            m_codeGenerator.output().add(m_codeGenerator.translator().STR_imm_offset(reg, Register::FP(), -offset));
         }
 
         if (reg.data().type() == DataMem && reg.data().edited()) {
