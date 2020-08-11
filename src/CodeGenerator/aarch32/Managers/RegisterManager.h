@@ -9,6 +9,12 @@ namespace oneCC::CodeGenerator::Aarch32 {
 
 class CodeGeneratorAarch32;
 
+struct FlushEntry {
+    int outputLabel;
+    uint32_t mask;
+    uint32_t origMask;
+};
+
 class RegisterManager {
 public:
     RegisterManager(CodeGeneratorAarch32& codeGen);
@@ -23,13 +29,19 @@ public:
     int replace(Register& reg, const RegisterData& data, bool forceNotUseOfReg = false);
     Register& has(const RegisterData& data);
 
-    // void useRegister(Register& reg) { m_calleeSavedUsedRegisters |= (1 << (uint32_t)reg.alias()); }
-    // void resetUsedRegisters() { m_calleeSavedUsedRegisters = 0; }
-    // RegisterList usedRegisters();
+    
+    // In code area where we don't know where we come from (e.g while, for, goto)
+    // we should think that we don't know what we have in registers, just because
+    // we don't know from where we have come. For that we regeter flush, and
+    // during the whole period of code generation we can change such registers to
+    // be flushed.
+    int newRegisterFlush();
+    int addUnchangedRegistersToFlush(int id, RegisterList reglist);
 
 private:
     uint32_t m_calleeSavedUsedRegisters; // Mask
     CodeGeneratorAarch32& m_codeGenerator;
+    std::vector<FlushEntry>m_flushData; // Store all flushes and for each flush it stores a mask.
 };
 
 }

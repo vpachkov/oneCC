@@ -67,6 +67,7 @@ private:
     int allocateArgVars(AST::FunctionNode* func);
     int allocateLocalVars(AST::FunctionNode* func);
     void addFalseBranch();
+    int recalcFlushedRegisters(int flushId);
 
     AsmTranslator m_translator;
     OutputManager m_outputManager;

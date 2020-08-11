@@ -55,6 +55,7 @@ public:
         convertASTNode(AST::BlockStatementNode);
         convertASTNode(AST::ReturnStatementNode);
         convertASTNode(AST::IfStatementNode);
+        convertASTNode(AST::WhileStatementNode);
 
         convertASTNode(AST::BooleanSnakeNode);
 
