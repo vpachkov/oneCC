@@ -301,6 +301,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
 {
     bool wasR0busy = false;
     m_transactionManager.create();
+
     for (int argId = 0; argId < node->arguments().size(); argId++) {
         if (argId <= 4) {
             // in register
@@ -332,7 +333,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
     output().add(translator().BL(0, node->name()));
 
     // Unlocking registers for reuse
-    for (int argId = 1; argId < node->arguments().size(); argId++) {
+    for (int argId = 0; argId < node->arguments().size(); argId++) {
         Register& paramReg = Register::RegisterList()[argId];
         m_transactionManager.active().allowRegister(paramReg);
     }
@@ -344,6 +345,7 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionCallNode* node)
     }
 
     if (wasR0busy) {
+        m_transactionManager.active().forbidRegister(Register::R0());
         Register& reg = m_registerManager.chooseRegister();
 
         // For us a function result is a tmp value, which we can't reuse later.
