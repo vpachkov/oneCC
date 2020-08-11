@@ -231,7 +231,40 @@ void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node)
     m_transactionManager.end();
 }
 
-void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* a) {}
+// FIXME: We have a problem with reg reuse.
+void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* node) 
+{
+    int rnd = rand() % 90 + 10;
+    std::string startLabel("WHES" + std::to_string(rnd));
+    std::string endLabel("WHLE" + std::to_string(rnd));
+
+    output().addLabel(startLabel);
+
+    m_transactionManager.create();
+    visitNode(node->expression());
+    addFalseBranch();
+
+    int oldActiveNode = output().activeNode().id();
+    int trueLabel = m_transactionManager.active().trueBranchLabel();
+    int falseLabel = m_transactionManager.active().falseBranchLabel();
+    assert(trueLabel != -1);
+    assert(falseLabel != -1);
+
+    // Generating true branch
+    if (node->statement()) {
+        m_transactionManager.create();
+        output().setActiveNode(trueLabel);
+        visitNode(node->statement());
+        for (Register& reg : m_transactionManager.active().logicallyUsedRegisters()) {
+            assert(m_registerManager.replace(reg, RegisterData::Tmp()) == 0);
+        }
+        output().add(translator().BL(0, startLabel));
+        m_transactionManager.end();
+    }
+
+    output().setActiveNode(oldActiveNode);
+    m_transactionManager.end();
+}
 
 void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
 {
