@@ -154,25 +154,56 @@ Register& RegisterManager::has(const RegisterData& data)
     return Register::Bad();
 }
 
-// RegisterList RegisterManager::usedRegisters()
-// {
-//     // r4-r15 are callee-saved
-//     RegisterList res;
+int RegisterManager::newRegisterFlush()
+{
+    int labelId = m_codeGenerator.output().addLabel("FLUSH");
+    uint32_t mask = TransactionMask::GeneralPurposeOnly; // All registers r0-r10
 
-//     // A cheet to split into 2 cycles to have the right order pushing registers to the stack.
-//     for (int rega = 11; rega < RegistersCount; rega++) {
-//         if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {
-//             res.push_back(Register::RegisterList()[rega]);
-//         }
-//     }
+    int wasOutput = m_codeGenerator.output().activeNode().id();
+    m_codeGenerator.output().setActiveNode(labelId);
 
-//     for (int rega = 4; rega < 11; rega++) {
-//         if ((m_calleeSavedUsedRegisters & (uint32_t)(1 << rega))) {
-//             res.push_back(Register::RegisterList()[rega]);
-//         }
-//     }
+    for (int i = 0; i <= 10; i++) {
+        Register& reg = Register::RegisterList()[i];
+        if (reg.data().type() == DataVariable || reg.data().type() == DataMem) {
+            assert(replace(reg, RegisterData::Tmp()) == 0);
+        } else {
+            mask &= ~(uint32_t(1 << i));
+        }
+    }
 
-//     return res;
-// }
+    m_flushData.emplace_back(labelId, mask, mask);
+    m_codeGenerator.output().setActiveNode(wasOutput);
+    return m_flushData.size() - 1;
+}
+
+// While newRegisterFlush we flush all registers which could be changed and that matters.
+// Now we could say which of them stay unchanged.
+int RegisterManager::addUnchangedRegistersToFlush(int id, RegisterList reglist)
+{
+    if (id < 0 || m_flushData.size() <= id) {
+        return -1;
+    }
+
+    uint32_t origMask = m_flushData[id].origMask;
+
+    // Since in newRegisterFlush flushed registers were put right after label,
+    // so we can simply find there ids. Also for that we need origMask.
+    for (Register& reg : reglist) {
+        int offset = 0;
+        for (int i = 0; i < reg.alias(); i++) {
+            if ((origMask & (uint32_t)(1 << i))) {
+                offset++;  
+            }
+        }
+        
+        int outputId = m_flushData[id].outputLabel + offset;
+        if (m_flushData[id].mask & (uint32_t)(1 << reg.alias())) {
+            m_codeGenerator.output().node(outputId).setVisible(false);
+            m_flushData[id].mask &= ~(uint32_t(1 << reg.alias()));
+        }
+    }
+
+    return 0;
+}
 
 }

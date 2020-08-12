@@ -244,6 +244,7 @@ public:
 private:
     Register(RegisterAlias alias)
         : m_alias(alias)
+        , m_data(RegisterData(DataTmp, 0))
     {
     }
 

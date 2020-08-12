@@ -232,8 +232,12 @@ void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node)
 }
 
 // FIXME: We have a problem with reg reuse.
-void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* node) 
+void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* node)
 {
+    // Since we don't know from where we come here,
+    // we delete all knowladge about registers.
+    int flushId = m_registerManager.newRegisterFlush();
+
     int rnd = rand() % 90 + 10;
     std::string startLabel("WHES" + std::to_string(rnd));
     std::string endLabel("WHLE" + std::to_string(rnd));
@@ -255,13 +259,21 @@ void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* node)
         m_transactionManager.create();
         output().setActiveNode(trueLabel);
         visitNode(node->statement());
-        for (Register& reg : m_transactionManager.active().logicallyUsedRegisters()) {
+
+        RegisterList logicallyUsedRegisters = m_transactionManager.active().logicallyUsedRegisters();
+        for (Register& reg : logicallyUsedRegisters) {
             assert(m_registerManager.replace(reg, RegisterData::Tmp()) == 0);
         }
+        
+        // For body
+        recalcFlushedRegisters(flushId);
+
         output().add(translator().BL(0, startLabel));
         m_transactionManager.end();
     }
 
+    // For expression
+    recalcFlushedRegisters(flushId);
     output().setActiveNode(oldActiveNode);
     m_transactionManager.end();
 }
@@ -525,6 +537,25 @@ void CodeGeneratorAarch32::addFalseBranch()
         output().node(m_storage[OP_SAVED_PLACE_FALSE_BRANCH]).setVisible(true);
         m_transactionManager.active().setFalseBranchLabel(output().addLabel(falseLabel));
     }
+}
+
+// recalcFlushedRegisters recalculates and updates untouched registers
+// based on logicallyUsedRegisters of current transaction.
+int CodeGeneratorAarch32::recalcFlushedRegisters(int flushId)
+{
+    RegisterList unchangedRegisters;
+    for (int i = 0; i <= 10; i++) {
+        bool ok = true;
+        for (Register& reg : m_transactionManager.active().logicallyUsedRegisters()) {
+            if (i == reg.alias()) {
+                ok = false;
+            }
+        }
+        if (ok) {
+            unchangedRegisters.push_back(Register::RegisterList()[i]);
+        }
+    }
+    return m_registerManager.addUnchangedRegistersToFlush(flushId, unchangedRegisters);
 }
 
 }

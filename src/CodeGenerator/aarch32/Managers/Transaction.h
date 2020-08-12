@@ -8,7 +8,7 @@
 namespace oneCC::CodeGenerator::Aarch32 {
 
 enum TransactionMask {
-    GeneralPurposeOnly = 0b1111111111, // defualt, r0-r10 are avail.
+    GeneralPurposeOnly = 0b11111111111, // defualt, r0-r10 are avail.
     All = 0b111111111111111, // sr0-r15 are avail.
 };
 
@@ -95,7 +95,6 @@ public:
 
     RegisterList physicallyUsedRegisters(int startReg = 0)
     {
-        std::cout << m_id << " " << m_changedRegisters << "\n";
         RegisterList res;
 
         // A hack to split into 2 cycles to have the right order pushing registers to the stack.
@@ -122,7 +121,6 @@ public:
         RegisterList log;
         
         for (Register& reg : phy) {
-            std::cout << reg.textAlias() << " ";
             bool notIn = true;
             for (auto replEntry : m_replacedRegisters) {
                 if (reg == replEntry.orig) {
