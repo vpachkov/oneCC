@@ -8,12 +8,12 @@ int main ()
     int b = 5;
     int c = 5;
 
-    a = func(1, 2, 4);
-    b = func(1, 2, 4);
-    c = func(1, 2, 4);
-
-    while (a == 1) {
-        a = 2;
+    while (a == 1 && b == 5) {
+        if (a == 3) {
+            c = 3;
+        } else {
+            c = 2;
+        }
     }
     return a;
 }

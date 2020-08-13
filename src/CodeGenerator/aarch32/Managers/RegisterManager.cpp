@@ -85,7 +85,7 @@ int RegisterManager::replace(Register& reg, const RegisterData& data, bool force
         if (!forceNotUseOfReg) {
             m_codeGenerator.transactionManager().useRegister(reg);
         }
-        
+
         if (reg.data().isSame(data)) {
             return 1;
         }
@@ -120,7 +120,7 @@ int RegisterManager::write(Register& reg)
     assert((!reg.isBad()));
 
     if (canUse(reg)) {
-        
+
 #ifdef DEBUG_REGMANAGER_PRINT_INFO
         m_codeGenerator.output().add(TranslatedOpcode("Write " + reg.textAlias()));
         reg.data().dump(m_codeGenerator.output());
@@ -154,6 +154,15 @@ Register& RegisterManager::has(const RegisterData& data)
     return Register::Bad();
 }
 
+int RegisterManager::leaveFunction()
+{
+    for (int reg = 0; reg <= 10; reg++) {
+        Register& tmpreg = Register::RegisterList()[reg];
+        tmpreg.data().set(RegisterData::Tmp());
+    }
+    return 0;
+}
+
 int RegisterManager::newRegisterFlush()
 {
     int labelId = m_codeGenerator.output().addLabel("FLUSH");
@@ -164,8 +173,8 @@ int RegisterManager::newRegisterFlush()
 
     for (int i = 0; i <= 10; i++) {
         Register& reg = Register::RegisterList()[i];
-        if (reg.data().type() == DataVariable || reg.data().type() == DataMem) {
-            assert(replace(reg, RegisterData::Tmp()) == 0);
+        if ((reg.data().type() == DataVariable || reg.data().type() == DataMem) && reg.data().edited()) {
+            assert(replace(reg, RegisterData::Tmp()) >= 0);
         } else {
             mask &= ~(uint32_t(1 << i));
         }
@@ -192,10 +201,10 @@ int RegisterManager::addUnchangedRegistersToFlush(int id, RegisterList reglist)
         int offset = 0;
         for (int i = 0; i < reg.alias(); i++) {
             if ((origMask & (uint32_t)(1 << i))) {
-                offset++;  
+                offset++;
             }
         }
-        
+
         int outputId = m_flushData[id].outputLabel + offset;
         if (m_flushData[id].mask & (uint32_t)(1 << reg.alias())) {
             m_codeGenerator.output().node(outputId).setVisible(false);

@@ -190,6 +190,7 @@ void CodeGeneratorAarch32::visitNode(AST::IfStatementNode* node)
     std::string exitLabel("EXTF" + std::to_string(rnd)); // Exit from 'if', if we have 'else' branch.
 
     m_transactionManager.create();
+    m_storage[OP_INVERSED] = 0;
     visitNode(node->expression());
     addFalseBranch();
 
@@ -245,6 +246,7 @@ void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* node)
     output().addLabel(startLabel);
 
     m_transactionManager.create();
+    m_storage[OP_INVERSED] = 0;
     visitNode(node->expression());
     addFalseBranch();
 
@@ -262,7 +264,7 @@ void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* node)
 
         RegisterList logicallyUsedRegisters = m_transactionManager.active().logicallyUsedRegisters();
         for (Register& reg : logicallyUsedRegisters) {
-            assert(m_registerManager.replace(reg, RegisterData::Tmp()) == 0);
+            assert(m_registerManager.replace(reg, RegisterData::Tmp()) >= 0);
         }
         
         // For body
@@ -301,6 +303,8 @@ void CodeGeneratorAarch32::visitNode(AST::FunctionNode* func)
     output().add(translator().addLabel(""));
 
     visitNode(func->statement());
+
+    m_registerManager.leaveFunction();
 
     output().add(translator().addLabel(""));
     restoreStackFrame(func);
