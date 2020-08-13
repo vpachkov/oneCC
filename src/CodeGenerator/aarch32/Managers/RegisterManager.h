@@ -29,6 +29,7 @@ public:
     int replace(Register& reg, const RegisterData& data, bool forceNotUseOfReg = false);
     Register& has(const RegisterData& data);
 
+    int leaveFunction();
     
     // In code area where we don't know where we come from (e.g while, for, goto)
     // we should think that we don't know what we have in registers, just because
