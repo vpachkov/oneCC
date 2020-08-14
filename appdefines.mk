@@ -1,6 +1,6 @@
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 GIT_HASH := $(shell git rev-parse --short HEAD)
-VERSION := 0.1-alpha
+VERSION := 0.2-alpha
 
 ifeq ($(OS),Windows_NT)
     HARDWARE += -D WIN32

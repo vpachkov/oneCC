@@ -46,6 +46,8 @@ std::shared_ptr<KeywordManager> KeywordManager::makeStandard()
     man->addKeyword(Token("==", TokenType::Equal));
     man->addKeyword(Token(">", TokenType::Bigger));
     man->addKeyword(Token("<", TokenType::Less));
+    man->addKeyword(Token(">=", TokenType::BiggerOrEqual));
+    man->addKeyword(Token("<=", TokenType::LessOrEqual));
     man->addKeyword(Token("&&", TokenType::And));
     man->addKeyword(Token("||", TokenType::Or));
 

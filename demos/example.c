@@ -8,7 +8,7 @@ int main ()
     int b = 5;
     int c = 5;
 
-    while (a == 1 && b == 5) {
+    while (b < 4) {
         if (a == 3) {
             c = 3;
         } else {

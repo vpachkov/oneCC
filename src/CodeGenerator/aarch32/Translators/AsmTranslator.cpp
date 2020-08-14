@@ -57,6 +57,26 @@ TranslatedOpcode AsmTranslator::BNE(uint32_t imm24, const std::string& label)
     return TranslatedOpcode("bne", label);
 }
 
+TranslatedOpcode AsmTranslator::BGT(uint32_t imm24, const std::string& label)
+{
+    return TranslatedOpcode("bgt", label);
+}
+
+TranslatedOpcode AsmTranslator::BLT(uint32_t imm24, const std::string& label)
+{
+    return TranslatedOpcode("blt", label);
+}
+
+TranslatedOpcode AsmTranslator::BGE(uint32_t imm24, const std::string& label)
+{
+    return TranslatedOpcode("bge", label);
+}
+
+TranslatedOpcode AsmTranslator::BLE(uint32_t imm24, const std::string& label)
+{
+    return TranslatedOpcode("ble", label);
+}
+
 TranslatedOpcode AsmTranslator::CMP(Register& Rn, Register& Rm)
 {
     return TranslatedOpcode("cmp " + Rn.textAlias() + ", " + Rm.textAlias());
