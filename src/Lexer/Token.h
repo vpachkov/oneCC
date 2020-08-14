@@ -27,11 +27,12 @@ enum TokenType {
     _BooleanStart,
     Less,
     Bigger,
+    LessOrEqual,
+    BiggerOrEqual,
     Equal,
     _BooleanEnd,
     // And and Or should stay out of boolean types, since we use that
-    // in BooleanSnake, not in BooleanExpr, see parser for better
-    // understanding.
+    // in BooleanSnake, not in BooleanExpr, see parser for better understanding.
     And,
     Or,
 

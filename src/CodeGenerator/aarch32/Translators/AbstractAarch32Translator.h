@@ -21,6 +21,10 @@ public:
     virtual TranslatedOpcode BX(Register& Rm) { return TranslatedOpcode(); }
     virtual TranslatedOpcode BEQ(uint32_t imm24, const std::string& label) { return TranslatedOpcode(); }
     virtual TranslatedOpcode BNE(uint32_t imm24, const std::string& label) { return TranslatedOpcode(); }
+    virtual TranslatedOpcode BGT(uint32_t imm24, const std::string& label) { return TranslatedOpcode(); }
+    virtual TranslatedOpcode BLT(uint32_t imm24, const std::string& label) { return TranslatedOpcode(); }
+    virtual TranslatedOpcode BGE(uint32_t imm24, const std::string& label) { return TranslatedOpcode(); }
+    virtual TranslatedOpcode BLE(uint32_t imm24, const std::string& label) { return TranslatedOpcode(); }
     virtual TranslatedOpcode CMP(Register& Rn, Register& Rm) { return TranslatedOpcode(); }
     virtual TranslatedOpcode LDR_imm_offset(Register& Rt, Register& Rn, int16_t imm12) { return TranslatedOpcode(); }
     virtual TranslatedOpcode LDR_imm_pre_indexed(Register& Rt, Register& Rn, int16_t imm12) { return TranslatedOpcode(); }

@@ -40,24 +40,25 @@ void CodeGeneratorAarch32::visitNode(AST::BinaryOperationNode* node)
     } else if (node->operation() == Lexer::TokenType::Assign) {
         genBinaryAssign(node);
     } else if (node->operation() == Lexer::TokenType::Equal) {
-        int rnd = rand() % 90 + 10;
-        std::string trueLabel("LBEQ" + std::to_string(rnd));
-
-        if (m_storage[OP_INVERSED]) {
-            genBinaryCmpOperation(node, [&](Register& l, Register& r) {
-                output().add(translator().CMP(l, r));
-                output().add(translator().BNE(0, trueLabel)); // ALERT: FROM BRANCH NEXT SHOULD BE THIS SPOT
-                m_storage[OP_SAVED_PLACE_FALSE_BRANCH] = output().saveSpot();
-            });
-            m_transactionManager.active().setFalseBranchLabel(output().addLabel(trueLabel));
-        } else {
-            genBinaryCmpOperation(node, [&](Register& l, Register& r) {
-                output().add(translator().CMP(l, r));
-                output().add(translator().BEQ(0, trueLabel)); // ALERT: FROM BRANCH NEXT SHOULD BE THIS SPOT
-                m_storage[OP_SAVED_PLACE_FALSE_BRANCH] = output().saveSpot();
-            });
-            m_transactionManager.active().setTrueBranchLabel(output().addLabel(trueLabel));
-        }
+        genBinaryCmpOperation(node,
+            [&](std::string& label) { return translator().BEQ(0, label); }, 
+            [&](std::string& label) { return translator().BNE(0, label); });
+    } else if (node->operation() == Lexer::TokenType::Less) {
+        genBinaryCmpOperation(node,
+            [&](std::string& label) { return translator().BLT(0, label); }, 
+            [&](std::string& label) { return translator().BGE(0, label); });
+    } else if (node->operation() == Lexer::TokenType::Bigger) {
+        genBinaryCmpOperation(node,
+            [&](std::string& label) { return translator().BGT(0, label); }, 
+            [&](std::string& label) { return translator().BLE(0, label); });
+    } else if (node->operation() == Lexer::TokenType::LessOrEqual) {
+        genBinaryCmpOperation(node,
+            [&](std::string& label) { return translator().BLE(0, label); }, 
+            [&](std::string& label) { return translator().BGT(0, label); });
+    } else if (node->operation() == Lexer::TokenType::BiggerOrEqual) {
+        genBinaryCmpOperation(node,
+            [&](std::string& label) { return translator().BGE(0, label); },
+            [&](std::string& label) { return translator().BLT(0, label); });
     }
 }
 
@@ -266,7 +267,7 @@ void CodeGeneratorAarch32::visitNode(AST::WhileStatementNode* node)
         for (Register& reg : logicallyUsedRegisters) {
             assert(m_registerManager.replace(reg, RegisterData::Tmp()) >= 0);
         }
-        
+
         // For body
         recalcFlushedRegisters(flushId);
 
@@ -429,7 +430,7 @@ void CodeGeneratorAarch32::genBinaryMathOperation(AST::BinaryOperationNode* node
 }
 
 template <typename Callback>
-void CodeGeneratorAarch32::genBinaryCmpOperation(AST::BinaryOperationNode* node, Callback genAsm)
+void CodeGeneratorAarch32::genBinaryCmpOperationImpl(AST::BinaryOperationNode* node, Callback genAsm)
 {
     m_transactionManager.create();
     visitNode(node->leftChild());
@@ -440,6 +441,26 @@ void CodeGeneratorAarch32::genBinaryCmpOperation(AST::BinaryOperationNode* node,
     m_transactionManager.end();
 
     genAsm(leftReg, rightReg);
+}
+
+template <typename Callback1, typename Callback2>
+void CodeGeneratorAarch32::genBinaryCmpOperation(AST::BinaryOperationNode* node, Callback1 genTr, Callback2 genTrInversed)
+{
+    int rnd = rand() % 90 + 10;
+    std::string trueLabel("LBEQ" + std::to_string(rnd));
+    bool inversed = m_storage[OP_INVERSED];
+
+    genBinaryCmpOperationImpl(node, [&](Register& l, Register& r) {
+        output().add(translator().CMP(l, r));
+        output().add(inversed ? genTrInversed(trueLabel) : genTr(trueLabel)); // ALERT: FROM BRANCH NEXT SHOULD BE THIS SPOT
+        m_storage[OP_SAVED_PLACE_FALSE_BRANCH] = output().saveSpot();
+    });
+
+    if (inversed) {
+        m_transactionManager.active().setFalseBranchLabel(output().addLabel(trueLabel));
+    } else {
+        m_transactionManager.active().setTrueBranchLabel(output().addLabel(trueLabel));
+    }
 }
 
 void CodeGeneratorAarch32::genBinaryAssign(AST::BinaryOperationNode* node)

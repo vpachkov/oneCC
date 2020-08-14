@@ -59,7 +59,9 @@ private:
     template <typename Callback>
     void genBinaryMathOperation(AST::BinaryOperationNode* node, Callback genAsm);
     template <typename Callback>
-    void genBinaryCmpOperation(AST::BinaryOperationNode* node, Callback genAsm);
+    void genBinaryCmpOperationImpl(AST::BinaryOperationNode* node, Callback genAsm);
+    template <typename Callback1, typename Callback2>
+    void genBinaryCmpOperation(AST::BinaryOperationNode* node, Callback1 genTr1, Callback2 genTr2);
     
     void genBinaryAssign(AST::BinaryOperationNode* node);
     void initStackFrame(AST::FunctionNode* func);
