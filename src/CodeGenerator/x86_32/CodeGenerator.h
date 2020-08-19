@@ -33,9 +33,19 @@ private:
     void visitNode(AST::FunctionCallNode* a) override;
     void visitNode(AST::ProgramNode* a) override;
     void visitNode(AST::IntConstNode* a) override;
+    void visitNode(AST::BooleanSnakeNode* a) override;
 
     int generateLabel();
+
+    int m_trueLabel = { 0 };
+    int m_falseLabel = { 1 };
+    int m_exitLabel = { 2 };
+
+    std::stack<int>m_futureLabels {};
+
     std::string generateFunctionLabel(AST::FunctionNode* function);
+    std::string getReverseBooleanOperation(Lexer::TokenType);
+    std::string getBooleanOperation(Lexer::TokenType);
 
     RegisterManager m_registerManager {};
     AsmTranslator m_asmTranslator {};

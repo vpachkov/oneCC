@@ -6,6 +6,8 @@
 #include <sstream>
 #include <utility>
 
+#define getResultRegister(node) static_cast<Register>(reinterpret_cast<AST::Expression *>(node)->resultRegister());
+
 namespace oneCC::CodeGenerator::X86_32 {
 
 CodeGeneratorX86_32::CodeGeneratorX86_32()
@@ -119,7 +121,101 @@ void CodeGeneratorX86_32::visitNode(AST::ReturnStatementNode* a) {
     }
 }
 
-void CodeGeneratorX86_32::visitNode(AST::IfStatementNode* a) {}
+void CodeGeneratorX86_32::visitNode(AST::BooleanSnakeNode* a) {
+    for (size_t i = 0 ; i < a->nodes().size() ; i++) {
+        auto node = a->nodes()[i];
+        if (!m_futureLabels.empty()) {
+            std::cout << "L" << m_futureLabels.top() << ":\n";
+            m_futureLabels.pop();
+        }
+
+        if (node->type() == AST::NodeType::BinaryOperation) {
+            auto* binaryOperationNode = reinterpret_cast<AST::BinaryOperationNode*>(node);
+
+            if (binaryOperationNode->leftChild()->type() == AST::NodeType::Identifier) {
+                auto* leftChild = reinterpret_cast<AST::IdentifierNode*>(binaryOperationNode->leftChild());
+                if (binaryOperationNode->rightChild()->type() == AST::NodeType::Const) {
+                    auto* rightChild = reinterpret_cast<AST::IntConstNode*>(binaryOperationNode->rightChild());
+                    m_asmTranslator.CMP_rm32_imm32(RM(RMType::Mem, m_scoper.getMemoryPosition(leftChild)), rightChild->value());
+                }
+                // TODO: else goes here
+            }
+            else {
+                visitNode(binaryOperationNode->leftChild());
+                visitNode(binaryOperationNode->rightChild());
+                auto leftResultRegister = getResultRegister(binaryOperationNode->leftChild());
+                auto rightResultRegister = getResultRegister(binaryOperationNode->rightChild());
+                m_registerManager.freeRegister(leftResultRegister);
+                m_registerManager.freeRegister(rightResultRegister);
+
+
+                m_asmTranslator.CMP_reg32_rm32(leftResultRegister, RM(RMType::Reg, rightResultRegister));
+            }
+
+            if (a->operation() == Lexer::TokenType::And) {
+                std::cout << getReverseBooleanOperation(binaryOperationNode->operation()) << " L" << m_falseLabel
+                          << "\n";
+                if (i == a->nodes().size() - 1){
+                    std::cout << "jmp L" << m_trueLabel << "\n";
+                }
+            }
+            else if (a->operation() == Lexer::TokenType::Or) {
+                if (i < a->nodes().size() - 1) {
+                    std::cout << getBooleanOperation(binaryOperationNode->operation()) << " L" << m_trueLabel << "\n";
+                }
+                else {
+                    std::cout << getReverseBooleanOperation(binaryOperationNode->operation()) << " L" << m_falseLabel << "\n";
+                }
+            }
+        }
+        else {
+            if (i == a->nodes().size() - 1) {
+                visitNode(node);
+            }
+            else if (a->operation() == Lexer::TokenType::Or) {
+                int rightSideLabel = generateLabel();
+                int copyFalseLabel = m_falseLabel;
+                m_falseLabel = rightSideLabel;
+                visitNode(node);
+                m_futureLabels.push(rightSideLabel);
+                m_falseLabel = copyFalseLabel;
+            }
+            else if (a->operation() == Lexer::TokenType::And) {
+                int rightSideLabel = generateLabel();
+                int copyTrueLabel = m_trueLabel;
+                m_trueLabel = rightSideLabel;
+                visitNode(node);
+                m_futureLabels.push(rightSideLabel);
+                m_trueLabel = copyTrueLabel;
+            }
+        }
+    }
+}
+
+
+
+void CodeGeneratorX86_32::visitNode(AST::IfStatementNode* a) {
+    m_trueLabel = generateLabel();
+    m_falseLabel = generateLabel();
+    m_exitLabel = generateLabel();
+
+    visitNode(a->expression());
+    std::cout << "L" << m_trueLabel << ":" << std::endl;
+    visitNode(a->trueStatement());
+
+    if (a->falseStatement()) {
+        std::cout << "jmp" << " L" << m_exitLabel << std::endl;
+    }
+
+    std::cout << "L" << m_falseLabel << ":" << std::endl;
+
+    if (a->falseStatement() != NULL) {
+        visitNode(a->falseStatement());
+    }
+
+    std::cout << "L" << m_exitLabel << ":" << std::endl;
+
+}
 void CodeGeneratorX86_32::visitNode(AST::WhileStatementNode* a) {}
 
 void CodeGeneratorX86_32::visitNode(AST::FunctionCallNode* a) {
@@ -274,5 +370,39 @@ std::string CodeGeneratorX86_32::generateFunctionLabel(AST::FunctionNode* functi
 
     return functionLabel.str();
 }
+
+    std::string CodeGeneratorX86_32::getReverseBooleanOperation(Lexer::TokenType token) {
+        switch (token) {
+            case Lexer::TokenType::Bigger: {
+                return "jle";
+            }
+            case Lexer::TokenType::Less: {
+                return "jge";
+            }
+
+            case Lexer::TokenType::Equal: {
+                return "jne";
+            }
+
+            return "unknown";
+        }
+    }
+
+    std::string CodeGeneratorX86_32::getBooleanOperation(Lexer::TokenType token) {
+        switch (token) {
+            case Lexer::TokenType::Bigger: {
+                return "jb";
+            }
+            case Lexer::TokenType::Less: {
+                return "jl";
+            }
+
+            case Lexer::TokenType::Equal: {
+                return "je";
+            }
+
+            return "unknown";
+        }
+    }
 
 }
