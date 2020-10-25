@@ -48,7 +48,7 @@ public:
 
 private:
     std::vector<std::string> m_arguments;
-    void m_validateArgumentKeys(std::string& argumentLong, std::string& argumentShort);
-    void m_validateArgumenValue(std::string& argumentValue);
+    void validateArgumentKeys(std::string& argumentLong, std::string& argumentShort);
+    void validateArgumenValue(std::string& argumentValue);
 };
 }

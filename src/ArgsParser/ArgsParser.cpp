@@ -25,7 +25,7 @@ int ArgsParser::registerArgument(std::string& configField, std::string argumentL
     if (m_arguments.empty())
         return 0;
         
-    m_validateArgumentKeys(argumentLong, argumentShort);
+    validateArgumentKeys(argumentLong, argumentShort);
 
     for (size_t i = 0; i < m_arguments.size() - 1; i++) {
         const std::string& argumentKey = m_arguments[i];
@@ -45,7 +45,7 @@ int ArgsParser::registerArgument(int& configField, std::string argumentLong, std
     if (m_arguments.empty())
         return 0;
 
-    m_validateArgumentKeys(argumentLong, argumentShort);
+    validateArgumentKeys(argumentLong, argumentShort);
 
     for (size_t i = 0; i < m_arguments.size() - 1; i++) {
         const std::string& argumentKey = m_arguments[i];
@@ -62,7 +62,7 @@ int ArgsParser::registerArgument(int& configField, std::string argumentLong, std
 
 int ArgsParser::registerArgument(bool& configField, std::string argumentLong, std::string argumentShort)
 {
-    m_validateArgumentKeys(argumentLong, argumentShort);
+    validateArgumentKeys(argumentLong, argumentShort);
 
     for (size_t i = 0; i < m_arguments.size(); i++) {
         const std::string& argumentKey = m_arguments[i];
@@ -76,7 +76,7 @@ int ArgsParser::registerArgument(bool& configField, std::string argumentLong, st
     return -1;
 }
 
-void ArgsParser::m_validateArgumentKeys(std::string& argumentLong, std::string& argumentShort)
+void ArgsParser::validateArgumentKeys(std::string& argumentLong, std::string& argumentShort)
 {
     if (argumentLong.size() <= 2 || argumentLong[0] != '-' || argumentLong[1] != '-') {
         throw oneCC::Exceptions::BadArgumentKey();
