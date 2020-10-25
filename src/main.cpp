@@ -14,6 +14,19 @@
 // #define DEBUG_TOKINIZE_FILE
 // #define DEBUG_VIZ
 
+// TODO: Normal args dump.
+void helpHandler()
+{
+    std::cout << "oneCC Compiler\n";
+    std::cout << "\nAvailbale commands:\n";
+    std::cout << "-f --file     : input C file\n";
+    std::cout << "-p --platform : x86_32 or aarch32\n";
+    std::cout << "   --version  : prints version of the compiler\n";
+    std::cout << "-h --help     : helps you\n\n";
+    std::cout << "Written by Plunkerusr & nimelehin\n\n";
+    exit(0);
+}
+
 void versionHandler()
 {
     std::cout << VERSION << "\n" << GIT_HASH << " @" << GIT_BRANCH;
@@ -45,6 +58,7 @@ int main(int argc, char* argv[])
     auto* configInstnace = oneCC::Config::Config::get();
     auto* argsParser = new oneCC::ArgsParser::ArgsParser(argc, argv);
     argsParser->registerHandler(configInstnace->version, versionHandler, "--version");
+    argsParser->registerHandler(configInstnace->help, helpHandler, "--help", "-h");
     argsParser->registerArgument(configInstnace->filename, "--file", "-f", false);
     argsParser->registerArgument(configInstnace->platform, "--platform", "-p", false);
 
