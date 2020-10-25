@@ -62,6 +62,11 @@ int main(int argc, char* argv[])
     argsParser->registerArgument(configInstnace->filename, "--file", "-f", false);
     argsParser->registerArgument(configInstnace->platform, "--platform", "-p", false);
 
+    if (configInstnace->filename.empty()) {
+        std::cout << "No input file provided. Exiting...\n\n";
+        return 1;
+    }
+
     auto ifstreamPtr4Parser = std::make_unique<std::ifstream>(configInstnace->filename);
     auto lexer4Parser = std::make_unique<oneCC::Lexer::Lexer>(std::move(ifstreamPtr4Parser));
     auto parser = oneCC::Parser::Parser(std::move(lexer4Parser));
@@ -96,12 +101,12 @@ int main(int argc, char* argv[])
         } else if (configInstnace->platform == "aarch32") {
             target = oneCC::CodeGenerator::TargetPlatform::aarch32;
         } else {
-            std::cout << "Undefined platform (" << configInstnace->platform << ")\n";
+            std::cout << "Undefined platform: " << configInstnace->platform << "\n";
         }
         oneCC::CodeGenerator::CodeGenerator codeGen(target);
         codeGen.start(root);
     } catch (std::exception& e) {
-        std::cout << "Unexpected error in CodeGenerator" << e.what() << "\n";
+        std::cout << "Unexpected error in CodeGenerator " << e.what() << "\n";
     }
 
     return 0;
