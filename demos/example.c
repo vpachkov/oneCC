@@ -6,14 +6,11 @@ int main ()
 {
     int a = 1;
     int b = 5;
-    int c = 5;
 
-    while (b < 4) {
-        if (a == 3) {
-            c = 3;
-        } else {
-            c = 2;
-        }
+    if ((a > 1 || a > 2) && (b > 3 || b > 4)) { 
+        b = 6;
+    } else {
+        b = 1;
     }
     return a;
 }

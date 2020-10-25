@@ -1,4 +1,5 @@
 int func () {
+    return 1234 + 333;
 }
 
 // It a main func
