@@ -69,18 +69,14 @@ add_executable(oneCC_executable ${COMMON_SOURCES} ${TARGET_SOURCES})
 add_executable(oneCC_test ${COMMON_SOURCES} ${TEST_SOURCES})
 
 file(
-    COPY ${CMAKE_CURRENT_BASE_DIR}/demos/assign_expression.txt
+    COPY ${CMAKE_CURRENT_BASE_DIR}/demos/assign_expression.c
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/demos/
 )
 
 file(
-    COPY ${CMAKE_CURRENT_BASE_DIR}/demos/example.txt
+    COPY ${CMAKE_CURRENT_BASE_DIR}/demos/example.c
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/demos/
 )
 
-file(
-    COPY ${CMAKE_CURRENT_BASE_DIR}/demos/function_definition.txt
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/demos/
-)
 
 enable_testing()
