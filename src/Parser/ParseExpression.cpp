@@ -123,7 +123,7 @@ AST::Node* Parser::booleanOperation()
 }
 
 // Boolean Snake is a sequence of booleanOperation
-// Rule: booleanOperation repeate(&& or || booleanOperation)
+// Rule: booleanOperation repeat(&& or || booleanOperation)
 // Example: a && v && c || a || b
 AST::Node* Parser::booleanSnakeAnd()
 {
